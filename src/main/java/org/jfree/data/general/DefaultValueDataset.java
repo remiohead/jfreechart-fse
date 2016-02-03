@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------------
@@ -47,7 +47,7 @@ package org.jfree.data.general;
 
 import java.io.Serializable;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.PublicCloneable;
 
 /**
@@ -96,7 +96,7 @@ public class DefaultValueDataset extends AbstractDataset
      * @return The value (possibly <code>null</code>).
      */
     @Override
-	public Number getValue() {
+    public Number getValue() {
         return this.value;
     }
 
@@ -119,13 +119,13 @@ public class DefaultValueDataset extends AbstractDataset
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
         if (obj instanceof ValueDataset) {
             ValueDataset vd = (ValueDataset) obj;
-            return ObjectUtilities.equal(this.value, vd.getValue());
+            return ObjectUtils.equal(this.value, vd.getValue());
         }
         return false;
     }
@@ -136,7 +136,7 @@ public class DefaultValueDataset extends AbstractDataset
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return (this.value != null ? this.value.hashCode() : 0);
     }
 

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------
@@ -56,7 +56,7 @@ import java.util.Date;
  * This class is intentionally immutable (that is, once constructed, you cannot
  * alter the start and end attributes).
  */
-public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
+public class SimpleTimePeriod implements TimePeriod, Comparable<TimePeriod>, Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = 8684672361131829554L;
@@ -97,7 +97,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      * @return The start date/time (never <code>null</code>).
      */
     @Override
-	public Date getStart() {
+    public Date getStart() {
         return new Date(this.start);
     }
 
@@ -118,7 +118,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      * @return The end date/time (never <code>null</code>).
      */
     @Override
-	public Date getEnd() {
+    public Date getEnd() {
         return new Date(this.end);
     }
 
@@ -143,7 +143,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -164,7 +164,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      * Returns an integer that indicates the relative ordering of two
      * time periods.
      *
-     * @param obj  the object (<code>null</code> not permitted).
+     * @param that  the object (<code>null</code> not permitted).
      *
      * @return An integer.
      *
@@ -172,8 +172,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      *                            {@link TimePeriod}.
      */
     @Override
-	public int compareTo(Object obj) {
-        TimePeriod that = (TimePeriod) obj;
+    public int compareTo(TimePeriod that) {
         long t0 = getStart().getTime();
         long t1 = getEnd().getTime();
         long m0 = t0 + (t1 - t0) / 2L;
@@ -217,7 +216,7 @@ public class SimpleTimePeriod implements TimePeriod, Comparable, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 17;
         result = 37 * result + (int) this.start;
         result = 37 * result + (int) this.end;

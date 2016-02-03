@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,16 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------
  * XYDotRenderer.java
  * ------------------
- * (C) Copyright 2002-2012, by Object Refinery Limited.
+ * (C) Copyright 2002-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Christian W. Zuckschwerdt;
+ *                   Michael Zinsmaier;
  *
  * Changes (from 29-Oct-2002)
  * --------------------------
@@ -56,6 +57,7 @@ package org.jfree.chart.renderer.xy;
 
 import java.awt.Graphics2D;
 import java.awt.Paint;
+import java.awt.Rectangle;
 import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 import java.io.IOException;
@@ -65,14 +67,16 @@ import java.io.ObjectOutputStream;
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
+import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.util.PublicCloneable;
-import org.jfree.chart.util.ShapeUtilities;
+import org.jfree.chart.util.ShapeUtils;
 import org.jfree.chart.event.RendererChangeEvent;
 import org.jfree.chart.plot.CrosshairState;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ParamChecks;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.xy.XYDataset;
 
 /**
@@ -82,7 +86,7 @@ import org.jfree.data.xy.XYDataset;
  * demo collection:
  * <br><br>
  * <img src="../../../../../images/XYDotRendererSample.png"
- * alt="XYDotRendererSample.png" />
+ * alt="XYDotRendererSample.png">
  */
 public class XYDotRenderer extends AbstractXYItemRenderer
         implements XYItemRenderer, PublicCloneable {
@@ -199,9 +203,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      * @since 1.0.7
      */
     public void setLegendShape(Shape shape) {
-        if (shape == null) {
-            throw new IllegalArgumentException("Null 'shape' argument.");
-        }
+        ParamChecks.nullNotPermitted(shape, "shape");
         this.legendShape = shape;
         fireChangeEvent();
     }
@@ -225,18 +227,10 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2,
-                         XYItemRendererState state,
-                         Rectangle2D dataArea,
-                         PlotRenderingInfo info,
-                         XYPlot plot,
-                         ValueAxis domainAxis,
-                         ValueAxis rangeAxis,
-                         XYDataset dataset,
-                         int series,
-                         int item,
-                         CrosshairState crosshairState,
-                         int pass) {
+    public void drawItem(Graphics2D g2, XYItemRendererState state,
+            Rectangle2D dataArea, PlotRenderingInfo info, XYPlot plot,
+            ValueAxis domainAxis, ValueAxis rangeAxis, XYDataset dataset,
+            int series, int item, CrosshairState crosshairState, int pass) {
 
         // do nothing if item is not visible
         if (!getItemVisible(series, item)) {
@@ -271,6 +265,24 @@ public class XYDotRenderer extends AbstractXYItemRenderer
             int rangeAxisIndex = plot.getRangeAxisIndex(rangeAxis);
             updateCrosshairValues(crosshairState, x, y, domainAxisIndex,
                     rangeAxisIndex, transX, transY, orientation);
+
+            // collecting the entity info
+            if (info != null) {
+                EntityCollection entities = info.getOwner().getEntityCollection();
+
+                if (orientation == PlotOrientation.HORIZONTAL) {
+                    Shape area = new Rectangle((int) transY, (int) transX,
+                            this.dotHeight, this.dotWidth);
+                    addEntity(entities, area, dataset, series, item, transY, 
+                            transX);
+                } else if (orientation == PlotOrientation.VERTICAL) {
+                    Shape area = new Rectangle((int) transX, (int) transY,
+                            this.dotWidth, this.dotHeight);
+                    addEntity(entities, area, dataset, series, item, transX, 
+                            transY);
+                }
+            }
+
         }
 
     }
@@ -284,7 +296,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      * @return A legend item for the series (possibly <code>null</code>).
      */
     @Override
-	public LegendItem getLegendItem(int datasetIndex, int series) {
+    public LegendItem getLegendItem(int datasetIndex, int series) {
 
         // if the renderer isn't assigned to a plot, then we don't have a
         // dataset...
@@ -346,7 +358,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -360,7 +372,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
         if (this.dotHeight != that.dotHeight) {
             return false;
         }
-        if (!ShapeUtilities.equal(this.legendShape, that.legendShape)) {
+        if (!ShapeUtils.equal(this.legendShape, that.legendShape)) {
             return false;
         }
         return super.equals(obj);
@@ -374,7 +386,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      * @throws CloneNotSupportedException  if the renderer cannot be cloned.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -389,7 +401,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.legendShape = SerialUtilities.readShape(stream);
+        this.legendShape = SerialUtils.readShape(stream);
     }
 
     /**
@@ -401,7 +413,7 @@ public class XYDotRenderer extends AbstractXYItemRenderer
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writeShape(this.legendShape, stream);
+        SerialUtils.writeShape(this.legendShape, stream);
     }
 
 }

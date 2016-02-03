@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------------
@@ -44,9 +44,9 @@ package org.jfree.chart.entity;
 
 import java.awt.Shape;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 import org.jfree.chart.axis.CategoryAxis;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 
 /**
  * An entity to represent the labels on a {@link CategoryAxis}.
@@ -89,7 +89,7 @@ public class CategoryLabelEntity extends TickLabelEntity {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -97,7 +97,7 @@ public class CategoryLabelEntity extends TickLabelEntity {
             return false;
         }
         CategoryLabelEntity that = (CategoryLabelEntity) obj;
-        if (!ObjectUtilities.equal(this.key, that.key)) {
+        if (!ObjectUtils.equal(this.key, that.key)) {
             return false;
         }
         return super.equals(obj);
@@ -109,9 +109,9 @@ public class CategoryLabelEntity extends TickLabelEntity {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = super.hashCode();
-        result = HashUtilities.hashCode(result, this.key);
+        result = HashUtils.hashCode(result, this.key);
         return result;
     }
 
@@ -122,12 +122,12 @@ public class CategoryLabelEntity extends TickLabelEntity {
      * @return A string representation of this entity.
      */
     @Override
-	public String toString() {
-        StringBuffer buf = new StringBuffer("CategoryLabelEntity: ");
+    public String toString() {
+        StringBuilder buf = new StringBuilder("CategoryLabelEntity: ");
         buf.append("category=");
         buf.append(this.key);
-        buf.append(", tooltip=" + getToolTipText());
-        buf.append(", url=" + getURLText());
+        buf.append(", tooltip=").append(getToolTipText());
+        buf.append(", url=").append(getURLText());
         return buf.toString();
     }
 }

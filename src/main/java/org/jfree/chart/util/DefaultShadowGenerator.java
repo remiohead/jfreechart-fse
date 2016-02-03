@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
@@ -46,11 +46,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.Serializable;
-import org.jfree.chart.HashUtilities;
 
 /**
  * A default implementation of the {@link ShadowGenerator} interface, based on
- * code in a 
+ * code in a
  * <a href="http://www.jroller.com/gfx/entry/fast_or_good_drop_shadows">blog
  * post by Romain Guy</a>.
  *
@@ -155,7 +154,7 @@ public class DefaultShadowGenerator implements ShadowGenerator, Serializable {
      * @return The x-offset.
      */
     @Override
-	public int calculateOffsetX() {
+    public int calculateOffsetX() {
         return (int) (Math.cos(this.angle) * this.distance) - this.shadowSize;
     }
 
@@ -166,7 +165,7 @@ public class DefaultShadowGenerator implements ShadowGenerator, Serializable {
      * @return The y-offset.
      */
     @Override
-	public int calculateOffsetY() {
+    public int calculateOffsetY() {
         return -(int) (Math.sin(this.angle) * this.distance) - this.shadowSize;
     }
 
@@ -179,7 +178,7 @@ public class DefaultShadowGenerator implements ShadowGenerator, Serializable {
      * @return A new image containing the shadow.
      */
     @Override
-	public BufferedImage createDropShadow(BufferedImage source) {
+    public BufferedImage createDropShadow(BufferedImage source) {
         BufferedImage subject = new BufferedImage(
                 source.getWidth() + this.shadowSize * 2,
                 source.getHeight() + this.shadowSize * 2,
@@ -284,13 +283,13 @@ public class DefaultShadowGenerator implements ShadowGenerator, Serializable {
 
     /**
      * Tests this object for equality with an arbitrary object.
-     * 
+     *
      * @param obj  the object (<code>null</code> permitted).
-     * 
+     *
      * @return The object.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -318,16 +317,16 @@ public class DefaultShadowGenerator implements ShadowGenerator, Serializable {
 
     /**
      * Returns a hash code for this instance.
-     * 
+     *
      * @return The hash code.
      */
     @Override
-	public int hashCode() {
-        int hash = HashUtilities.hashCode(17, this.shadowSize);
-        hash = HashUtilities.hashCode(hash, this.shadowColor);
-        hash = HashUtilities.hashCode(hash, this.shadowOpacity);
-        hash = HashUtilities.hashCode(hash, this.distance);
-        hash = HashUtilities.hashCode(hash, this.angle);
+    public int hashCode() {
+        int hash = HashUtils.hashCode(17, this.shadowSize);
+        hash = HashUtils.hashCode(hash, this.shadowColor);
+        hash = HashUtils.hashCode(hash, this.shadowOpacity);
+        hash = HashUtils.hashCode(hash, this.distance);
+        hash = HashUtils.hashCode(hash, this.angle);
         return hash;
     }
 

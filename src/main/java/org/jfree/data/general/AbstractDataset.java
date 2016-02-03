@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
@@ -79,9 +79,6 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
     /** For serialization. */
     private static final long serialVersionUID = 1918768939869230744L;
 
-    /** The group that the dataset belongs to. */
-    private DatasetGroup group;
-
     /** Storage for registered change listeners. */
     private transient EventListenerList listenerList;
 
@@ -90,35 +87,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      * group.
      */
     protected AbstractDataset() {
-        this.group = new DatasetGroup();
         this.listenerList = new EventListenerList();
-    }
-
-    /**
-     * Returns the dataset group for the dataset.
-     *
-     * @return The group (never <code>null</code>).
-     *
-     * @see #setGroup(DatasetGroup)
-     */
-    @Override
-	public DatasetGroup getGroup() {
-        return this.group;
-    }
-
-    /**
-     * Sets the dataset group for the dataset.
-     *
-     * @param group  the group (<code>null</code> not permitted).
-     *
-     * @see #getGroup()
-     */
-    @Override
-	public void setGroup(DatasetGroup group) {
-        if (group == null) {
-            throw new IllegalArgumentException("Null 'group' argument.");
-        }
-        this.group = group;
     }
 
     /**
@@ -129,7 +98,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      * @see #removeChangeListener(DatasetChangeListener)
      */
     @Override
-	public void addChangeListener(DatasetChangeListener listener) {
+    public void addChangeListener(DatasetChangeListener listener) {
         this.listenerList.add(DatasetChangeListener.class, listener);
     }
 
@@ -142,7 +111,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      * @see #addChangeListener(DatasetChangeListener)
      */
     @Override
-	public void removeChangeListener(DatasetChangeListener listener) {
+    public void removeChangeListener(DatasetChangeListener listener) {
         this.listenerList.remove(DatasetChangeListener.class, listener);
     }
 
@@ -159,7 +128,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      * @see #removeChangeListener(DatasetChangeListener)
      */
     public boolean hasListener(EventListener listener) {
-        List list = Arrays.asList(this.listenerList.getListenerList());
+        List<Object> list = Arrays.asList(this.listenerList.getListenerList());
         return list.contains(listener);
     }
 
@@ -204,7 +173,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      *                                     cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         AbstractDataset clone = (AbstractDataset) super.clone();
         clone.listenerList = new EventListenerList();
         return clone;
@@ -255,7 +224,7 @@ public abstract class AbstractDataset implements Dataset, Cloneable,
      * @exception InvalidObjectException If the object cannot validate itself.
      */
     @Override
-	public void validateObject() throws InvalidObjectException {
+    public void validateObject() throws InvalidObjectException {
         fireDatasetChanged();
     }
 

@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -27,7 +27,7 @@
  * -------------------------------
  * XYIntervalSeriesCollection.java
  * -------------------------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -48,8 +48,7 @@ package org.jfree.data.xy;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.ParamChecks;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.general.DatasetChangeEvent;
@@ -71,7 +70,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      * Creates a new instance of <code>XIntervalSeriesCollection</code>.
      */
     public XYIntervalSeriesCollection() {
-        this.data = new java.util.ArrayList();
+        this.data = new java.util.ArrayList<XYIntervalSeries>();
     }
 
     /**
@@ -246,7 +245,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      */
     @Override
     public Number getY(int series, int item) {
-        return new Double(getYValue(series, item));
+        return getYValue(series, item);
     }
 
     /**
@@ -259,7 +258,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      */
     @Override
     public Number getStartX(int series, int item) {
-        return new Double(getStartXValue(series, item));
+        return getStartXValue(series, item);
     }
 
     /**
@@ -272,7 +271,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      */
     @Override
     public Number getEndX(int series, int item) {
-        return new Double(getEndXValue(series, item));
+        return getEndXValue(series, item);
     }
 
     /**
@@ -286,7 +285,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      */
     @Override
     public Number getStartY(int series, int item) {
-        return new Double(getStartYValue(series, item));
+        return getStartYValue(series, item);
     }
 
     /**
@@ -300,7 +299,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
      */
     @Override
     public Number getEndY(int series, int item) {
-        return new Double(getEndYValue(series, item));
+        return getEndYValue(series, item);
     }
 
     /**
@@ -370,7 +369,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
             return false;
         }
         XYIntervalSeriesCollection that = (XYIntervalSeriesCollection) obj;
-        return ObjectUtilities.equal(this.data, that.data);
+        return ObjectUtils.equal(this.data, that.data);
     }
 
     /**
@@ -385,7 +384,7 @@ public class XYIntervalSeriesCollection extends AbstractIntervalXYDataset
         XYIntervalSeriesCollection clone
                 = (XYIntervalSeriesCollection) super.clone();
         int seriesCount = getSeriesCount();
-        clone.data = new java.util.ArrayList(seriesCount);
+        clone.data = new java.util.ArrayList<XYIntervalSeries>(seriesCount);
         for (int i = 0; i < this.data.size(); i++) {
             clone.data.set(i, (XYIntervalSeries) getSeries(i).clone());
         }

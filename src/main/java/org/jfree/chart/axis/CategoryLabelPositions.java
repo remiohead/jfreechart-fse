@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
  * CategoryLabelPositions.java
  * ---------------------------
- * (C) Copyright 2004-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2004-2014, by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -61,22 +61,16 @@ public class CategoryLabelPositions implements Serializable {
 
     /** STANDARD category label positions. */
     public static final CategoryLabelPositions
-        STANDARD = new CategoryLabelPositions(
-            new CategoryLabelPosition(
-                RectangleAnchor.BOTTOM, TextBlockAnchor.BOTTOM_CENTER
-            ), // TOP
-            new CategoryLabelPosition(
-                RectangleAnchor.TOP, TextBlockAnchor.TOP_CENTER
-            ), // BOTTOM
-            new CategoryLabelPosition(
-                RectangleAnchor.RIGHT, TextBlockAnchor.CENTER_RIGHT,
-                CategoryLabelWidthType.RANGE, 0.30f
-            ), // LEFT
-            new CategoryLabelPosition(
-                RectangleAnchor.LEFT, TextBlockAnchor.CENTER_LEFT,
-                CategoryLabelWidthType.RANGE, 0.30f
-            ) // RIGHT
-        );
+        STANDARD = new CategoryLabelPositions(new CategoryLabelPosition(
+                RectangleAnchor.BOTTOM, TextBlockAnchor.BOTTOM_CENTER), // TOP
+                new CategoryLabelPosition(RectangleAnchor.TOP, 
+                        TextBlockAnchor.TOP_CENTER), // BOTTOM
+                new CategoryLabelPosition(RectangleAnchor.RIGHT, 
+                        TextBlockAnchor.CENTER_RIGHT, 
+                        CategoryLabelWidthType.RANGE, 0.30f), // LEFT
+                new CategoryLabelPosition(RectangleAnchor.LEFT, 
+                        TextBlockAnchor.CENTER_LEFT,
+                        CategoryLabelWidthType.RANGE, 0.30f));
 
     /** UP_90 category label positions. */
     public static final CategoryLabelPositions
@@ -140,7 +134,7 @@ public class CategoryLabelPositions implements Serializable {
      * Creates a new instance where the category labels angled upwards by the
      * specified amount.
      *
-     * @param angle  the rotation angle (should be < Math.PI / 2.0).
+     * @param angle  the rotation angle (should be &lt; Math.PI / 2.0).
      *
      * @return A category label position specification.
      */
@@ -174,7 +168,7 @@ public class CategoryLabelPositions implements Serializable {
      * Creates a new instance where the category labels angled downwards by the
      * specified amount.
      *
-     * @param angle  the rotation angle (should be < Math.PI / 2.0).
+     * @param angle  the rotation angle (should be &lt; Math.PI / 2.0).
      *
      * @return A category label position specification.
      */
@@ -417,7 +411,7 @@ public class CategoryLabelPositions implements Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
 
         if (this == obj) {
             return true;
@@ -451,7 +445,7 @@ public class CategoryLabelPositions implements Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 19;
         result = 37 * result + this.positionForAxisAtTop.hashCode();
         result = 37 * result + this.positionForAxisAtBottom.hashCode();

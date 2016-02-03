@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------
@@ -95,16 +95,16 @@ public class ResourceBundleWrapper {
      */
     public static void removeCodeBase(URL codeBase,
             URLClassLoader urlClassLoader) {
-        List urlsNoBase = new ArrayList();
+        List<URL> urlsNoBase = new ArrayList<URL>();
 
         URL[] urls = urlClassLoader.getURLs();
-        for (int i = 0; i < urls.length; i++) {
-            if (!urls[i].sameFile(codeBase)) {
-                urlsNoBase.add(urls[i]);
+        for (URL url : urls) {
+            if (!url.sameFile(codeBase)) {
+                urlsNoBase.add(url);
             }
         }
         // substitute the filtered URL list
-        URL[] urlsNoBaseArray = (URL[]) urlsNoBase.toArray(new URL[0]);
+        URL[] urlsNoBaseArray = urlsNoBase.toArray(new URL[urlsNoBase.size()]);
         noCodeBaseClassLoader = URLClassLoader.newInstance(urlsNoBaseArray);
     }
 
@@ -115,7 +115,7 @@ public class ResourceBundleWrapper {
      *
      * @return The resource bundle.
      */
-    public static final ResourceBundle getBundle(String baseName) {
+    public static ResourceBundle getBundle(String baseName) {
         // the noCodeBaseClassLoader is configured by a call to the
         // removeCodeBase() method, typically in the init() method of an
         // applet...
@@ -137,8 +137,7 @@ public class ResourceBundleWrapper {
      *
      * @return The resource bundle.
      */
-    public static final ResourceBundle getBundle(String baseName,
-            Locale locale) {
+    public static ResourceBundle getBundle(String baseName, Locale locale) {
 
         // the noCodeBaseClassLoader is configured by a call to the
         // removeCodeBase() method, typically in the init() method of an

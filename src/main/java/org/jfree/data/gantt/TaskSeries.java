@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------
@@ -49,7 +49,7 @@ package org.jfree.data.gantt;
 import java.util.Collections;
 import java.util.List;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.data.general.Series;
 
 /**
@@ -61,7 +61,7 @@ import org.jfree.data.general.Series;
 public class TaskSeries extends Series {
 
     /** Storage for the tasks in the series. */
-    private List tasks;
+    private List<Task> tasks;
 
     /**
      * Constructs a new series with the specified name.
@@ -70,7 +70,7 @@ public class TaskSeries extends Series {
      */
     public TaskSeries(String name) {
         super(name);
-        this.tasks = new java.util.ArrayList();
+        this.tasks = new java.util.ArrayList<Task>();
     }
 
     /**
@@ -116,7 +116,7 @@ public class TaskSeries extends Series {
      * @return The item count.
      */
     @Override
-	public int getItemCount() {
+    public int getItemCount() {
         return this.tasks.size();
     }
 
@@ -128,7 +128,7 @@ public class TaskSeries extends Series {
      * @return The task.
      */
     public Task get(int index) {
-        return (Task) this.tasks.get(index);
+        return this.tasks.get(index);
     }
 
     /**
@@ -140,9 +140,7 @@ public class TaskSeries extends Series {
      */
     public Task get(String description) {
         Task result = null;
-        int count = this.tasks.size();
-        for (int i = 0; i < count; i++) {
-            Task t = (Task) this.tasks.get(i);
+        for (Task t : this.tasks) {
             if (t.getDescription().equals(description)) {
                 result = t;
                 break;
@@ -156,7 +154,7 @@ public class TaskSeries extends Series {
      *
      * @return The tasks.
      */
-    public List getTasks() {
+    public List<Task> getTasks() {
         return Collections.unmodifiableList(this.tasks);
     }
 
@@ -168,7 +166,7 @@ public class TaskSeries extends Series {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -194,9 +192,9 @@ public class TaskSeries extends Series {
      *     the dataset.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         TaskSeries clone = (TaskSeries) super.clone();
-        clone.tasks = (List) ObjectUtilities.deepClone(this.tasks);
+        clone.tasks = ObjectUtils.deepClone(this.tasks);
         return clone;
     }
 

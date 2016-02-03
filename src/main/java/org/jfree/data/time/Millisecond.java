@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------
  * Millisecond.java
  * ----------------
- * (C) Copyright 2001-2009, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -64,12 +64,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * Represents a millisecond.  This class is immutable, which is a requirement
  * for all {@link RegularTimePeriod} subclasses.
  */
-public class Millisecond extends RegularTimePeriod implements Serializable {
+public class Millisecond extends RegularTimePeriod implements Serializable, 
+        Comparable<TimePeriod> {
 
     /** For serialization. */
     static final long serialVersionUID = -5316836467277638485L;
@@ -135,9 +137,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      */
     public Millisecond(int millisecond, int second, int minute, int hour,
                        int day, int month, int year) {
-
         this(millisecond, new Second(second, minute, hour, day, month, year));
-
     }
 
     /**
@@ -145,7 +145,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      *
      * @param time  the time.
      *
-     * @see #Millisecond(Date, TimeZone)
+     * @see #Millisecond(Date, TimeZone, Locale)
      */
     public Millisecond(Date time) {
         this(time, TimeZone.getDefault(), Locale.getDefault());
@@ -154,9 +154,9 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
     /**
      * Creates a millisecond.
      *
-     * @param time  the date-time (<code>null</code> not permitted).
-     * @param zone  the time zone (<code>null</code> not permitted).
-     * @param locale  the locale (<code>null</code> not permitted).
+     * @param time  the date-time ({@code null} not permitted).
+     * @param zone  the time zone ({@code null} not permitted).
+     * @param locale  the locale ({@code null} not permitted).
      *
      * @since 1.0.13
      */
@@ -202,7 +202,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @see #getLastMillisecond()
      */
     @Override
-	public long getFirstMillisecond() {
+    public long getFirstMillisecond() {
         return this.firstMillisecond;
     }
 
@@ -217,7 +217,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @see #getFirstMillisecond()
      */
     @Override
-	public long getLastMillisecond() {
+    public long getLastMillisecond() {
         return this.firstMillisecond;
     }
 
@@ -230,7 +230,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @since 1.0.3
      */
     @Override
-	public void peg(Calendar calendar) {
+    public void peg(Calendar calendar) {
         this.firstMillisecond = getFirstMillisecond(calendar);
     }
 
@@ -240,7 +240,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @return The millisecond preceding this one.
      */
     @Override
-	public RegularTimePeriod previous() {
+    public RegularTimePeriod previous() {
         RegularTimePeriod result = null;
         if (this.millisecond != FIRST_MILLISECOND_IN_SECOND) {
             result = new Millisecond(this.millisecond - 1, getSecond());
@@ -260,7 +260,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @return The millisecond following this one.
      */
     @Override
-	public RegularTimePeriod next() {
+    public RegularTimePeriod next() {
         RegularTimePeriod result = null;
         if (this.millisecond != LAST_MILLISECOND_IN_SECOND) {
             result = new Millisecond(this.millisecond + 1, getSecond());
@@ -280,7 +280,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @return The serial index number.
      */
     @Override
-	public long getSerialIndex() {
+    public long getSerialIndex() {
         long hourIndex = this.day.getSerialIndex() * 24L + this.hour;
         long minuteIndex = hourIndex * 60L + this.minute;
         long secondIndex = minuteIndex * 60L + this.second;
@@ -299,7 +299,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      *      are the same.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -335,7 +335,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @return A hashcode.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 17;
         result = 37 * result + this.millisecond;
         result = 37 * result + getSecond().hashCode();
@@ -353,7 +353,7 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      * @return negative == before, zero == same, positive == after.
      */
     @Override
-	public int compareTo(Object obj) {
+    public int compareTo(TimePeriod obj) {
         int result;
         long difference;
 
@@ -377,19 +377,12 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
 
         // CASE 2 : Comparing to another TimePeriod object
         // -----------------------------------------------
-        else if (obj instanceof RegularTimePeriod) {
+        else {
             RegularTimePeriod rtp = (RegularTimePeriod) obj;
             final long thisVal = this.getFirstMillisecond();
             final long anotherVal = rtp.getFirstMillisecond();
             result = (thisVal < anotherVal ? -1
                     : (thisVal == anotherVal ? 0 : 1));
-        }
-
-        // CASE 3 : Comparing to a non-TimePeriod object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
         }
 
         return result;
@@ -398,15 +391,14 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
     /**
      * Returns the first millisecond of the time period.
      *
-     * @param calendar  the calendar (<code>null</code> not permitted).
+     * @param calendar  the calendar ({@code null} not permitted).
      *
      * @return The first millisecond of the time period.
-     *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * 
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getFirstMillisecond(Calendar calendar) {
+    public long getFirstMillisecond(Calendar calendar) {
         int year = this.day.getYear();
         int month = this.day.getMonth() - 1;
         int day = this.day.getDayOfMonth();
@@ -423,11 +415,10 @@ public class Millisecond extends RegularTimePeriod implements Serializable {
      *
      * @return The last millisecond of the time period.
      *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getLastMillisecond(Calendar calendar) {
+    public long getLastMillisecond(Calendar calendar) {
         return getFirstMillisecond(calendar);
     }
 

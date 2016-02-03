@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
  * LineAndShapeRenderer.java
  * -------------------------
- * (C) Copyright 2001-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2001-2014, by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Mark Watson (www.markwatson.com);
@@ -107,9 +107,9 @@ import org.jfree.chart.LegendItem;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.util.BooleanList;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.PublicCloneable;
-import org.jfree.chart.util.ShapeUtilities;
+import org.jfree.chart.util.ShapeUtils;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
 import org.jfree.chart.plot.CategoryPlot;
@@ -123,7 +123,7 @@ import org.jfree.data.category.CategoryDataset;
  * program included in the JFreeChart Demo Collection:
  * <br><br>
  * <img src="../../../../../images/LineAndShapeRendererSample.png"
- * alt="LineAndShapeRendererSample.png" />
+ * alt="LineAndShapeRendererSample.png">
  */
 public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
         implements Cloneable, PublicCloneable, Serializable {
@@ -234,7 +234,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
     public boolean getItemLineVisible(int series, int item) {
         Boolean flag = getSeriesLinesVisible(series);
         if (flag != null) {
-            return flag.booleanValue();
+            return flag;
         }
         else {
             return this.baseLinesVisible;
@@ -320,7 +320,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
     public boolean getItemShapeVisible(int series, int item) {
         Boolean flag = getSeriesShapesVisible(series);
         if (flag != null) {
-            return flag.booleanValue();
+            return flag;
         }
         else {
             return this.baseShapesVisible;
@@ -476,7 +476,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
 
         Boolean flag = this.seriesShapesFilled.getBoolean(series);
         if (flag != null) {
-            return flag.booleanValue();
+            return flag;
         }
         else {
             return this.baseShapesFilled;
@@ -615,7 +615,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * (expressed as a percentage of the overall category width), and sends
      * a {@link RendererChangeEvent} to all registered listeners.
      *
-     * @param margin  the margin (0.0 <= margin < 1.0).
+     * @param margin  the margin (0.0 &lt;= margin &lt; 1.0).
      *
      * @see #getItemMargin()
      * @see #getUseSeriesOffset()
@@ -639,7 +639,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * @return The legend item.
      */
     @Override
-	public LegendItem getLegendItem(int datasetIndex, int series) {
+    public LegendItem getLegendItem(int datasetIndex, int series) {
 
         CategoryPlot cp = getPlot();
         if (cp == null) {
@@ -697,7 +697,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * @return The pass count (<code>2</code> for this renderer).
      */
     @Override
-	public int getPassCount() {
+    public int getPassCount() {
         return 2;
     }
 
@@ -716,7 +716,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, CategoryItemRendererState state,
+    public void drawItem(Graphics2D g2, CategoryItemRendererState state,
             Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis,
             ValueAxis rangeAxis, CategoryDataset dataset, int row, int column,
             int pass) {
@@ -800,18 +800,16 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
         if (pass == 1) {
             Shape shape = getItemShape(row, column);
             if (orientation == PlotOrientation.HORIZONTAL) {
-                shape = ShapeUtilities.createTranslatedShape(shape, y1, x1);
-            }
-            else if (orientation == PlotOrientation.VERTICAL) {
-                shape = ShapeUtilities.createTranslatedShape(shape, x1, y1);
+                shape = ShapeUtils.createTranslatedShape(shape, y1, x1);
+            } else if (orientation == PlotOrientation.VERTICAL) {
+                shape = ShapeUtils.createTranslatedShape(shape, x1, y1);
             }
 
             if (getItemShapeVisible(row, column)) {
                 if (getItemShapeFilled(row, column)) {
                     if (this.useFillPaint) {
                         g2.setPaint(getItemFillPaint(row, column));
-                    }
-                    else {
+                    } else {
                         g2.setPaint(getItemPaint(row, column));
                     }
                     g2.fill(shape);
@@ -819,8 +817,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
                 if (this.drawOutlines) {
                     if (this.useOutlinePaint) {
                         g2.setPaint(getItemOutlinePaint(row, column));
-                    }
-                    else {
+                    } else {
                         g2.setPaint(getItemPaint(row, column));
                     }
                     g2.setStroke(getItemOutlineStroke(row, column));
@@ -833,15 +830,14 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
                 if (orientation == PlotOrientation.HORIZONTAL) {
                     drawItemLabel(g2, orientation, dataset, row, column, y1,
                             x1, (value < 0.0));
-                }
-                else if (orientation == PlotOrientation.VERTICAL) {
+                } else if (orientation == PlotOrientation.VERTICAL) {
                     drawItemLabel(g2, orientation, dataset, row, column, x1,
                             y1, (value < 0.0));
                 }
             }
 
             // submit the current data point as a crosshair candidate
-            int datasetIndex = plot.indexOf(dataset);
+            int datasetIndex = plot.findDatasetIndex(dataset);
             updateCrosshairValues(state.getCrosshairState(),
                     dataset.getRowKey(row), dataset.getColumnKey(column),
                     value, datasetIndex, x1, y1, orientation);
@@ -863,7 +859,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
 
         if (obj == this) {
             return true;
@@ -876,18 +872,18 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
         if (this.baseLinesVisible != that.baseLinesVisible) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.seriesLinesVisible,
+        if (!ObjectUtils.equal(this.seriesLinesVisible,
                 that.seriesLinesVisible)) {
             return false;
         }
         if (this.baseShapesVisible != that.baseShapesVisible) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.seriesShapesVisible,
+        if (!ObjectUtils.equal(this.seriesShapesVisible,
                 that.seriesShapesVisible)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.seriesShapesFilled,
+        if (!ObjectUtils.equal(this.seriesShapesFilled,
                 that.seriesShapesFilled)) {
             return false;
         }
@@ -914,7 +910,7 @@ public class LineAndShapeRenderer extends AbstractCategoryItemRenderer
      * @throws CloneNotSupportedException  should not happen.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         LineAndShapeRenderer clone = (LineAndShapeRenderer) super.clone();
         clone.seriesLinesVisible
                 = (BooleanList) this.seriesLinesVisible.clone();

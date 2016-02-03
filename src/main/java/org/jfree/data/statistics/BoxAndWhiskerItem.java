@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
@@ -40,7 +40,7 @@
  * 15-Nov-2006 : Added toString() method override (DG);
  * 02-Oct-2007 : Added new constructor (for convenience) (DG);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.data.statistics;
@@ -49,7 +49,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 
 /**
  * Represents one data item within a box-and-whisker dataset.  Instances of
@@ -85,7 +85,7 @@ public class BoxAndWhiskerItem implements Serializable {
     private Number maxOutlier;
 
     /** The outliers. */
-    private List outliers;
+    private List<Number> outliers;
 
     /**
      * Creates a new box-and-whisker item.
@@ -110,7 +110,7 @@ public class BoxAndWhiskerItem implements Serializable {
                              Number maxRegularValue,
                              Number minOutlier,
                              Number maxOutlier,
-                             List outliers) {
+                             List<Number> outliers) {
 
         this.mean = mean;
         this.median = median;
@@ -141,7 +141,7 @@ public class BoxAndWhiskerItem implements Serializable {
      */
     public BoxAndWhiskerItem(double mean, double median, double q1, double q3,
             double minRegularValue, double maxRegularValue, double minOutlier,
-            double maxOutlier, List outliers) {
+            double maxOutlier, List<Number> outliers) {
 
         // pass values to other constructor
         this(new Double(mean), new Double(median), new Double(q1),
@@ -228,7 +228,7 @@ public class BoxAndWhiskerItem implements Serializable {
      *
      * @return A list of outliers (possibly <code>null</code>).
      */
-    public List getOutliers() {
+    public List<Number> getOutliers() {
         if (this.outliers == null) {
             return null;
         }
@@ -242,7 +242,7 @@ public class BoxAndWhiskerItem implements Serializable {
      * @return A string representation of this instance.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return super.toString() + "[mean=" + this.mean + ",median="
                 + this.median + ",q1=" + this.q1 + ",q3=" + this.q3 + "]";
     }
@@ -255,7 +255,7 @@ public class BoxAndWhiskerItem implements Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
 
         if (obj == this) {
             return true;
@@ -264,33 +264,33 @@ public class BoxAndWhiskerItem implements Serializable {
             return false;
         }
         BoxAndWhiskerItem that = (BoxAndWhiskerItem) obj;
-        if (!ObjectUtilities.equal(this.mean, that.mean)) {
+        if (!ObjectUtils.equal(this.mean, that.mean)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.median, that.median)) {
+        if (!ObjectUtils.equal(this.median, that.median)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.q1, that.q1)) {
+        if (!ObjectUtils.equal(this.q1, that.q1)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.q3, that.q3)) {
+        if (!ObjectUtils.equal(this.q3, that.q3)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.minRegularValue,
+        if (!ObjectUtils.equal(this.minRegularValue,
                 that.minRegularValue)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.maxRegularValue,
+        if (!ObjectUtils.equal(this.maxRegularValue,
                 that.maxRegularValue)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.minOutlier, that.minOutlier)) {
+        if (!ObjectUtils.equal(this.minOutlier, that.minOutlier)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.maxOutlier, that.maxOutlier)) {
+        if (!ObjectUtils.equal(this.maxOutlier, that.maxOutlier)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.outliers, that.outliers)) {
+        if (!ObjectUtils.equal(this.outliers, that.outliers)) {
             return false;
         }
         return true;

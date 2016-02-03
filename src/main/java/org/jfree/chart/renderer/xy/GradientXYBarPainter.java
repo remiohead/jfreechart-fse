@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -51,7 +51,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.geom.RectangularShape;
 import java.io.Serializable;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 import org.jfree.chart.ui.RectangleEdge;
 
 /**
@@ -103,7 +103,7 @@ public class GradientXYBarPainter implements XYBarPainter, Serializable {
      *              bar.
      */
     @Override
-	public void paintBar(Graphics2D g2, XYBarRenderer renderer, int row,
+    public void paintBar(Graphics2D g2, XYBarRenderer renderer, int row,
             int column, RectangularShape bar, RectangleEdge base) {
 
         Paint itemPaint = renderer.getItemPaint(row, column);
@@ -204,7 +204,7 @@ public class GradientXYBarPainter implements XYBarPainter, Serializable {
      * @param pegShadow  peg the shadow to the base of the bar?
      */
     @Override
-	public void paintBarShadow(Graphics2D g2, XYBarRenderer renderer, int row,
+    public void paintBarShadow(Graphics2D g2, XYBarRenderer renderer, int row,
             int column, RectangularShape bar, RectangleEdge base,
             boolean pegShadow) {
 
@@ -343,7 +343,7 @@ public class GradientXYBarPainter implements XYBarPainter, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -369,11 +369,11 @@ public class GradientXYBarPainter implements XYBarPainter, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int hash = 37;
-        hash = HashUtilities.hashCode(hash, this.g1);
-        hash = HashUtilities.hashCode(hash, this.g2);
-        hash = HashUtilities.hashCode(hash, this.g3);
+        hash = HashUtils.hashCode(hash, this.g1);
+        hash = HashUtils.hashCode(hash, this.g2);
+        hash = HashUtils.hashCode(hash, this.g3);
         return hash;
     }
 

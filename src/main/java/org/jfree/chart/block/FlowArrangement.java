@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
@@ -105,7 +105,7 @@ public class FlowArrangement implements Arrangement, Serializable {
      * @param key  a key that controls the position of the block.
      */
     @Override
-	public void add(Block block, Object key) {
+    public void add(Block block, Object key) {
         // since the flow layout is relatively straightforward,
         // no information needs to be recorded here
     }
@@ -123,7 +123,7 @@ public class FlowArrangement implements Arrangement, Serializable {
      * @return The size of the container after arrangement of the contents.
      */
     @Override
-	public Size2D arrange(BlockContainer container, Graphics2D g2,
+    public Size2D arrange(BlockContainer container, Graphics2D g2,
                           RectangleConstraint constraint) {
 
         LengthConstraintType w = constraint.getWidthConstraintType();
@@ -178,45 +178,42 @@ public class FlowArrangement implements Arrangement, Serializable {
     protected Size2D arrangeFN(BlockContainer container, Graphics2D g2,
                                RectangleConstraint constraint) {
 
-        List blocks = container.getBlocks();
+        List<Block> blocks = container.getBlocks();
         double width = constraint.getWidth();
 
         double x = 0.0;
         double y = 0.0;
         double maxHeight = 0.0;
-        List itemsInRow = new ArrayList();
-        for (int i = 0; i < blocks.size(); i++) {
-            Block block = (Block) blocks.get(i);
+        List<Block> itemsInRow = new ArrayList<Block>();
+        for (Block block : blocks) {
             Size2D size = block.arrange(g2, RectangleConstraint.NONE);
             if (x + size.width <= width) {
                 itemsInRow.add(block);
                 block.setBounds(
-                    new Rectangle2D.Double(x, y, size.width, size.height)
+                        new Rectangle2D.Double(x, y, size.width, size.height)
                 );
                 x = x + size.width + this.horizontalGap;
                 maxHeight = Math.max(maxHeight, size.height);
-            }
-            else {
+            } else {
                 if (itemsInRow.isEmpty()) {
                     // place in this row (truncated) anyway
                     block.setBounds(
-                        new Rectangle2D.Double(
-                            x, y, Math.min(size.width, width - x), size.height
-                        )
+                            new Rectangle2D.Double(
+                                    x, y, Math.min(size.width, width - x), size.height
+                            )
                     );
                     x = 0.0;
                     y = y + size.height + this.verticalGap;
-                }
-                else {
+                } else {
                     // start new row
                     itemsInRow.clear();
                     x = 0.0;
                     y = y + maxHeight + this.verticalGap;
                     maxHeight = size.height;
                     block.setBounds(
-                        new Rectangle2D.Double(
-                            x, y, Math.min(size.width, width), size.height
-                        )
+                            new Rectangle2D.Double(
+                                    x, y, Math.min(size.width, width), size.height
+                            )
                     );
                     x = size.width + this.horizontalGap;
                     itemsInRow.add(block);
@@ -359,12 +356,12 @@ public class FlowArrangement implements Arrangement, Serializable {
         double x = 0.0;
         double width = 0.0;
         double maxHeight = 0.0;
-        List blocks = container.getBlocks();
+        List<Block> blocks = container.getBlocks();
         int blockCount = blocks.size();
         if (blockCount > 0) {
             Size2D[] sizes = new Size2D[blocks.size()];
             for (int i = 0; i < blocks.size(); i++) {
-                Block block = (Block) blocks.get(i);
+                Block block = blocks.get(i);
                 sizes[i] = block.arrange(g2, RectangleConstraint.NONE);
                 width = width + sizes[i].getWidth();
                 maxHeight = Math.max(sizes[i].height, maxHeight);
@@ -379,12 +376,11 @@ public class FlowArrangement implements Arrangement, Serializable {
                 width = width + this.horizontalGap * (blockCount - 1);
             }
             if (this.verticalAlignment != VerticalAlignment.TOP) {
-                for (int i = 0; i < blocks.size(); i++) {
+                for (Block block : blocks) {
                     //Block b = (Block) blocks.get(i);
                     if (this.verticalAlignment == VerticalAlignment.CENTER) {
                         //TODO: shift block down by half
-                    }
-                    else if (this.verticalAlignment
+                    } else if (this.verticalAlignment
                             == VerticalAlignment.BOTTOM) {
                         //TODO: shift block down to bottom
                     }
@@ -414,7 +410,7 @@ public class FlowArrangement implements Arrangement, Serializable {
      * Clears any cached information.
      */
     @Override
-	public void clear() {
+    public void clear() {
         // no action required.
     }
 
@@ -426,7 +422,7 @@ public class FlowArrangement implements Arrangement, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }

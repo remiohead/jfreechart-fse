@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -43,7 +43,7 @@ package org.jfree.data;
 
 import java.io.Serializable;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 
 /**
  * Represents one (Comparable, Object) data item for use in a
@@ -51,7 +51,7 @@ import org.jfree.chart.util.ObjectUtilities;
  *
  * @since 1.0.3
  */
-public class ComparableObjectItem implements Cloneable, Comparable,
+public class ComparableObjectItem implements Cloneable, Comparable<ComparableObjectItem>,
         Serializable {
 
     /** For serialization. */
@@ -112,32 +112,14 @@ public class ComparableObjectItem implements Cloneable, Comparable,
      * For the order we consider only the x-value:
      * negative == "less-than", zero == "equal", positive == "greater-than".
      *
-     * @param o1  the object being compared to.
+     * @param that  the object being compared to.
      *
      * @return An integer indicating the order of this data pair object
      *      relative to another object.
      */
     @Override
-	public int compareTo(Object o1) {
-
-        int result;
-
-        // CASE 1 : Comparing to another ComparableObjectItem object
-        // ---------------------------------------------------------
-        if (o1 instanceof ComparableObjectItem) {
-            ComparableObjectItem that = (ComparableObjectItem) o1;
-            return this.x.compareTo(that.x);
-        }
-
-        // CASE 2 : Comparing to a general object
-        // ---------------------------------------------
-        else {
-            // consider these to be ordered after general objects
-            result = 1;
-        }
-
-        return result;
-
+    public int compareTo(ComparableObjectItem that) {
+       return this.x.compareTo(that.x);
     }
 
     /**
@@ -149,7 +131,7 @@ public class ComparableObjectItem implements Cloneable, Comparable,
      *         subclasses may differ.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -162,7 +144,7 @@ public class ComparableObjectItem implements Cloneable, Comparable,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -173,7 +155,7 @@ public class ComparableObjectItem implements Cloneable, Comparable,
         if (!this.x.equals(that.x)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.obj, that.obj)) {
+        if (!ObjectUtils.equal(this.obj, that.obj)) {
             return false;
         }
         return true;
@@ -185,7 +167,7 @@ public class ComparableObjectItem implements Cloneable, Comparable,
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result;
         result = this.x.hashCode();
         result = 29 * result + (this.obj != null ? this.obj.hashCode() : 0);

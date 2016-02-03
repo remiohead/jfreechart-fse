@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------
  * ShapeList.java
  * --------------
- * (C) Copyright 2003-2012, by Object Refinery Limited.
+ * (C) Copyright 2003-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -47,12 +47,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jfree.chart.util.SerialUtilities;
-
 /**
  * A table of {@link Shape} objects.
  */
-public class ShapeList extends AbstractObjectList {
+public class ShapeList extends AbstractObjectList<Shape> {
 
     /**
      * Creates a new list.
@@ -69,7 +67,7 @@ public class ShapeList extends AbstractObjectList {
      * @return The object.
      */
     public Shape getShape(final int index) {
-        return (Shape) get(index);
+        return get(index);
     }
 
     /**
@@ -92,7 +90,7 @@ public class ShapeList extends AbstractObjectList {
      *         support cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -104,8 +102,7 @@ public class ShapeList extends AbstractObjectList {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
-
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -114,13 +111,12 @@ public class ShapeList extends AbstractObjectList {
         }
         ShapeList that = (ShapeList) obj;
         int listSize = size();
-        for (int i = 0; i < listSize; i++) {
-           if (!ShapeUtilities.equal((Shape) get(i), (Shape) that.get(i))) {
+        for (int i = 0; i < listSize; i++) { // FIXME: this is wrong
+           if (!ShapeUtils.equal(get(i), that.get(i))) {
                return false;
            }
         }
         return true;
-
     }
 
     /**
@@ -129,7 +125,7 @@ public class ShapeList extends AbstractObjectList {
      * @return the hashcode
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return super.hashCode();
     }
 
@@ -149,7 +145,7 @@ public class ShapeList extends AbstractObjectList {
             final Shape shape = getShape(i);
             if (shape != null) {
                 stream.writeInt(i);
-                SerialUtilities.writeShape(shape, stream);
+                SerialUtils.writeShape(shape, stream);
             }
             else {
                 stream.writeInt(-1);
@@ -173,7 +169,7 @@ public class ShapeList extends AbstractObjectList {
         for (int i = 0; i < count; i++) {
             final int index = stream.readInt();
             if (index != -1) {
-                setShape(index, SerialUtilities.readShape(stream));
+                setShape(index, SerialUtils.readShape(stream));
             }
         }
 

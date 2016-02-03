@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------------
@@ -62,16 +62,16 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.Size2D;
 import org.jfree.chart.ui.TextAnchor;
-import org.jfree.chart.util.ObjectUtilities;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.text.TextUtilities;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A value indicator for a {@link DialPlot}.
@@ -152,7 +152,7 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
         this.angle = -90.0;
         this.radius = 0.3;
         this.frameAnchor = RectangleAnchor.CENTER;
-        this.templateValue = new Double(100.0);
+        this.templateValue = 100.0;
         this.maxTemplateValue = null;
         this.formatter = new DecimalFormat("0.0");
         this.font = new Font("Dialog", Font.BOLD, 14);
@@ -570,7 +570,7 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      * @return <code>true</code>.
      */
     @Override
-	public boolean isClippedToWindow() {
+    public boolean isClippedToWindow() {
         return true;
     }
 
@@ -585,7 +585,7 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      * @param view  the view rectangle (<code>null</code> not permitted).
      */
     @Override
-	public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
+    public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
             Rectangle2D view) {
 
         // work out the anchor point
@@ -649,13 +649,13 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
     }
 
     /**
-     * A utility method that adjusts a value, if necessary, to be within a 
+     * A utility method that adjusts a value, if necessary, to be within a
      * specified range.
-     * 
+     *
      * @param x  the value.
      * @param minX  the minimum value in the range.
      * @param maxX  the maximum value in the range.
-     * 
+     *
      * @return The adjusted value.
      */
     private double fixToRange(double x, double minX, double maxX) {
@@ -681,7 +681,7 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -704,23 +704,23 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
         if (!this.templateValue.equals(that.templateValue)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.maxTemplateValue,
+        if (!ObjectUtils.equal(this.maxTemplateValue,
                 that.maxTemplateValue)) {
             return false;
         }
         if (!this.font.equals(that.font)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.paint, that.paint)) {
+        if (!PaintUtils.equal(this.paint, that.paint)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.backgroundPaint, that.backgroundPaint)) {
+        if (!PaintUtils.equal(this.backgroundPaint, that.backgroundPaint)) {
             return false;
         }
         if (!this.outlineStroke.equals(that.outlineStroke)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.outlinePaint, that.outlinePaint)) {
+        if (!PaintUtils.equal(this.outlinePaint, that.outlinePaint)) {
             return false;
         }
         if (!this.insets.equals(that.insets)) {
@@ -741,12 +741,12 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      * @return The hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 193;
-        result = 37 * result + HashUtilities.hashCodeForPaint(this.paint);
-        result = 37 * result + HashUtilities.hashCodeForPaint(
+        result = 37 * result + HashUtils.hashCodeForPaint(this.paint);
+        result = 37 * result + HashUtils.hashCodeForPaint(
                 this.backgroundPaint);
-        result = 37 * result + HashUtilities.hashCodeForPaint(
+        result = 37 * result + HashUtils.hashCodeForPaint(
                 this.outlinePaint);
         result = 37 * result + this.outlineStroke.hashCode();
         return result;
@@ -761,7 +761,7 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      *     cannot be cloned.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -774,10 +774,10 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.paint, stream);
-        SerialUtilities.writePaint(this.backgroundPaint, stream);
-        SerialUtilities.writePaint(this.outlinePaint, stream);
-        SerialUtilities.writeStroke(this.outlineStroke, stream);
+        SerialUtils.writePaint(this.paint, stream);
+        SerialUtils.writePaint(this.backgroundPaint, stream);
+        SerialUtils.writePaint(this.outlinePaint, stream);
+        SerialUtils.writeStroke(this.outlineStroke, stream);
     }
 
     /**
@@ -791,10 +791,10 @@ public class DialValueIndicator extends AbstractDialLayer implements DialLayer,
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.paint = SerialUtilities.readPaint(stream);
-        this.backgroundPaint = SerialUtilities.readPaint(stream);
-        this.outlinePaint = SerialUtilities.readPaint(stream);
-        this.outlineStroke = SerialUtilities.readStroke(stream);
+        this.paint = SerialUtils.readPaint(stream);
+        this.backgroundPaint = SerialUtils.readPaint(stream);
+        this.outlinePaint = SerialUtils.readPaint(stream);
+        this.outlineStroke = SerialUtils.readStroke(stream);
     }
 
 }

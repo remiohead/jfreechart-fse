@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2016, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------
  * NumberAxis.java
  * ---------------
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2016, by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Laurence Vanhelsuwe;
@@ -96,7 +96,7 @@
  *               collection (DG);
  * 19-Mar-2009 : Added entity support - see patch 2603321 by Peter Kolb (DG);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.axis;
@@ -116,11 +116,12 @@ import java.util.Locale;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.TextAnchor;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.event.AxisChangeEvent;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.ValueAxisPlot;
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.data.Range;
 import org.jfree.data.RangeType;
 
@@ -129,12 +130,11 @@ import org.jfree.data.RangeType;
  * <P>
  * If the axis is set up to automatically determine its range to fit the data,
  * you can ensure that the range includes zero (statisticians usually prefer
- * this) by setting the <code>autoRangeIncludesZero</code> flag to
- * <code>true</code>.
+ * this) by setting the {@code autoRangeIncludesZero} flag to
+ * {@code true}.
  * <P>
- * The <code>NumberAxis</code> class has a mechanism for automatically
- * selecting a tick unit that is appropriate for the current axis range.  This
- * mechanism is an adaptation of code suggested by Laurence Vanhelsuwe.
+ * The {@code NumberAxis} class has a mechanism for automatically
+ * selecting a tick unit that is appropriate for the current axis range.
  */
 public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
 
@@ -193,7 +193,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Constructs a number axis, using default values where necessary.
      *
-     * @param label  the axis label (<code>null</code> permitted).
+     * @param label  the axis label ({@code null} permitted).
      */
     public NumberAxis(String label) {
         super(label, NumberAxis.createStandardTickUnits());
@@ -208,7 +208,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Returns the axis range type.
      *
-     * @return The axis range type (never <code>null</code>).
+     * @return The axis range type (never {@code null}).
      *
      * @see #setRangeType(RangeType)
      */
@@ -219,14 +219,12 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Sets the axis range type.
      *
-     * @param rangeType  the range type (<code>null</code> not permitted).
+     * @param rangeType  the range type ({@code null} not permitted).
      *
      * @see #getRangeType()
      */
     public void setRangeType(RangeType rangeType) {
-        if (rangeType == null) {
-            throw new IllegalArgumentException("Null 'rangeType' argument.");
-        }
+        ParamChecks.nullNotPermitted(rangeType, "rangeType");
         this.rangeType = rangeType;
         notifyListeners(new AxisChangeEvent(this));
     }
@@ -245,7 +243,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * Sets the flag that indicates whether or not the axis range, if
      * automatically calculated, is forced to include zero.
      * <p>
-     * If the flag is changed to <code>true</code>, the axis range is
+     * If the flag is changed to {@code true}, the axis range is
      * recalculated.
      * <p>
      * Any change to the flag will trigger an {@link AxisChangeEvent}.
@@ -297,8 +295,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Returns the tick unit for the axis.
      * <p>
-     * Note: if the <code>autoTickUnitSelection</code> flag is
-     * <code>true</code> the tick unit may be changed while the axis is being
+     * Note: if the {@code autoTickUnitSelection} flag is
+     * {@code true} the tick unit may be changed while the axis is being
      * drawn, so in that case the return value from this method may be
      * irrelevant if the method is called before the axis has been drawn.
      *
@@ -318,7 +316,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * restore it using the {@link ValueAxis#setAutoTickUnitSelection(boolean)}
      * method).
      *
-     * @param unit  the new tick unit (<code>null</code> not permitted).
+     * @param unit  the new tick unit ({@code null} not permitted).
      *
      * @see #getTickUnit()
      * @see #setTickUnit(NumberTickUnit, boolean, boolean)
@@ -335,16 +333,14 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * (you can restore it using the
      * {@link ValueAxis#setAutoTickUnitSelection(boolean)} method).
      *
-     * @param unit  the new tick unit (<code>null</code> not permitted).
+     * @param unit  the new tick unit ({@code null} not permitted).
      * @param notify  notify listeners?
      * @param turnOffAutoSelect  turn off the auto-tick selection?
      */
     public void setTickUnit(NumberTickUnit unit, boolean notify,
                             boolean turnOffAutoSelect) {
 
-        if (unit == null) {
-            throw new IllegalArgumentException("Null 'unit' argument.");
-        }
+        ParamChecks.nullNotPermitted(unit, "unit");
         this.tickUnit = unit;
         if (turnOffAutoSelect) {
             setAutoTickUnitSelection(false, false);
@@ -359,7 +355,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * Returns the number format override.  If this is non-null, then it will
      * be used to format the numbers on the axis.
      *
-     * @return The number formatter (possibly <code>null</code>).
+     * @return The number formatter (possibly {@code null}).
      *
      * @see #setNumberFormatOverride(NumberFormat)
      */
@@ -371,7 +367,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * Sets the number format override.  If this is non-null, then it will be
      * used to format the numbers on the axis.
      *
-     * @param formatter  the number formatter (<code>null</code> permitted).
+     * @param formatter  the number formatter ({@code null} permitted).
      *
      * @see #getNumberFormatOverride()
      */
@@ -383,7 +379,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Returns the (optional) marker band for the axis.
      *
-     * @return The marker band (possibly <code>null</code>).
+     * @return The marker band (possibly {@code null}).
      *
      * @see #setMarkerBand(MarkerAxisBand)
      */
@@ -394,10 +390,10 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Sets the marker band for the axis.
      * <P>
-     * The marker band is optional, leave it set to <code>null</code> if you
+     * The marker band is optional, leave it set to {@code null} if you
      * don't require it.
      *
-     * @param band the new band (<code>null</code> permitted).
+     * @param band the new band ({@code null} permitted).
      *
      * @see #getMarkerBand()
      */
@@ -411,7 +407,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * auto-scaling, then sets the maximum and minimum values.
      */
     @Override
-	public void configure() {
+    public void configure() {
         if (isAutoRange()) {
             autoAdjustRange();
         }
@@ -421,7 +417,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * Rescales the axis to ensure that all data is visible.
      */
     @Override
-	protected void autoAdjustRange() {
+    protected void autoAdjustRange() {
 
         Plot plot = getPlot();
         if (plot == null) {
@@ -441,8 +437,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             if (this.rangeType == RangeType.POSITIVE) {
                 lower = Math.max(0.0, lower);
                 upper = Math.max(0.0, upper);
-            }
-            else if (this.rangeType == RangeType.NEGATIVE) {
+            } else if (this.rangeType == RangeType.NEGATIVE) {
                 lower = Math.min(0.0, lower);
                 upper = Math.min(0.0, upper);
             }
@@ -457,8 +452,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             double fixedAutoRange = getFixedAutoRange();
             if (fixedAutoRange > 0.0) {
                 lower = upper - fixedAutoRange;
-            }
-            else {
+            } else {
                 // ensure the autorange is at least <minRange> in size...
                 double minRange = getAutoRangeMinimumSize();
                 if (range < minRange) {
@@ -475,8 +469,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                             upper = upper - lower;
                             lower = 0.0;
                         }
-                    }
-                    else if (this.rangeType == RangeType.NEGATIVE) {
+                    } else if (this.rangeType == RangeType.NEGATIVE) {
                         if (upper > 0.0) {
                             lower = lower - upper;
                             upper = 0.0;
@@ -487,18 +480,15 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                 if (getAutoRangeStickyZero()) {
                     if (upper <= 0.0) {
                         upper = Math.min(0.0, upper + getUpperMargin() * range);
-                    }
-                    else {
+                    } else {
                         upper = upper + getUpperMargin() * range;
                     }
                     if (lower >= 0.0) {
                         lower = Math.max(0.0, lower - getLowerMargin() * range);
-                    }
-                    else {
+                    } else {
                         lower = lower - getLowerMargin() * range;
                     }
-                }
-                else {
+                } else {
                     upper = upper + getUpperMargin() * range;
                     lower = lower - getLowerMargin() * range;
                 }
@@ -524,9 +514,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #java2DToValue(double, Rectangle2D, RectangleEdge)
      */
     @Override
-	public double valueToJava2D(double value, Rectangle2D area,
+    public double valueToJava2D(double value, Rectangle2D area,
                                 RectangleEdge edge) {
-
         Range range = getRange();
         double axisMin = range.getLowerBound();
         double axisMax = range.getUpperBound();
@@ -544,8 +533,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         if (isInverted()) {
             return max
                    - ((value - axisMin) / (axisMax - axisMin)) * (max - min);
-        }
-        else {
+        } else {
             return min
                    + ((value - axisMin) / (axisMax - axisMin)) * (max - min);
         }
@@ -565,9 +553,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #valueToJava2D(double, Rectangle2D, RectangleEdge)
      */
     @Override
-	public double java2DToValue(double java2DValue, Rectangle2D area,
+    public double java2DToValue(double java2DValue, Rectangle2D area,
                                 RectangleEdge edge) {
-
         Range range = getRange();
         double axisMin = range.getLowerBound();
         double axisMax = range.getUpperBound();
@@ -577,16 +564,14 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         if (RectangleEdge.isTopOrBottom(edge)) {
             min = area.getX();
             max = area.getMaxX();
-        }
-        else if (RectangleEdge.isLeftOrRight(edge)) {
+        } else if (RectangleEdge.isLeftOrRight(edge)) {
             min = area.getMaxY();
             max = area.getY();
         }
         if (isInverted()) {
             return axisMax
                    - (java2DValue - min) / (max - min) * (axisMax - axisMin);
-        }
-        else {
+        } else {
             return axisMin
                    + (java2DValue - min) / (max - min) * (axisMax - axisMin);
         }
@@ -601,11 +586,9 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #calculateHighestVisibleTickValue()
      */
     protected double calculateLowestVisibleTickValue() {
-
         double unit = getTickUnit().getSize();
         double index = Math.ceil(getRange().getLowerBound() / unit);
         return index * unit;
-
     }
 
     /**
@@ -616,11 +599,9 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #calculateLowestVisibleTickValue()
      */
     protected double calculateHighestVisibleTickValue() {
-
         double unit = getTickUnit().getSize();
         double index = Math.floor(getRange().getUpperBound() / unit);
         return index * unit;
-
     }
 
     /**
@@ -629,32 +610,30 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @return The number of visible ticks on the axis.
      */
     protected int calculateVisibleTickCount() {
-
         double unit = getTickUnit().getSize();
         Range range = getRange();
         return (int) (Math.floor(range.getUpperBound() / unit)
                       - Math.ceil(range.getLowerBound() / unit) + 1);
-
     }
 
     /**
      * Draws the axis on a Java 2D graphics device (such as the screen or a
      * printer).
      *
-     * @param g2  the graphics device (<code>null</code> not permitted).
+     * @param g2  the graphics device ({@code null} not permitted).
      * @param cursor  the cursor location.
      * @param plotArea  the area within which the axes and data should be drawn
-     *                  (<code>null</code> not permitted).
+     *                  ({@code null} not permitted).
      * @param dataArea  the area within which the data should be drawn
-     *                  (<code>null</code> not permitted).
-     * @param edge  the location of the axis (<code>null</code> not permitted).
+     *                  ({@code null} not permitted).
+     * @param edge  the location of the axis ({@code null} not permitted).
      * @param plotState  collects information about the plot
-     *                   (<code>null</code> permitted).
+     *                   ({@code null} permitted).
      *
-     * @return The axis state (never <code>null</code>).
+     * @return The axis state (never {@code null}).
      */
     @Override
-	public AxisState draw(Graphics2D g2, double cursor, Rectangle2D plotArea,
+    public AxisState draw(Graphics2D g2, double cursor, Rectangle2D plotArea,
             Rectangle2D dataArea, RectangleEdge edge,
             PlotRenderingInfo plotState) {
 
@@ -664,7 +643,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             state = new AxisState(cursor);
             // even though the axis is not visible, we need ticks for the
             // gridlines...
-            List ticks = refreshTicks(g2, state, dataArea, edge);
+            List<ValueTick> ticks = refreshTicks(g2, state, dataArea, edge);
             state.setTicks(ticks);
             return state;
         }
@@ -684,7 +663,6 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         state = drawLabel(getLabel(), g2, plotArea, dataArea, edge, state);
         createAndAddEntity(cursor, state, dataArea, edge, plotState);
         return state;
-
     }
 
     /**
@@ -700,92 +678,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #createIntegerTickUnits()
      */
     public static TickUnitSource createStandardTickUnits() {
-
-        TickUnits units = new TickUnits();
-        DecimalFormat df000 = new DecimalFormat("0.0000000000");
-        DecimalFormat df00 = new DecimalFormat("0.000000000");
-        DecimalFormat df0 = new DecimalFormat("0.00000000");
-        DecimalFormat df1 = new DecimalFormat("0.0000000");
-        DecimalFormat df2 = new DecimalFormat("0.000000");
-        DecimalFormat df3 = new DecimalFormat("0.00000");
-        DecimalFormat df4 = new DecimalFormat("0.0000");
-        DecimalFormat df5 = new DecimalFormat("0.000");
-        DecimalFormat df6 = new DecimalFormat("0.00");
-        DecimalFormat df7 = new DecimalFormat("0.0");
-        DecimalFormat df8 = new DecimalFormat("#,##0");
-        DecimalFormat df9 = new DecimalFormat("#,###,##0");
-        DecimalFormat df10 = new DecimalFormat("#,###,###,##0");
-
-        // we can add the units in any order, the TickUnits collection will
-        // sort them...
-        units.add(new NumberTickUnit(0.000000001, df00, 2));
-        units.add(new NumberTickUnit(0.00000001, df0, 2));
-        units.add(new NumberTickUnit(0.0000001, df1, 2));
-        units.add(new NumberTickUnit(0.000001, df2, 2));
-        units.add(new NumberTickUnit(0.00001, df3, 2));
-        units.add(new NumberTickUnit(0.0001, df4, 2));
-        units.add(new NumberTickUnit(0.001, df5, 2));
-        units.add(new NumberTickUnit(0.01, df6, 2));
-        units.add(new NumberTickUnit(0.1, df7, 2));
-        units.add(new NumberTickUnit(1, df8, 2));
-        units.add(new NumberTickUnit(10, df8, 2));
-        units.add(new NumberTickUnit(100, df8, 2));
-        units.add(new NumberTickUnit(1000, df8, 2));
-        units.add(new NumberTickUnit(10000, df8, 2));
-        units.add(new NumberTickUnit(100000, df8, 2));
-        units.add(new NumberTickUnit(1000000, df9, 2));
-        units.add(new NumberTickUnit(10000000, df9, 2));
-        units.add(new NumberTickUnit(100000000, df9, 2));
-        units.add(new NumberTickUnit(1000000000, df10, 2));
-        units.add(new NumberTickUnit(10000000000.0, df10, 2));
-        units.add(new NumberTickUnit(100000000000.0, df10, 2));
-
-        units.add(new NumberTickUnit(0.0000000025, df000, 5));
-        units.add(new NumberTickUnit(0.000000025, df00, 5));
-        units.add(new NumberTickUnit(0.00000025, df0, 5));
-        units.add(new NumberTickUnit(0.0000025, df1, 5));
-        units.add(new NumberTickUnit(0.000025, df2, 5));
-        units.add(new NumberTickUnit(0.00025, df3, 5));
-        units.add(new NumberTickUnit(0.0025, df4, 5));
-        units.add(new NumberTickUnit(0.025, df5, 5));
-        units.add(new NumberTickUnit(0.25, df6, 5));
-        units.add(new NumberTickUnit(2.5, df7, 5));
-        units.add(new NumberTickUnit(25, df8, 5));
-        units.add(new NumberTickUnit(250, df8, 5));
-        units.add(new NumberTickUnit(2500, df8, 5));
-        units.add(new NumberTickUnit(25000, df8, 5));
-        units.add(new NumberTickUnit(250000, df8, 5));
-        units.add(new NumberTickUnit(2500000, df9, 5));
-        units.add(new NumberTickUnit(25000000, df9, 5));
-        units.add(new NumberTickUnit(250000000, df9, 5));
-        units.add(new NumberTickUnit(2500000000.0, df10, 5));
-        units.add(new NumberTickUnit(25000000000.0, df10, 5));
-        units.add(new NumberTickUnit(250000000000.0, df10, 5));
-
-        units.add(new NumberTickUnit(0.000000005, df00, 5));
-        units.add(new NumberTickUnit(0.00000005, df0, 5));
-        units.add(new NumberTickUnit(0.0000005, df1, 5));
-        units.add(new NumberTickUnit(0.000005, df2, 5));
-        units.add(new NumberTickUnit(0.00005, df3, 5));
-        units.add(new NumberTickUnit(0.0005, df4, 5));
-        units.add(new NumberTickUnit(0.005, df5, 5));
-        units.add(new NumberTickUnit(0.05, df6, 5));
-        units.add(new NumberTickUnit(0.5, df7, 5));
-        units.add(new NumberTickUnit(5L, df8, 5));
-        units.add(new NumberTickUnit(50L, df8, 5));
-        units.add(new NumberTickUnit(500L, df8, 5));
-        units.add(new NumberTickUnit(5000L, df8, 5));
-        units.add(new NumberTickUnit(50000L, df8, 5));
-        units.add(new NumberTickUnit(500000L, df8, 5));
-        units.add(new NumberTickUnit(5000000L, df9, 5));
-        units.add(new NumberTickUnit(50000000L, df9, 5));
-        units.add(new NumberTickUnit(500000000L, df9, 5));
-        units.add(new NumberTickUnit(5000000000L, df10, 5));
-        units.add(new NumberTickUnit(50000000000L, df10, 5));
-        units.add(new NumberTickUnit(500000000000L, df10, 5));
-
-        return units;
-
+        return new NumberTickUnitSource();
     }
 
     /**
@@ -797,51 +690,17 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #createStandardTickUnits()
      */
     public static TickUnitSource createIntegerTickUnits() {
-        TickUnits units = new TickUnits();
-        DecimalFormat df0 = new DecimalFormat("0");
-        DecimalFormat df1 = new DecimalFormat("#,##0");
-        units.add(new NumberTickUnit(1, df0, 2));
-        units.add(new NumberTickUnit(2, df0, 2));
-        units.add(new NumberTickUnit(5, df0, 5));
-        units.add(new NumberTickUnit(10, df0, 2));
-        units.add(new NumberTickUnit(20, df0, 2));
-        units.add(new NumberTickUnit(50, df0, 5));
-        units.add(new NumberTickUnit(100, df0, 2));
-        units.add(new NumberTickUnit(200, df0, 2));
-        units.add(new NumberTickUnit(500, df0, 5));
-        units.add(new NumberTickUnit(1000, df1, 2));
-        units.add(new NumberTickUnit(2000, df1, 2));
-        units.add(new NumberTickUnit(5000, df1, 5));
-        units.add(new NumberTickUnit(10000, df1, 2));
-        units.add(new NumberTickUnit(20000, df1, 2));
-        units.add(new NumberTickUnit(50000, df1, 5));
-        units.add(new NumberTickUnit(100000, df1, 2));
-        units.add(new NumberTickUnit(200000, df1, 2));
-        units.add(new NumberTickUnit(500000, df1, 5));
-        units.add(new NumberTickUnit(1000000, df1, 2));
-        units.add(new NumberTickUnit(2000000, df1, 2));
-        units.add(new NumberTickUnit(5000000, df1, 5));
-        units.add(new NumberTickUnit(10000000, df1, 2));
-        units.add(new NumberTickUnit(20000000, df1, 2));
-        units.add(new NumberTickUnit(50000000, df1, 5));
-        units.add(new NumberTickUnit(100000000, df1, 2));
-        units.add(new NumberTickUnit(200000000, df1, 2));
-        units.add(new NumberTickUnit(500000000, df1, 5));
-        units.add(new NumberTickUnit(1000000000, df1, 2));
-        units.add(new NumberTickUnit(2000000000, df1, 2));
-        units.add(new NumberTickUnit(5000000000.0, df1, 5));
-        units.add(new NumberTickUnit(10000000000.0, df1, 2));
-        return units;
+        return new NumberTickUnitSource(true);
     }
 
     /**
      * Creates a collection of standard tick units.  The supplied locale is
      * used to create the number formatter (a localised instance of
-     * <code>NumberFormat</code>).
+     * {@code NumberFormat}).
      * <P>
      * If you don't like these defaults, create your own instance of
      * {@link TickUnits} and then pass it to the
-     * <code>setStandardTickUnits()</code> method.
+     * {@code setStandardTickUnits()} method.
      *
      * @param locale  the locale.
      *
@@ -850,70 +709,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #setStandardTickUnits(TickUnitSource)
      */
     public static TickUnitSource createStandardTickUnits(Locale locale) {
-
-        TickUnits units = new TickUnits();
         NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
-        // we can add the units in any order, the TickUnits collection will
-        // sort them...
-        units.add(new NumberTickUnit(0.0000001, numberFormat, 2));
-        units.add(new NumberTickUnit(0.000001, numberFormat, 2));
-        units.add(new NumberTickUnit(0.00001, numberFormat, 2));
-        units.add(new NumberTickUnit(0.0001, numberFormat, 2));
-        units.add(new NumberTickUnit(0.001, numberFormat, 2));
-        units.add(new NumberTickUnit(0.01, numberFormat, 2));
-        units.add(new NumberTickUnit(0.1, numberFormat, 2));
-        units.add(new NumberTickUnit(1, numberFormat, 2));
-        units.add(new NumberTickUnit(10, numberFormat, 2));
-        units.add(new NumberTickUnit(100, numberFormat, 2));
-        units.add(new NumberTickUnit(1000, numberFormat, 2));
-        units.add(new NumberTickUnit(10000, numberFormat, 2));
-        units.add(new NumberTickUnit(100000, numberFormat, 2));
-        units.add(new NumberTickUnit(1000000, numberFormat, 2));
-        units.add(new NumberTickUnit(10000000, numberFormat, 2));
-        units.add(new NumberTickUnit(100000000, numberFormat, 2));
-        units.add(new NumberTickUnit(1000000000, numberFormat, 2));
-        units.add(new NumberTickUnit(10000000000.0, numberFormat, 2));
-
-        units.add(new NumberTickUnit(0.00000025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.0000025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.000025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.00025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.0025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.025, numberFormat, 5));
-        units.add(new NumberTickUnit(0.25, numberFormat, 5));
-        units.add(new NumberTickUnit(2.5, numberFormat, 5));
-        units.add(new NumberTickUnit(25, numberFormat, 5));
-        units.add(new NumberTickUnit(250, numberFormat, 5));
-        units.add(new NumberTickUnit(2500, numberFormat, 5));
-        units.add(new NumberTickUnit(25000, numberFormat, 5));
-        units.add(new NumberTickUnit(250000, numberFormat, 5));
-        units.add(new NumberTickUnit(2500000, numberFormat, 5));
-        units.add(new NumberTickUnit(25000000, numberFormat, 5));
-        units.add(new NumberTickUnit(250000000, numberFormat, 5));
-        units.add(new NumberTickUnit(2500000000.0, numberFormat, 5));
-        units.add(new NumberTickUnit(25000000000.0, numberFormat, 5));
-
-        units.add(new NumberTickUnit(0.0000005, numberFormat, 5));
-        units.add(new NumberTickUnit(0.000005, numberFormat, 5));
-        units.add(new NumberTickUnit(0.00005, numberFormat, 5));
-        units.add(new NumberTickUnit(0.0005, numberFormat, 5));
-        units.add(new NumberTickUnit(0.005, numberFormat, 5));
-        units.add(new NumberTickUnit(0.05, numberFormat, 5));
-        units.add(new NumberTickUnit(0.5, numberFormat, 5));
-        units.add(new NumberTickUnit(5L, numberFormat, 5));
-        units.add(new NumberTickUnit(50L, numberFormat, 5));
-        units.add(new NumberTickUnit(500L, numberFormat, 5));
-        units.add(new NumberTickUnit(5000L, numberFormat, 5));
-        units.add(new NumberTickUnit(50000L, numberFormat, 5));
-        units.add(new NumberTickUnit(500000L, numberFormat, 5));
-        units.add(new NumberTickUnit(5000000L, numberFormat, 5));
-        units.add(new NumberTickUnit(50000000L, numberFormat, 5));
-        units.add(new NumberTickUnit(500000000L, numberFormat, 5));
-        units.add(new NumberTickUnit(5000000000L, numberFormat, 5));
-        units.add(new NumberTickUnit(50000000000L, numberFormat, 5));
-
-        return units;
-
+        return new NumberTickUnitSource(false, numberFormat);
     }
 
     /**
@@ -927,40 +724,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @see #setStandardTickUnits(TickUnitSource)
      */
     public static TickUnitSource createIntegerTickUnits(Locale locale) {
-        TickUnits units = new TickUnits();
         NumberFormat numberFormat = NumberFormat.getNumberInstance(locale);
-        units.add(new NumberTickUnit(1, numberFormat, 2));
-        units.add(new NumberTickUnit(2, numberFormat, 2));
-        units.add(new NumberTickUnit(5, numberFormat, 5));
-        units.add(new NumberTickUnit(10, numberFormat, 2));
-        units.add(new NumberTickUnit(20, numberFormat, 2));
-        units.add(new NumberTickUnit(50, numberFormat, 5));
-        units.add(new NumberTickUnit(100, numberFormat, 2));
-        units.add(new NumberTickUnit(200, numberFormat, 2));
-        units.add(new NumberTickUnit(500, numberFormat, 5));
-        units.add(new NumberTickUnit(1000, numberFormat, 2));
-        units.add(new NumberTickUnit(2000, numberFormat, 2));
-        units.add(new NumberTickUnit(5000, numberFormat, 5));
-        units.add(new NumberTickUnit(10000, numberFormat, 2));
-        units.add(new NumberTickUnit(20000, numberFormat, 2));
-        units.add(new NumberTickUnit(50000, numberFormat, 5));
-        units.add(new NumberTickUnit(100000, numberFormat, 2));
-        units.add(new NumberTickUnit(200000, numberFormat, 2));
-        units.add(new NumberTickUnit(500000, numberFormat, 5));
-        units.add(new NumberTickUnit(1000000, numberFormat, 2));
-        units.add(new NumberTickUnit(2000000, numberFormat, 2));
-        units.add(new NumberTickUnit(5000000, numberFormat, 5));
-        units.add(new NumberTickUnit(10000000, numberFormat, 2));
-        units.add(new NumberTickUnit(20000000, numberFormat, 2));
-        units.add(new NumberTickUnit(50000000, numberFormat, 5));
-        units.add(new NumberTickUnit(100000000, numberFormat, 2));
-        units.add(new NumberTickUnit(200000000, numberFormat, 2));
-        units.add(new NumberTickUnit(500000000, numberFormat, 5));
-        units.add(new NumberTickUnit(1000000000, numberFormat, 2));
-        units.add(new NumberTickUnit(2000000000, numberFormat, 2));
-        units.add(new NumberTickUnit(5000000000.0, numberFormat, 5));
-        units.add(new NumberTickUnit(10000000000.0, numberFormat, 2));
-        return units;
+        return new NumberTickUnitSource(true, numberFormat);
     }
 
     /**
@@ -971,7 +736,6 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @return The maximum height.
      */
     protected double estimateMaximumTickLabelHeight(Graphics2D g2) {
-
         RectangleInsets tickLabelInsets = getTickLabelInsets();
         double result = tickLabelInsets.getTop() + tickLabelInsets.getBottom();
 
@@ -979,7 +743,6 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         FontRenderContext frc = g2.getFontRenderContext();
         result += tickLabelFont.getLineMetrics("123", frc).getHeight();
         return result;
-
     }
 
     /**
@@ -995,8 +758,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      *
      * @return The estimated maximum width of the tick labels.
      */
-    protected double estimateMaximumTickLabelWidth(Graphics2D g2,
-                                                   TickUnit unit) {
+    protected double estimateMaximumTickLabelWidth(Graphics2D g2, 
+            TickUnit unit) {
 
         RectangleInsets tickLabelInsets = getTickLabelInsets();
         double result = tickLabelInsets.getLeft() + tickLabelInsets.getRight();
@@ -1007,8 +770,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             FontRenderContext frc = g2.getFontRenderContext();
             LineMetrics lm = getTickLabelFont().getLineMetrics("0", frc);
             result += lm.getHeight();
-        }
-        else {
+        } else {
             // look at lower and upper bounds...
             FontMetrics fm = g2.getFontMetrics(getTickLabelFont());
             Range range = getRange();
@@ -1020,8 +782,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             if (formatter != null) {
                 lowerStr = formatter.format(lower);
                 upperStr = formatter.format(upper);
-            }
-            else {
+            } else {
                 lowerStr = unit.valueToString(lower);
                 upperStr = unit.valueToString(upper);
             }
@@ -1029,9 +790,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             double w2 = fm.stringWidth(upperStr);
             result += Math.max(w1, w2);
         }
-
         return result;
-
     }
 
     /**
@@ -1043,17 +802,14 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @param dataArea  the area defined by the axes.
      * @param edge  the axis location.
      */
-    protected void selectAutoTickUnit(Graphics2D g2,
-                                      Rectangle2D dataArea,
-                                      RectangleEdge edge) {
-
+    protected void selectAutoTickUnit(Graphics2D g2, Rectangle2D dataArea,
+            RectangleEdge edge) {
         if (RectangleEdge.isTopOrBottom(edge)) {
             selectHorizontalAutoTickUnit(g2, dataArea, edge);
         }
         else if (RectangleEdge.isLeftOrRight(edge)) {
             selectVerticalAutoTickUnit(g2, dataArea, edge);
         }
-
     }
 
     /**
@@ -1065,32 +821,34 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @param dataArea  the area defined by the axes.
      * @param edge  the axis location.
      */
-   protected void selectHorizontalAutoTickUnit(Graphics2D g2,
-                                               Rectangle2D dataArea,
-                                               RectangleEdge edge) {
+   protected void selectHorizontalAutoTickUnit(Graphics2D g2, 
+           Rectangle2D dataArea, RectangleEdge edge) {
 
-        double tickLabelWidth = estimateMaximumTickLabelWidth(g2,
-                getTickUnit());
+        TickUnit unit = getTickUnit();
+        TickUnitSource tickUnitSource = getStandardTickUnits();
+        // we should use the current tick unit if it gives a count in the range
+        // 2 to 40 otherwise just estimate one that will give a count <= 20
+        double length = getRange().getLength();
+        int count = (int) (length / unit.getSize());
+        if (count < 2 || count > 40) {
+            unit = tickUnitSource.getCeilingTickUnit(length / 20);
+        }
+        double tickLabelWidth = estimateMaximumTickLabelWidth(g2, unit);
 
-        // start with the current tick unit...
-        TickUnitSource tickUnits = getStandardTickUnits();
-        TickUnit unit1 = tickUnits.getCeilingTickUnit(getTickUnit());
+        TickUnit unit1 = tickUnitSource.getCeilingTickUnit(unit);
         double unit1Width = lengthToJava2D(unit1.getSize(), dataArea, edge);
 
         // then extrapolate...
         double guess = (tickLabelWidth / unit1Width) * unit1.getSize();
-
-        NumberTickUnit unit2 = (NumberTickUnit) tickUnits.getCeilingTickUnit(
-                guess);
+        NumberTickUnit unit2 = (NumberTickUnit) 
+                tickUnitSource.getCeilingTickUnit(guess);
         double unit2Width = lengthToJava2D(unit2.getSize(), dataArea, edge);
 
         tickLabelWidth = estimateMaximumTickLabelWidth(g2, unit2);
         if (tickLabelWidth > unit2Width) {
-            unit2 = (NumberTickUnit) tickUnits.getLargerTickUnit(unit2);
+            unit2 = (NumberTickUnit) tickUnitSource.getLargerTickUnit(unit2);
         }
-
         setTickUnit(unit2, false, false);
-
     }
 
     /**
@@ -1102,9 +860,8 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @param dataArea  the area in which the plot should be drawn.
      * @param edge  the axis location.
      */
-    protected void selectVerticalAutoTickUnit(Graphics2D g2,
-                                              Rectangle2D dataArea,
-                                              RectangleEdge edge) {
+    protected void selectVerticalAutoTickUnit(Graphics2D g2, 
+            Rectangle2D dataArea, RectangleEdge edge) {
 
         double tickLabelHeight = estimateMaximumTickLabelHeight(g2);
 
@@ -1112,21 +869,21 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         TickUnitSource tickUnits = getStandardTickUnits();
         TickUnit unit1 = tickUnits.getCeilingTickUnit(getTickUnit());
         double unitHeight = lengthToJava2D(unit1.getSize(), dataArea, edge);
-
-        // then extrapolate...
-        double guess = (tickLabelHeight / unitHeight) * unit1.getSize();
-
-        NumberTickUnit unit2
-            = (NumberTickUnit) tickUnits.getCeilingTickUnit(guess);
+        double guess;
+        if (unitHeight > 0) { // then extrapolate...
+            guess = (tickLabelHeight / unitHeight) * unit1.getSize();
+        } else { 
+            guess = getRange().getLength() / 20.0;
+        }
+        NumberTickUnit unit2 = (NumberTickUnit) tickUnits.getCeilingTickUnit(
+                guess);
         double unit2Height = lengthToJava2D(unit2.getSize(), dataArea, edge);
 
         tickLabelHeight = estimateMaximumTickLabelHeight(g2);
         if (tickLabelHeight > unit2Height) {
             unit2 = (NumberTickUnit) tickUnits.getLargerTickUnit(unit2);
         }
-
         setTickUnit(unit2, false, false);
-
     }
 
     /**
@@ -1139,15 +896,11 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      * @param edge  the location of the axis.
      *
      * @return A list of ticks.
-     *
      */
     @Override
-	public List refreshTicks(Graphics2D g2,
-                             AxisState state,
-                             Rectangle2D dataArea,
-                             RectangleEdge edge) {
-
-        List result = new java.util.ArrayList();
+    public List<ValueTick> refreshTicks(Graphics2D g2, AxisState state,
+            Rectangle2D dataArea, RectangleEdge edge) {
+        List<ValueTick> result = new java.util.ArrayList<ValueTick>();
         if (RectangleEdge.isTopOrBottom(edge)) {
             result = refreshTicksHorizontal(g2, dataArea, edge);
         }
@@ -1155,7 +908,6 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
             result = refreshTicksVertical(g2, dataArea, edge);
         }
         return result;
-
     }
 
     /**
@@ -1168,10 +920,10 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      *
      * @return A list of ticks.
      */
-    protected List refreshTicksHorizontal(Graphics2D g2,
+    protected List<ValueTick> refreshTicksHorizontal(Graphics2D g2,
             Rectangle2D dataArea, RectangleEdge edge) {
 
-        List result = new java.util.ArrayList();
+        List<ValueTick> result = new java.util.ArrayList<ValueTick>();
 
         Font tickLabelFont = getTickLabelFont();
         g2.setFont(tickLabelFont);
@@ -1186,16 +938,13 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         double lowestTickValue = calculateLowestVisibleTickValue();
 
         if (count <= ValueAxis.MAXIMUM_TICK_COUNT) {
-            int minorTickSpaces = getMinorTickCount();
-            if (minorTickSpaces <= 0) {
-                minorTickSpaces = tu.getMinorTickCount();
-            }
-            for (int minorTick = 1; minorTick < minorTickSpaces; minorTick++) {
-                double minorTickValue = lowestTickValue 
-                        - size * minorTick / minorTickSpaces;
+            int minorTickIntervals = tu.getMinorTickIntervals();
+            for (int mt = 1; mt < minorTickIntervals; mt++) {
+                double minorTickValue = lowestTickValue
+                        - size * mt / minorTickIntervals;
                 if (getRange().contains(minorTickValue)) {
                     result.add(new NumberTick(TickType.MINOR, minorTickValue,
-                            "", TextAnchor.TOP_CENTER, TextAnchor.CENTER,
+                            null, TextAnchor.TOP_CENTER, TextAnchor.CENTER,
                             0.0));
                 }
             }
@@ -1205,8 +954,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                 NumberFormat formatter = getNumberFormatOverride();
                 if (formatter != null) {
                     tickLabel = formatter.format(currentTickValue);
-                }
-                else {
+                } else {
                     tickLabel = getTickUnit().valueToString(currentTickValue);
                 }
                 TextAnchor anchor;
@@ -1217,34 +965,29 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                     rotationAnchor = TextAnchor.CENTER_RIGHT;
                     if (edge == RectangleEdge.TOP) {
                         angle = Math.PI / 2.0;
-                    }
-                    else {
+                    } else {
                         angle = -Math.PI / 2.0;
                     }
-                }
-                else {
+                } else {
                     if (edge == RectangleEdge.TOP) {
                         anchor = TextAnchor.BOTTOM_CENTER;
                         rotationAnchor = TextAnchor.BOTTOM_CENTER;
-                    }
-                    else {
+                    } else {
                         anchor = TextAnchor.TOP_CENTER;
                         rotationAnchor = TextAnchor.TOP_CENTER;
                     }
                 }
 
-                Tick tick = new NumberTick(new Double(currentTickValue),
-                        tickLabel, anchor, rotationAnchor, angle);
-                result.add(tick);
+                result.add(new NumberTick(currentTickValue,
+                        tickLabel, anchor, rotationAnchor, angle));
                 double nextTickValue = lowestTickValue + ((i + 1) * size);
-                for (int minorTick = 1; minorTick < minorTickSpaces;
-                        minorTick++) {
+                for (int mt = 1; mt < minorTickIntervals; mt++) {
                     double minorTickValue = currentTickValue
                             + (nextTickValue - currentTickValue)
-                            * minorTick / minorTickSpaces;
+                            * mt / minorTickIntervals;
                     if (getRange().contains(minorTickValue)) {
                         result.add(new NumberTick(TickType.MINOR,
-                                minorTickValue, "", TextAnchor.TOP_CENTER,
+                                minorTickValue, null, TextAnchor.TOP_CENTER,
                                 TextAnchor.CENTER, 0.0));
                     }
                 }
@@ -1264,10 +1007,10 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      *
      * @return A list of ticks.
      */
-    protected List refreshTicksVertical(Graphics2D g2,
+    protected List<ValueTick> refreshTicksVertical(Graphics2D g2,
             Rectangle2D dataArea, RectangleEdge edge) {
 
-        List result = new java.util.ArrayList();
+        List<ValueTick> result = new java.util.ArrayList<ValueTick>();
         result.clear();
 
         Font tickLabelFont = getTickLabelFont();
@@ -1282,16 +1025,13 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         double lowestTickValue = calculateLowestVisibleTickValue();
 
         if (count <= ValueAxis.MAXIMUM_TICK_COUNT) {
-            int minorTickSpaces = getMinorTickCount();
-            if (minorTickSpaces <= 0) {
-                minorTickSpaces = tu.getMinorTickCount();
-            }
-            for (int minorTick = 1; minorTick < minorTickSpaces; minorTick++) {
+            int minorTickIntervals = tu.getMinorTickIntervals();
+            for (int mt = 1; mt < minorTickIntervals; mt++) {
                 double minorTickValue = lowestTickValue
-                        - size * minorTick / minorTickSpaces;
+                        - size * mt / minorTickIntervals;
                 if (getRange().contains(minorTickValue)) {
                     result.add(new NumberTick(TickType.MINOR, minorTickValue,
-                            "", TextAnchor.TOP_CENTER, TextAnchor.CENTER,
+                            null, TextAnchor.TOP_CENTER, TextAnchor.CENTER,
                             0.0));
                 }
             }
@@ -1302,8 +1042,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                 NumberFormat formatter = getNumberFormatOverride();
                 if (formatter != null) {
                     tickLabel = formatter.format(currentTickValue);
-                }
-                else {
+                } else {
                     tickLabel = getTickUnit().valueToString(currentTickValue);
                 }
 
@@ -1315,44 +1054,38 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
                         anchor = TextAnchor.BOTTOM_CENTER;
                         rotationAnchor = TextAnchor.BOTTOM_CENTER;
                         angle = -Math.PI / 2.0;
-                    }
-                    else {
+                    } else {
                         anchor = TextAnchor.BOTTOM_CENTER;
                         rotationAnchor = TextAnchor.BOTTOM_CENTER;
                         angle = Math.PI / 2.0;
                     }
-                }
-                else {
+                } else {
                     if (edge == RectangleEdge.LEFT) {
                         anchor = TextAnchor.CENTER_RIGHT;
                         rotationAnchor = TextAnchor.CENTER_RIGHT;
-                    }
-                    else {
+                    } else {
                         anchor = TextAnchor.CENTER_LEFT;
                         rotationAnchor = TextAnchor.CENTER_LEFT;
                     }
                 }
 
-                Tick tick = new NumberTick(new Double(currentTickValue),
-                        tickLabel, anchor, rotationAnchor, angle);
-                result.add(tick);
+                result.add(new NumberTick(currentTickValue,
+                        tickLabel, anchor, rotationAnchor, angle));
 
                 double nextTickValue = lowestTickValue + ((i + 1) * size);
-                for (int minorTick = 1; minorTick < minorTickSpaces;
-                        minorTick++) {
+                for (int mt = 1; mt < minorTickIntervals; mt++) {
                     double minorTickValue = currentTickValue
                             + (nextTickValue - currentTickValue)
-                            * minorTick / minorTickSpaces;
+                            * mt / minorTickIntervals;
                     if (getRange().contains(minorTickValue)) {
                         result.add(new NumberTick(TickType.MINOR,
-                                minorTickValue, "", TextAnchor.TOP_CENTER,
+                                minorTickValue, null, TextAnchor.TOP_CENTER,
                                 TextAnchor.CENTER, 0.0));
                     }
                 }
             }
         }
         return result;
-
     }
 
     /**
@@ -1364,7 +1097,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      *         not support cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         NumberAxis clone = (NumberAxis) super.clone();
         if (this.numberFormatOverride != null) {
             clone.numberFormatOverride
@@ -1376,7 +1109,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
     /**
      * Tests the axis for equality with an arbitrary object.
      *
-     * @param obj  the object (<code>null</code> permitted).
+     * @param obj  the object ({@code null} permitted).
      *
      * @return A boolean.
      */
@@ -1395,10 +1128,10 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
         if (this.autoRangeStickyZero != that.autoRangeStickyZero) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.tickUnit, that.tickUnit)) {
+        if (!ObjectUtils.equal(this.tickUnit, that.tickUnit)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.numberFormatOverride,
+        if (!ObjectUtils.equal(this.numberFormatOverride,
                 that.numberFormatOverride)) {
             return false;
         }
@@ -1415,12 +1148,7 @@ public class NumberAxis extends ValueAxis implements Cloneable, Serializable {
      */
     @Override
     public int hashCode() {
-        if (getLabel() != null) {
-            return getLabel().hashCode();
-        }
-        else {
-            return 0;
-        }
+        return super.hashCode();
     }
-
+   
 }

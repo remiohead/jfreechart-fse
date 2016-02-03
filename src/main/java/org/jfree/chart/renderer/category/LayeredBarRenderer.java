@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------------
  * LayeredBarRenderer.java
  * -----------------------
- * (C) Copyright 2003-2012, by Arnaud Lelievre and Contributors.
+ * (C) Copyright 2003-2014, by Arnaud Lelievre and Contributors.
  *
  * Original Author:  Arnaud Lelievre (for Garden);
  * Contributor(s):   David Gilbert (for Object Refinery Limited);
@@ -49,7 +49,7 @@
  * 02-Feb-2007 : Removed author tags all over JFreeChart sources (DG);
  * 19-May-2009 : Fixed FindBugs warnings, patch by Michal Wozniak (DG);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.renderer.category;
@@ -79,7 +79,7 @@ import org.jfree.data.category.CategoryDataset;
  * Demo Collection:
  * <br><br>
  * <img src="../../../../../images/LayeredBarRendererSample.png"
- * alt="LayeredBarRendererSample.png" />
+ * alt="LayeredBarRendererSample.png">
  */
 public class LayeredBarRenderer extends BarRenderer implements Serializable {
 
@@ -87,14 +87,14 @@ public class LayeredBarRenderer extends BarRenderer implements Serializable {
     private static final long serialVersionUID = -8716572894780469487L;
 
     /** A list of the width of each series bar. */
-    protected ObjectList seriesBarWidthList;
+    protected ObjectList<Double> seriesBarWidthList;
 
     /**
      * Default constructor.
      */
     public LayeredBarRenderer() {
         super();
-        this.seriesBarWidthList = new ObjectList();
+        this.seriesBarWidthList = new ObjectList<Double>();
     }
 
     /**
@@ -107,7 +107,7 @@ public class LayeredBarRenderer extends BarRenderer implements Serializable {
      */
     public double getSeriesBarWidth(int series) {
         double result = Double.NaN;
-        Number n = (Number) this.seriesBarWidthList.get(series);
+        Number n = this.seriesBarWidthList.get(series);
         if (n != null) {
             result = n.doubleValue();
         }
@@ -134,7 +134,7 @@ public class LayeredBarRenderer extends BarRenderer implements Serializable {
      * @param state  the renderer state.
      */
     @Override
-	protected void calculateBarWidth(CategoryPlot plot,
+    protected void calculateBarWidth(CategoryPlot plot,
                                      Rectangle2D dataArea,
                                      int rendererIndex,
                                      CategoryItemRendererState state) {
@@ -188,7 +188,7 @@ public class LayeredBarRenderer extends BarRenderer implements Serializable {
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2,
+    public void drawItem(Graphics2D g2,
                          CategoryItemRendererState state,
                          Rectangle2D dataArea,
                          CategoryPlot plot,

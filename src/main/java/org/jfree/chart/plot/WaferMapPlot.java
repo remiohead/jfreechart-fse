@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,14 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------
  * WaferMapPlot.java
  * -----------------
  *
- * (C) Copyright 2003-2012, by Robert Redburn and Contributors.
+ * (C) Copyright 2003-2014, by Robert Redburn and Contributors.
  *
  * Original Author:  Robert Redburn;
  * Contributor(s):   David Gilbert (for Object Refinery Limited);
@@ -43,6 +43,7 @@
  * 18-Dec-2008 : Use ResourceBundleWrapper - see patch 1607918 by
  *               Jess Thrysoee (DG);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
+ * 10-Mar-2014 : Removed LegendItemCollection (DG);
  *
  */
 
@@ -59,9 +60,10 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
+import java.util.List;
 import java.util.ResourceBundle;
+import org.jfree.chart.LegendItem;
 
-import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.event.PlotChangeEvent;
 import org.jfree.chart.event.RendererChangeEvent;
@@ -168,7 +170,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
      * @return A short string describing the type of plot.
      */
     @Override
-	public String getPlotType() {
+    public String getPlotType() {
         return ("WMAP_Plot");
     }
 
@@ -197,7 +199,6 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
         // set the new dataset, and register the chart as a change listener...
         this.dataset = dataset;
         if (dataset != null) {
-            setDatasetGroup(dataset.getGroup());
             dataset.addChangeListener(this);
         }
 
@@ -233,7 +234,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
      * @param info  the plot rendering info.
      */
     @Override
-	public void draw(Graphics2D g2, Rectangle2D area, Point2D anchor,
+    public void draw(Graphics2D g2, Rectangle2D area, Point2D anchor,
                      PlotState state,
                      PlotRenderingInfo info) {
 
@@ -282,8 +283,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
         double chipWidth = 1d;
         double chipHeight = 1d;
         if (plotArea.getWidth() != plotArea.getHeight()) {
-            double major = 0d;
-            double minor = 0d;
+            double major, minor;
             if (plotArea.getWidth() > plotArea.getHeight()) {
                 major = plotArea.getWidth();
                 minor = plotArea.getHeight();
@@ -346,8 +346,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
         double upperLeftY = plotArea.getY();
         //get major dimension
         if (plotArea.getWidth() != plotArea.getHeight()) {
-            double major = 0d;
-            double minor = 0d;
+            double major, minor;
             if (plotArea.getWidth() > plotArea.getHeight()) {
                 major = plotArea.getWidth();
                 minor = plotArea.getHeight();
@@ -384,7 +383,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
         // calculate and draw the notch
         // horizontal orientation is considered notch right
         // vertical orientation is considered notch down
-        Arc2D notch = null;
+        Arc2D notch;
         Rectangle2D waferFrame = waferEdge.getFrame();
         double notchDiameter = waferFrame.getWidth() * 0.04;
         if (this.orientation == PlotOrientation.HORIZONTAL) {
@@ -420,7 +419,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
      * @return The legend items.
      */
     @Override
-	public LegendItemCollection getLegendItems() {
+    public List<LegendItem> getLegendItems() {
         return this.renderer.getLegendCollection();
     }
 
@@ -430,7 +429,7 @@ public class WaferMapPlot extends Plot implements RendererChangeListener,
      * @param event  the event.
      */
     @Override
-	public void rendererChanged(RendererChangeEvent event) {
+    public void rendererChanged(RendererChangeEvent event) {
         fireChangeEvent();
     }
 

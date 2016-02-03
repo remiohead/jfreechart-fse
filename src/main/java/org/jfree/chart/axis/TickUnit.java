@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------
  * TickUnit.java
  * -------------
- * (C) Copyright 2001-2008, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -41,7 +41,7 @@
  * 26-Mar-2003 : Implemented Serializable (DG);
  * 05-Sep-2005 : Implemented hashCode(), thanks to Thomas Morgner (DG);
  * 02-Aug-2007 : Added minorTickCount attribute (DG);
- *
+ * 19-Mar-2014 : Change minorTickCount to minorTickIntervalCount (DG);
  */
 
 package org.jfree.chart.axis;
@@ -60,7 +60,7 @@ import java.io.Serializable;
  *
  * @see ValueAxis
  */
-public abstract class TickUnit implements Comparable, Serializable {
+public abstract class TickUnit implements Comparable<TickUnit>, Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = 510179855057013974L;
@@ -69,11 +69,14 @@ public abstract class TickUnit implements Comparable, Serializable {
     private double size;
 
     /**
-     * The number of minor ticks.
+     * The number of minor tick intervals between major tick marks.  Note
+     * that the number of minor tick marks will be one less than this number 
+     * (for example, if the number of intervals is 10, the number of minor
+     * tick marks will be 9).
      *
      * @since 1.0.7
      */
-    private int minorTickCount;
+    private int minorTickIntervals;
 
     /**
      * Constructs a new tick unit.
@@ -88,13 +91,13 @@ public abstract class TickUnit implements Comparable, Serializable {
      * Constructs a new tick unit.
      *
      * @param size  the tick unit size.
-     * @param minorTickCount  the minor tick count.
+     * @param minorTickIntervals  the number of minor tick intervals.
      *
      * @since 1.0.7
      */
-    public TickUnit(double size, int minorTickCount) {
+    public TickUnit(double size, int minorTickIntervals) {
         this.size = size;
-        this.minorTickCount = minorTickCount;
+        this.minorTickIntervals = minorTickIntervals;
     }
 
     /**
@@ -107,14 +110,14 @@ public abstract class TickUnit implements Comparable, Serializable {
     }
 
     /**
-     * Returns the minor tick count.
-     *
-     * @return The minor tick count.
-     *
-     * @since 1.0.7
+     * Returns the number of minor tick intervals between major tick marks.
+     * If this is <code>1</code> or less, no minor tick marks will be 
+     * displayed.
+     * 
+     * @return The number of minor tick intervals.
      */
-    public int getMinorTickCount() {
-        return this.minorTickCount;
+    public int getMinorTickIntervals() {
+        return this.minorTickIntervals;
     }
 
     /**
@@ -133,29 +136,23 @@ public abstract class TickUnit implements Comparable, Serializable {
     /**
      * Compares this tick unit to an arbitrary object.
      *
-     * @param object  the object to compare against.
+     * @param other  the object to compare against.
      *
      * @return <code>1</code> if the size of the other object is less than this,
      *      <code>0</code> if both have the same size and <code>-1</code> this
      *      size is less than the others.
      */
     @Override
-	public int compareTo(Object object) {
+    public int compareTo(TickUnit other) {
 
-        if (object instanceof TickUnit) {
-            TickUnit other = (TickUnit) object;
-            if (this.size > other.getSize()) {
-                return 1;
-            }
-            else if (this.size < other.getSize()) {
-                return -1;
-            }
-            else {
-                return 0;
-            }
+        if (this.size > other.getSize()) {
+            return 1;
+        }
+        else if (this.size < other.getSize()) {
+            return -1;
         }
         else {
-            return -1;
+            return 0;
         }
 
     }
@@ -168,7 +165,7 @@ public abstract class TickUnit implements Comparable, Serializable {
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -179,7 +176,7 @@ public abstract class TickUnit implements Comparable, Serializable {
         if (this.size != that.size) {
             return false;
         }
-        if (this.minorTickCount != that.minorTickCount) {
+        if (this.minorTickIntervals != that.minorTickIntervals) {
             return false;
         }
         return true;
@@ -191,7 +188,7 @@ public abstract class TickUnit implements Comparable, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         long temp = this.size != +0.0d ? Double.doubleToLongBits(this.size)
                 : 0L;
         return (int) (temp ^ (temp >>> 32));

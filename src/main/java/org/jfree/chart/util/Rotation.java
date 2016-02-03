@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------
@@ -37,37 +37,29 @@
  * 19-Aug-2003 : Version 1 (DG);
  * 20-Feb-2004 : Updated Javadocs (DG);
  * 17-Jun-2012 : Moved from JCommon to JFreeChart (DG);
- * 
+ *
  */
 
 package org.jfree.chart.util;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-
 /**
- * Represents a direction of rotation (<code>CLOCKWISE</code> or 
+ * Represents a direction of rotation (<code>CLOCKWISE</code> or
  * <code>ANTICLOCKWISE</code>).
  */
-public final class Rotation implements Serializable {
+public enum Rotation {
 
-    /** For serialization. */
-    private static final long serialVersionUID = -4662815260201591676L;
-    
     /** Clockwise. */
-    public static final Rotation CLOCKWISE 
-        = new Rotation("Rotation.CLOCKWISE", -1.0);
+    CLOCKWISE("Rotation.CLOCKWISE", -1.0),
 
     /** The reverse order renders the primary dataset first. */
-    public static final Rotation ANTICLOCKWISE 
-        = new Rotation("Rotation.ANTICLOCKWISE", 1.0);
+    ANTICLOCKWISE("Rotation.ANTICLOCKWISE", 1.0);
 
     /** The name. */
     private String name;
-    
-    /** 
-     * The factor (-1.0 for <code>CLOCKWISE</code> and 1.0 for 
-     * <code>ANTICLOCKWISE</code>). 
+
+    /**
+     * The factor (-1.0 for <code>CLOCKWISE</code> and 1.0 for
+     * <code>ANTICLOCKWISE</code>).
      */
     private double factor;
 
@@ -88,72 +80,18 @@ public final class Rotation implements Serializable {
      * @return the string (never <code>null</code>).
      */
     @Override
-	public String toString() {
+    public String toString() {
         return this.name;
     }
 
     /**
-     * Returns the rotation factor, which is -1.0 for <code>CLOCKWISE</code> 
+     * Returns the rotation factor, which is -1.0 for <code>CLOCKWISE</code>
      * and 1.0 for <code>ANTICLOCKWISE</code>.
-     * 
+     *
      * @return the rotation factor.
      */
     public double getFactor() {
         return this.factor;
-    }
-
-    /**
-     * Compares this object for equality with an other object.
-     * Implementation note: This simply compares the factor instead
-     * of the name.
-     *
-     * @param o the other object
-     * @return true or false
-     */
-    @Override
-	public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof Rotation)) {
-            return false;
-        }
-
-        final Rotation rotation = (Rotation) o;
-
-        if (this.factor != rotation.factor) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * Returns a hash code value for the object.
-     *
-     * @return the hashcode
-     */
-    @Override
-	public int hashCode() {
-        final long temp = Double.doubleToLongBits(this.factor);
-        return (int) (temp ^ (temp >>> 32));
-    }
-
-    /**
-     * Ensures that serialization returns the unique instances.
-     * 
-     * @return the object.
-     * 
-     * @throws ObjectStreamException if there is a problem.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        if (this.equals(Rotation.CLOCKWISE)) {
-            return Rotation.CLOCKWISE;
-        }
-        else if (this.equals(Rotation.ANTICLOCKWISE)) {
-            return Rotation.ANTICLOCKWISE;
-        }      
-        return null;
     }
 
 }

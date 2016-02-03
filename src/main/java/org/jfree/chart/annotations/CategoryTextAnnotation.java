@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2013, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
@@ -65,6 +65,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.text.TextUtilities;
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.data.category.CategoryDataset;
 
 /**
@@ -93,12 +94,10 @@ public class CategoryTextAnnotation extends TextAnnotation
      * @param category  the category (<code>null</code> not permitted).
      * @param value  the value.
      */
-    public CategoryTextAnnotation(String text, Comparable category,
-                                  double value) {
+    public CategoryTextAnnotation(String text, Comparable category, 
+            double value) {
         super(text);
-        if (category == null) {
-            throw new IllegalArgumentException("Null 'category' argument.");
-        }
+        ParamChecks.nullNotPermitted(category, "category");
         this.category = category;
         this.value = value;
         this.categoryAnchor = CategoryAnchor.MIDDLE;
@@ -151,9 +150,7 @@ public class CategoryTextAnnotation extends TextAnnotation
      * @see #getCategoryAnchor()
      */
     public void setCategoryAnchor(CategoryAnchor anchor) {
-        if (anchor == null) {
-            throw new IllegalArgumentException("Null 'anchor' argument.");
-        }
+        ParamChecks.nullNotPermitted(anchor, "anchor");
         this.categoryAnchor = anchor;
         fireAnnotationChanged();
     }
@@ -192,7 +189,7 @@ public class CategoryTextAnnotation extends TextAnnotation
      * @param rangeAxis  the range axis.
      */
     @Override
-	public void draw(Graphics2D g2, CategoryPlot plot, Rectangle2D dataArea,
+    public void draw(Graphics2D g2, CategoryPlot plot, Rectangle2D dataArea,
                      CategoryAxis domainAxis, ValueAxis rangeAxis) {
 
         CategoryDataset dataset = plot.getDataset();
@@ -236,7 +233,7 @@ public class CategoryTextAnnotation extends TextAnnotation
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -265,7 +262,7 @@ public class CategoryTextAnnotation extends TextAnnotation
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = super.hashCode();
         result = 37 * result + this.category.hashCode();
         result = 37 * result + this.categoryAnchor.hashCode();
@@ -283,7 +280,7 @@ public class CategoryTextAnnotation extends TextAnnotation
      *         exception, but subclasses (if any) might.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
  * TimeSeriesCollection.java
  * -------------------------
- * (C) Copyright 2001-2012, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -83,24 +83,30 @@
  * 26-Jun-2009 : Fixed clone() (DG);
  * 08-Jan-2012 : Fixed getRangeBounds() method (bug 3445507) (DG);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ * 02-Jul-2013 : Use ParamChecks (DG);
+ * 23-Feb-2014 : Improve implementation of getRangeBounds() (DG);
+ *
  */
 
 package org.jfree.data.time;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyVetoException;
+import java.beans.VetoableChangeListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.data.DomainInfo;
 import org.jfree.data.DomainOrder;
 import org.jfree.data.Range;
 import org.jfree.data.general.DatasetChangeEvent;
+import org.jfree.data.general.Series;
 import org.jfree.data.xy.AbstractIntervalXYDataset;
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -115,13 +121,13 @@ import org.jfree.data.xy.XYRangeInfo;
  */
 public class TimeSeriesCollection extends AbstractIntervalXYDataset
         implements XYDataset, IntervalXYDataset, DomainInfo, XYDomainInfo,
-        XYRangeInfo, Serializable {
+        XYRangeInfo, VetoableChangeListener, Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = 834149929022371137L;
 
     /** Storage for the time series. */
-    private List data;
+    private List<TimeSeries> data;
 
     /** A working calendar (to recycle) */
     private Calendar workingCalendar;
@@ -143,8 +149,8 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
     /**
      * Constructs an empty dataset, tied to a specific timezone.
      *
-     * @param zone  the timezone (<code>null</code> permitted, will use
-     *              <code>TimeZone.getDefault()</code> in that case).
+     * @param zone  the timezone ({@code null} permitted, will use
+     *              {@code TimeZone.getDefault()} in that case).
      */
     public TimeSeriesCollection(TimeZone zone) {
         // FIXME: need a locale as well as a timezone
@@ -155,7 +161,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * Constructs a dataset containing a single series (more can be added),
      * tied to the default timezone.
      *
-     * @param series the series (<code>null</code> permitted).
+     * @param series the series ({@code null} permitted).
      */
     public TimeSeriesCollection(TimeSeries series) {
         this(series, TimeZone.getDefault());
@@ -165,10 +171,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * Constructs a dataset containing a single series (more can be added),
      * tied to a specific timezone.
      *
-     * @param series  a series to add to the collection (<code>null</code>
+     * @param series  a series to add to the collection ({@code null}
      *                permitted).
-     * @param zone  the timezone (<code>null</code> permitted, will use
-     *              <code>TimeZone.getDefault()</code> in that case).
+     * @param zone  the timezone ({@code null} permitted, will use
+     *              {@code TimeZone.getDefault()} in that case).
      */
     public TimeSeriesCollection(TimeSeries series, TimeZone zone) {
         // FIXME:  need a locale as well as a timezone
@@ -176,7 +182,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
             zone = TimeZone.getDefault();
         }
         this.workingCalendar = Calendar.getInstance(zone);
-        this.data = new ArrayList();
+        this.data = new ArrayList<TimeSeries>();
         if (series != null) {
             this.data.add(series);
             series.addChangeListener(this);
@@ -191,16 +197,17 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return {@link DomainOrder#ASCENDING}
      */
     @Override
-	public DomainOrder getDomainOrder() {
+    public DomainOrder getDomainOrder() {
         return DomainOrder.ASCENDING;
     }
 
     /**
      * Returns the position within each time period that is used for the X
      * value when the collection is used as an
-     * {@link org.jfree.data.xy.XYDataset}.
+     * {@link org.jfree.data.xy.XYDataset}.  The default value is 
+     * {@code TimePeriodAnchor.START}.
      *
-     * @return The anchor position (never <code>null</code>).
+     * @return The anchor position (never {@code null}).
      */
     public TimePeriodAnchor getXPosition() {
         return this.xPosition;
@@ -211,12 +218,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * when the collection is used as an {@link XYDataset}, then sends a
      * {@link DatasetChangeEvent} is sent to all registered listeners.
      *
-     * @param anchor  the anchor position (<code>null</code> not permitted).
+     * @param anchor  the anchor position ({@code null} not permitted).
      */
     public void setXPosition(TimePeriodAnchor anchor) {
-        if (anchor == null) {
-            throw new IllegalArgumentException("Null 'anchor' argument.");
-        }
+        ParamChecks.nullNotPermitted(anchor, "anchor");
         this.xPosition = anchor;
         notifyListeners(new DatasetChangeEvent(this, this));
     }
@@ -226,7 +231,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      *
      * @return The list (which is unmodifiable).
      */
-    public List getSeries() {
+    public List<TimeSeries> getSeries() {
         return Collections.unmodifiableList(this.data);
     }
 
@@ -236,7 +241,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The series count.
      */
     @Override
-	public int getSeriesCount() {
+    public int getSeriesCount() {
         return this.data.size();
     }
 
@@ -244,16 +249,14 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * Returns the index of the specified series, or -1 if that series is not
      * present in the dataset.
      *
-     * @param series  the series (<code>null</code> not permitted).
+     * @param series  the series ({@code null} not permitted).
      *
      * @return The series index.
      *
      * @since 1.0.6
      */
     public int indexOf(TimeSeries series) {
-        if (series == null) {
-            throw new IllegalArgumentException("Null 'series' argument.");
-        }
+        ParamChecks.nullNotPermitted(series, "series");
         return this.data.indexOf(series);
     }
 
@@ -269,23 +272,21 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
             throw new IllegalArgumentException(
                 "The 'series' argument is out of bounds (" + series + ").");
         }
-        return (TimeSeries) this.data.get(series);
+        return this.data.get(series);
     }
 
     /**
-     * Returns the series with the specified key, or <code>null</code> if
+     * Returns the series with the specified key, or {@code null} if
      * there is no such series.
      *
-     * @param key  the series key (<code>null</code> permitted).
+     * @param key  the series key ({@code null} permitted).
      *
      * @return The series with the given key.
      */
     public TimeSeries getSeries(Comparable key) {
         TimeSeries result = null;
-        Iterator iterator = this.data.iterator();
-        while (iterator.hasNext()) {
-            TimeSeries series = (TimeSeries) iterator.next();
-            Comparable k = series.getKey();
+        for (TimeSeries series : this.data) {
+           Comparable k = series.getKey();
             if (k != null && k.equals(key)) {
                 result = series;
             }
@@ -301,24 +302,45 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The key for a series.
      */
     @Override
-	public Comparable getSeriesKey(int series) {
+    public Comparable getSeriesKey(int series) {
         // check arguments...delegated
         // fetch the series name...
         return getSeries(series).getKey();
     }
 
     /**
+     * Returns the index of the series with the specified key, or -1 if no
+     * series has that key.
+     * 
+     * @param key  the key ({@code null} not permitted).
+     * 
+     * @return The index.
+     * 
+     * @since 1.0.17
+     */
+    public int getSeriesIndex(Comparable key) {
+        ParamChecks.nullNotPermitted(key, "key");
+        int seriesCount = getSeriesCount();
+        for (int i = 0; i < seriesCount; i++) {
+            TimeSeries series = (TimeSeries) this.data.get(i);
+            if (key.equals(series.getKey())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Adds a series to the collection and sends a {@link DatasetChangeEvent} to
      * all registered listeners.
      *
-     * @param series  the series (<code>null</code> not permitted).
+     * @param series  the series ({@code null} not permitted).
      */
     public void addSeries(TimeSeries series) {
-        if (series == null) {
-            throw new IllegalArgumentException("Null 'series' argument.");
-        }
+        ParamChecks.nullNotPermitted(series, "series");
         this.data.add(series);
         series.addChangeListener(this);
+        series.addVetoableChangeListener(this);
         fireDatasetChanged();
     }
 
@@ -326,14 +348,13 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * Removes the specified series from the collection and sends a
      * {@link DatasetChangeEvent} to all registered listeners.
      *
-     * @param series  the series (<code>null</code> not permitted).
+     * @param series  the series ({@code null} not permitted).
      */
     public void removeSeries(TimeSeries series) {
-        if (series == null) {
-            throw new IllegalArgumentException("Null 'series' argument.");
-        }
+        ParamChecks.nullNotPermitted(series, "series");
         this.data.remove(series);
         series.removeChangeListener(this);
+        series.removeVetoableChangeListener(this);
         fireDatasetChanged();
     }
 
@@ -357,9 +378,9 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
 
         // deregister the collection as a change listener to each series in the
         // collection
-        for (int i = 0; i < this.data.size(); i++) {
-            TimeSeries series = (TimeSeries) this.data.get(i);
+        for (TimeSeries series : this.data) {
             series.removeChangeListener(this);
+            series.removeVetoableChangeListener(this);
         }
 
         // remove all the series from the collection and notify listeners.
@@ -377,7 +398,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The item count.
      */
     @Override
-	public int getItemCount(int series) {
+    public int getItemCount(int series) {
         return getSeries(series).getItemCount();
     }
 
@@ -390,8 +411,8 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The x-value.
      */
     @Override
-	public double getXValue(int series, int item) {
-        TimeSeries s = (TimeSeries) this.data.get(series);
+    public double getXValue(int series, int item) {
+        TimeSeries s = this.data.get(series);
         RegularTimePeriod period = s.getTimePeriod(item);
         return getX(period);
     }
@@ -405,16 +426,16 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getX(int series, int item) {
-        TimeSeries ts = (TimeSeries) this.data.get(series);
+    public Number getX(int series, int item) {
+        TimeSeries ts = this.data.get(series);
         RegularTimePeriod period = ts.getTimePeriod(item);
-        return new Long(getX(period));
+        return getX(period);
     }
 
     /**
      * Returns the x-value for a time period.
      *
-     * @param period  the time period (<code>null</code> not permitted).
+     * @param period  the time period ({@code null} not permitted).
      *
      * @return The x-value.
      */
@@ -441,10 +462,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public synchronized Number getStartX(int series, int item) {
-        TimeSeries ts = (TimeSeries) this.data.get(series);
-        return new Long(ts.getTimePeriod(item).getFirstMillisecond(
-                this.workingCalendar));
+    public synchronized Number getStartX(int series, int item) {
+        TimeSeries ts = this.data.get(series);
+        return ts.getTimePeriod(item).getFirstMillisecond(
+                this.workingCalendar);
     }
 
     /**
@@ -456,10 +477,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public synchronized Number getEndX(int series, int item) {
-        TimeSeries ts = (TimeSeries) this.data.get(series);
-        return new Long(ts.getTimePeriod(item).getLastMillisecond(
-                this.workingCalendar));
+    public synchronized Number getEndX(int series, int item) {
+        TimeSeries ts = this.data.get(series);
+        return ts.getTimePeriod(item).getLastMillisecond(
+                this.workingCalendar);
     }
 
     /**
@@ -471,8 +492,8 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value (possibly <code>null</code>).
      */
     @Override
-	public Number getY(int series, int item) {
-        TimeSeries ts = (TimeSeries) this.data.get(series);
+    public Number getY(int series, int item) {
+        TimeSeries ts = this.data.get(series);
         return ts.getValue(item);
     }
 
@@ -485,7 +506,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value (possibly <code>null</code>).
      */
     @Override
-	public Number getStartY(int series, int item) {
+    public Number getStartY(int series, int item) {
         return getY(series, item);
     }
 
@@ -495,10 +516,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @param series  te series (zero-based index).
      * @param item  the item (zero-based index).
      *
-     * @return The value (possibly <code>null</code>).
+     * @return The value (possibly {@code null}).
      */
     @Override
-	public Number getEndY(int series, int item) {
+    public Number getEndY(int series, int item) {
         return getY(series, item);
     }
 
@@ -539,7 +560,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The minimum value.
      */
     @Override
-	public double getDomainLowerBound(boolean includeInterval) {
+    public double getDomainLowerBound(boolean includeInterval) {
         double result = Double.NaN;
         Range r = getDomainBounds(includeInterval);
         if (r != null) {
@@ -557,7 +578,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The maximum value.
      */
     @Override
-	public double getDomainUpperBound(boolean includeInterval) {
+    public double getDomainUpperBound(boolean includeInterval) {
         double result = Double.NaN;
         Range r = getDomainBounds(includeInterval);
         if (r != null) {
@@ -575,11 +596,9 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The range.
      */
     @Override
-	public Range getDomainBounds(boolean includeInterval) {
+    public Range getDomainBounds(boolean includeInterval) {
         Range result = null;
-        Iterator iterator = this.data.iterator();
-        while (iterator.hasNext()) {
-            TimeSeries series = (TimeSeries) iterator.next();
+        for (TimeSeries series : this.data) {
             int count = series.getItemCount();
             if (count > 0) {
                 RegularTimePeriod start = series.getTimePeriod(0);
@@ -587,8 +606,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
                 Range temp;
                 if (!includeInterval) {
                     temp = new Range(getX(start), getX(end));
-                }
-                else {
+                } else {
                     temp = new Range(
                             start.getFirstMillisecond(this.workingCalendar),
                             end.getLastMillisecond(this.workingCalendar));
@@ -610,12 +628,10 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @since 1.0.13
      */
     @Override
-	public Range getDomainBounds(List visibleSeriesKeys,
+    public Range getDomainBounds(List<Comparable> visibleSeriesKeys,
             boolean includeInterval) {
         Range result = null;
-        Iterator iterator = visibleSeriesKeys.iterator();
-        while (iterator.hasNext()) {
-            Comparable seriesKey = (Comparable) iterator.next();
+        for (Comparable seriesKey : visibleSeriesKeys) {
             TimeSeries series = getSeries(seriesKey);
             int count = series.getItemCount();
             if (count > 0) {
@@ -624,8 +640,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
                 Range temp;
                 if (!includeInterval) {
                     temp = new Range(getX(start), getX(end));
-                }
-                else {
+                } else {
                     temp = new Range(
                             start.getFirstMillisecond(this.workingCalendar),
                             end.getLastMillisecond(this.workingCalendar));
@@ -638,21 +653,17 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
 
     /**
      * Returns the bounds for the y-values in the dataset.
-     * 
+     *
      * @param includeInterval  ignored for this dataset.
-     * 
-     * @return The range of value in the dataset (possibly <code>null</code>).
+     *
+     * @return The range of value in the dataset (possibly {@code null}).
      *
      * @since 1.0.15
      */
     public Range getRangeBounds(boolean includeInterval) {
         Range result = null;
-        Iterator iterator = this.data.iterator();
-        while (iterator.hasNext()) {
-            TimeSeries series = (TimeSeries) iterator.next();
-            Range r = null;
-            r = new Range(series.getMinY(), series.getMaxY());
-            result = Range.combineIgnoringNaN(result, r);
+        for (TimeSeries series : this.data) {
+            result = Range.combineIgnoringNaN(result, series.findValueRange());
         }
         return result;
     }
@@ -669,19 +680,47 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @since 1.0.14
      */
     @Override
-	public Range getRangeBounds(List visibleSeriesKeys, Range xRange,
-            boolean includeInterval) {
+    public Range getRangeBounds(List<Comparable> visibleSeriesKeys, 
+            Range xRange, boolean includeInterval) {
         Range result = null;
-        Iterator iterator = visibleSeriesKeys.iterator();
-        while (iterator.hasNext()) {
-            Comparable seriesKey = (Comparable) iterator.next();
+        for (Comparable seriesKey : visibleSeriesKeys) {
             TimeSeries series = getSeries(seriesKey);
-            Range r = null;
-            r = new Range(series.getMinY(), series.getMaxY());
-            // FIXME: Here we are ignoring the xRange
+            Range r = series.findValueRange(xRange, this.xPosition, 
+                    this.workingCalendar.getTimeZone());
             result = Range.combineIgnoringNaN(result, r);
         }
         return result;
+    }
+
+    /**
+     * Receives notification that the key for one of the series in the 
+     * collection has changed, and vetos it if the key is already present in 
+     * the collection.
+     * 
+     * @param e  the event.
+     * 
+     * @since 1.0.17
+     */
+    @Override
+    public void vetoableChange(PropertyChangeEvent e)
+            throws PropertyVetoException {
+        // if it is not the series name, then we have no interest
+        if (!"Key".equals(e.getPropertyName())) {
+            return;
+        }
+        
+        // to be defensive, let's check that the source series does in fact
+        // belong to this collection
+        Series s = (Series) e.getSource();
+        if (getSeriesIndex(s.getKey()) == -1) {
+            throw new IllegalStateException("Receiving events from a series " +
+                    "that does not belong to this collection.");
+        }
+        // check if the new series name already exists for another series
+        Comparable key = (Comparable) e.getNewValue();
+        if (getSeriesIndex(key) >= 0) {
+            throw new PropertyVetoException("Duplicate key2", e);
+        }
     }
 
     /**
@@ -692,7 +731,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -703,7 +742,7 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
         if (this.xPosition != that.xPosition) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.data, that.data)) {
+        if (!ObjectUtils.equal(this.data, that.data)) {
             return false;
         }
         return true;
@@ -730,12 +769,13 @@ public class TimeSeriesCollection extends AbstractIntervalXYDataset
      *
      * @return A clone.
      *
-     * @throws java.lang.CloneNotSupportedException
+     * @throws java.lang.CloneNotSupportedException if there is a problem 
+     *     with cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         TimeSeriesCollection clone = (TimeSeriesCollection) super.clone();
-        clone.data = (List) ObjectUtilities.deepClone(this.data);
+        clone.data = ObjectUtils.deepClone(this.data);
         clone.workingCalendar = (Calendar) this.workingCalendar.clone();
         return clone;
     }

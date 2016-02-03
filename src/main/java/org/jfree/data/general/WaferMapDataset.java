@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
@@ -97,8 +97,8 @@ public class WaferMapDataset extends AbstractDataset {
      */
     public WaferMapDataset(int maxChipX, int maxChipY, Number chipSpace) {
 
-        this.maxValue = new Double(Double.NEGATIVE_INFINITY);
-        this.minValue = new Double(Double.POSITIVE_INFINITY);
+        this.maxValue = Double.NEGATIVE_INFINITY;
+        this.minValue = Double.POSITIVE_INFINITY;
         this.data = new DefaultKeyedValues2D();
 
         this.maxChipX = maxChipX;
@@ -131,7 +131,7 @@ public class WaferMapDataset extends AbstractDataset {
      * @param y  the y-index.
      */
     public void addValue(int v, int x, int y) {
-        setValue(new Double(v), new Integer(x), new Integer(y));
+        setValue((double) v, x, y);
     }
 
     /**
@@ -165,8 +165,8 @@ public class WaferMapDataset extends AbstractDataset {
      *
      * @return The set of unique values.
      */
-    public Set getUniqueValues() {
-        Set unique = new TreeSet();
+    public Set<Number> getUniqueValues() {
+        Set<Number> unique = new TreeSet<Number>();
         //step through all the values and add them to the hash
         for (int r = 0; r < this.data.getRowCount(); r++) {
             for (int c = 0; c < this.data.getColumnCount(); c++) {
@@ -188,7 +188,7 @@ public class WaferMapDataset extends AbstractDataset {
      * @return The data value.
      */
     public Number getChipValue(int chipx, int chipy) {
-        return getChipValue(new Integer(chipx), new Integer(chipy));
+        return getChipValue(Integer.valueOf(chipx), Integer.valueOf(chipy));
     }
 
     /**
@@ -219,7 +219,7 @@ public class WaferMapDataset extends AbstractDataset {
      * @return A boolean.
      */
     public boolean isMaxValue(Number check) {
-        if (check.doubleValue() > this.maxValue.doubleValue()) {
+        if (check.doubleValue() > this.maxValue) {
             return true;
         }
         return false;
@@ -233,7 +233,7 @@ public class WaferMapDataset extends AbstractDataset {
      * @return A boolean.
      */
     public boolean isMinValue(Number check) {
-        if (check.doubleValue() < this.minValue.doubleValue()) {
+        if (check.doubleValue() < this.minValue) {
             return true;
         }
         return false;

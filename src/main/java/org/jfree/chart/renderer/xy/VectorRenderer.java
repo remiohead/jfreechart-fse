@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------
  * VectorRenderer.java
  * -------------------
- * (C) Copyright 2007-2012, by Object Refinery Limited.
+ * (C) Copyright 2007-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -71,7 +71,7 @@ import org.jfree.data.xy.XYDataset;
  * program included in the JFreeChart demo collection:
  * <br><br>
  * <img src="../../../../../images/VectorRendererSample.png"
- * alt="VectorRendererSample.png" />
+ * alt="VectorRendererSample.png">
  *
  * @since 1.0.6
  */
@@ -101,7 +101,7 @@ public class VectorRenderer extends AbstractXYItemRenderer
      *         or empty).
      */
     @Override
-	public Range findDomainBounds(XYDataset dataset) {
+    public Range findDomainBounds(XYDataset dataset) {
         if (dataset == null) {
             throw new IllegalArgumentException("Null 'dataset' argument.");
         }
@@ -158,7 +158,7 @@ public class VectorRenderer extends AbstractXYItemRenderer
      *         or empty).
      */
     @Override
-	public Range findRangeBounds(XYDataset dataset) {
+    public Range findRangeBounds(XYDataset dataset) {
         if (dataset == null) {
             throw new IllegalArgumentException("Null 'dataset' argument.");
         }
@@ -222,7 +222,7 @@ public class VectorRenderer extends AbstractXYItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, XYItemRendererState state,
+    public void drawItem(Graphics2D g2, XYItemRendererState state,
             Rectangle2D dataArea, PlotRenderingInfo info, XYPlot plot,
             ValueAxis domainAxis, ValueAxis rangeAxis, XYDataset dataset,
             int series, int item, CrosshairState crosshairState, int pass) {
@@ -319,7 +319,7 @@ public class VectorRenderer extends AbstractXYItemRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -345,7 +345,7 @@ public class VectorRenderer extends AbstractXYItemRenderer
      *     clone.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

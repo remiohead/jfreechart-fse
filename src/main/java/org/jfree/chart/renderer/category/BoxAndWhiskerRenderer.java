@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------
  * BoxAndWhiskerRenderer.java
  * --------------------------
- * (C) Copyright 2003-2012, by David Browning and Contributors.
+ * (C) Copyright 2003-2014, by David Browning and Contributors.
  *
  * Original Author:  David Browning (for the Australian Institute of Marine
  *                   Science);
@@ -84,7 +84,7 @@
  *               Becker (DG);
  * 11-Oct-2011 : applied patch #3421088 from Martin Krauskopf to fix bug (MH);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.renderer.category;
@@ -104,14 +104,13 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.LegendItem;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
@@ -121,7 +120,7 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.renderer.Outlier;
 import org.jfree.chart.renderer.OutlierList;
 import org.jfree.chart.renderer.OutlierListCollection;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
@@ -134,7 +133,7 @@ import org.jfree.data.statistics.BoxAndWhiskerCategoryDataset;
  * JFreeChart Demo Collection:
  * <br><br>
  * <img src="../../../../../images/BoxAndWhiskerRendererSample.png"
- * alt="BoxAndWhiskerRendererSample.png" />
+ * alt="BoxAndWhiskerRendererSample.png">
  */
 public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
         implements Cloneable, PublicCloneable, Serializable {
@@ -159,7 +158,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
 
     /**
      * A flag that controls whether or not the median indicator is drawn.
-     * 
+     *
      * @since 1.0.13
      */
     private boolean medianVisible;
@@ -450,7 +449,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @return The legend item (possibly <code>null</code>).
      */
     @Override
-	public LegendItem getLegendItem(int datasetIndex, int series) {
+    public LegendItem getLegendItem(int datasetIndex, int series) {
 
         CategoryPlot cp = getPlot();
         if (cp == null) {
@@ -504,7 +503,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @return The range.
      */
     @Override
-	public Range findRangeBounds(CategoryDataset dataset) {
+    public Range findRangeBounds(CategoryDataset dataset) {
         return super.findRangeBounds(dataset, true);
     }
 
@@ -521,7 +520,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @return The renderer state.
      */
     @Override
-	public CategoryItemRendererState initialise(Graphics2D g2,
+    public CategoryItemRendererState initialise(Graphics2D g2,
                                                 Rectangle2D dataArea,
                                                 CategoryPlot plot,
                                                 int rendererIndex,
@@ -583,7 +582,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, CategoryItemRendererState state,
+    public void drawItem(Graphics2D g2, CategoryItemRendererState state,
         Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis,
         ValueAxis rangeAxis, CategoryDataset dataset, int row, int column,
         int pass) {
@@ -628,7 +627,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @param row  the row index (zero-based).
      * @param column  the column index (zero-based).
      */
-    public void drawHorizontalItem(Graphics2D g2, 
+    public void drawHorizontalItem(Graphics2D g2,
             CategoryItemRendererState state, Rectangle2D dataArea,
             CategoryPlot plot, CategoryAxis domainAxis, ValueAxis rangeAxis,
             CategoryDataset dataset, int row, int column) {
@@ -716,7 +715,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
 
         // draw mean - SPECIAL AIMS REQUIREMENT...
         g2.setPaint(this.artifactPaint);
-        double aRadius = 0;                 // average radius
+        double aRadius;                 // average radius
         if (this.meanVisible) {
             Number xMean = bawDataset.getMeanValue(row, column);
             if (xMean != null) {
@@ -806,7 +805,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
             xx = xx + offset;
         }
 
-        double yyAverage = 0.0;
+        double yyAverage;
         double yyOutlier;
 
         Paint itemPaint = getItemPaint(row, column);
@@ -888,7 +887,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
             if (yMedian != null) {
                 double yyMedian = rangeAxis.valueToJava2D(
                         yMedian.doubleValue(), dataArea, location);
-                g2.draw(new Line2D.Double(xx, yyMedian, 
+                g2.draw(new Line2D.Double(xx, yyMedian,
                         xx + state.getBarWidth(), yyMedian));
             }
         }
@@ -903,34 +902,31 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
 
         // draw outliers
         double oRadius = state.getBarWidth() / 3;    // outlier radius
-        List outliers = new ArrayList();
+        List<Outlier> outliers = new ArrayList<Outlier>();
         OutlierListCollection outlierListCollection
                 = new OutlierListCollection();
 
         // From outlier array sort out which are outliers and put these into a
         // list If there are any farouts, set the flag on the
         // OutlierListCollection
-        List yOutliers = bawDataset.getOutliers(row, column);
+        List<Number> yOutliers = bawDataset.getOutliers(row, column);
         if (yOutliers != null) {
-            for (int i = 0; i < yOutliers.size(); i++) {
-                double outlier = ((Number) yOutliers.get(i)).doubleValue();
+            for (Number yOutlier : yOutliers) {
+                double outlier = ((Number) yOutlier).doubleValue();
                 Number minOutlier = bawDataset.getMinOutlier(row, column);
                 Number maxOutlier = bawDataset.getMaxOutlier(row, column);
                 Number minRegular = bawDataset.getMinRegularValue(row, column);
                 Number maxRegular = bawDataset.getMaxRegularValue(row, column);
                 if (outlier > maxOutlier.doubleValue()) {
                     outlierListCollection.setHighFarOut(true);
-                }
-                else if (outlier < minOutlier.doubleValue()) {
+                } else if (outlier < minOutlier.doubleValue()) {
                     outlierListCollection.setLowFarOut(true);
-                }
-                else if (outlier > maxRegular.doubleValue()) {
+                } else if (outlier > maxRegular.doubleValue()) {
                     yyOutlier = rangeAxis.valueToJava2D(outlier, dataArea,
                             location);
                     outliers.add(new Outlier(xx + state.getBarWidth() / 2.0,
                             yyOutlier, oRadius));
-                }
-                else if (outlier < minRegular.doubleValue()) {
+                } else if (outlier < minRegular.doubleValue()) {
                     yyOutlier = rangeAxis.valueToJava2D(outlier, dataArea,
                             location);
                     outliers.add(new Outlier(xx + state.getBarWidth() / 2.0,
@@ -941,22 +937,18 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
 
             // Process outliers. Each outlier is either added to the
             // appropriate outlier list or a new outlier list is made
-            for (Iterator iterator = outliers.iterator(); iterator.hasNext();) {
-                Outlier outlier = (Outlier) iterator.next();
+            for (Outlier outlier : outliers) {
                 outlierListCollection.add(outlier);
             }
 
-            for (Iterator iterator = outlierListCollection.iterator();
-                     iterator.hasNext();) {
-                OutlierList list = (OutlierList) iterator.next();
+            for (OutlierList list : outlierListCollection) {
                 Outlier outlier = list.getAveragedOutlier();
                 Point2D point = outlier.getPoint();
 
                 if (list.isMultiple()) {
                     drawMultipleEllipse(point, state.getBarWidth(), oRadius,
                             g2);
-                }
-                else {
+                } else {
                     drawEllipse(point, oRadius, g2);
                 }
             }
@@ -1054,7 +1046,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -1084,7 +1076,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
         if (this.whiskerWidth != that.whiskerWidth) {
             return false;
         }
-        if (!PaintUtilities.equal(this.artifactPaint, that.artifactPaint)) {
+        if (!PaintUtils.equal(this.artifactPaint, that.artifactPaint)) {
             return false;
         }
         return super.equals(obj);
@@ -1099,7 +1091,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.artifactPaint, stream);
+        SerialUtils.writePaint(this.artifactPaint, stream);
     }
 
     /**
@@ -1113,7 +1105,7 @@ public class BoxAndWhiskerRenderer extends AbstractCategoryItemRenderer
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.artifactPaint = SerialUtilities.readPaint(stream);
+        this.artifactPaint = SerialUtils.readPaint(stream);
     }
 
 }

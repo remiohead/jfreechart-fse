@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
  * SunPNGEncoderAdapter.java
  * -------------------------
- * (C) Copyright 2004-2008, by Richard Atkinson and Contributors.
+ * (C) Copyright 2004-2014, by Richard Atkinson and Contributors.
  *
  * Original Author:  Richard Atkinson;
  * Contributor(s):   -;
@@ -47,11 +47,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
+import org.jfree.chart.util.ParamChecks;
 
 /**
- * Adapter class for the Sun PNG Encoder.  The ImageEncoderFactory will only
- * return a reference to this class by default if the library has been compiled
- * under a JDK 1.4+ and is being run using a JDK 1.4+.
+ * Adapter class for the Sun PNG Encoder.
  */
 public class SunPNGEncoderAdapter implements ImageEncoder {
 
@@ -61,7 +60,7 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      * @return A float representing the quality.
      */
     @Override
-	public float getQuality() {
+    public float getQuality() {
         return 0.0f;
     }
 
@@ -72,7 +71,7 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      * @param quality  A float representing the quality.
      */
     @Override
-	public void setQuality(float quality) {
+    public void setQuality(float quality) {
         //  No op
     }
 
@@ -82,7 +81,7 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      * @return Whether the encoder is encoding alpha transparency.
      */
     @Override
-	public boolean isEncodingAlpha() {
+    public boolean isEncodingAlpha() {
         return false;
     }
 
@@ -94,7 +93,7 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      *                       transparency.
      */
     @Override
-	public void setEncodingAlpha(boolean encodingAlpha) {
+    public void setEncodingAlpha(boolean encodingAlpha) {
         //  No op
     }
 
@@ -105,10 +104,10 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      *
      * @return The byte[] that is the encoded image.
      *
-     * @throws IOException
+     * @throws IOException if there is an IO problem.
      */
     @Override
-	public byte[] encode(BufferedImage bufferedImage) throws IOException {
+    public byte[] encode(BufferedImage bufferedImage) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         encode(bufferedImage, outputStream);
         return outputStream.toByteArray();
@@ -119,17 +118,13 @@ public class SunPNGEncoderAdapter implements ImageEncoder {
      *
      * @param bufferedImage  The image to be encoded.
      * @param outputStream  The OutputStream to write the encoded image to.
-     * @throws IOException
+     * @throws IOException if there is an IO problem.
      */
     @Override
-	public void encode(BufferedImage bufferedImage, OutputStream outputStream)
-        throws IOException {
-        if (bufferedImage == null) {
-            throw new IllegalArgumentException("Null 'image' argument.");
-        }
-        if (outputStream == null) {
-            throw new IllegalArgumentException("Null 'outputStream' argument.");
-        }
+    public void encode(BufferedImage bufferedImage, OutputStream outputStream)
+            throws IOException {
+        ParamChecks.nullNotPermitted(bufferedImage, "bufferedImage");
+        ParamChecks.nullNotPermitted(outputStream, "outputStream");
         ImageIO.write(bufferedImage, ImageFormat.PNG, outputStream);
     }
 

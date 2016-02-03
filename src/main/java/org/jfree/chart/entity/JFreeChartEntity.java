@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------
@@ -36,7 +36,7 @@
  * --------
  * 15-Feb-2009 : Version 1 (PK);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.entity;
@@ -46,10 +46,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 import org.jfree.chart.JFreeChart;
-import org.jfree.chart.util.ObjectUtilities;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A class that captures information about an entire chart.
@@ -123,8 +123,8 @@ public class JFreeChartEntity extends ChartEntity {
      * @return A string.
      */
     @Override
-	public String toString() {
-        StringBuffer buf = new StringBuffer("JFreeChartEntity: ");
+    public String toString() {
+        StringBuilder buf = new StringBuilder("JFreeChartEntity: ");
         buf.append("tooltip = ");
         buf.append(getToolTipText());
         return buf.toString();
@@ -138,7 +138,7 @@ public class JFreeChartEntity extends ChartEntity {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -149,10 +149,10 @@ public class JFreeChartEntity extends ChartEntity {
         if (!getArea().equals(that.getArea())) {
             return false;
         }
-        if (!ObjectUtilities.equal(getToolTipText(), that.getToolTipText())) {
+        if (!ObjectUtils.equal(getToolTipText(), that.getToolTipText())) {
             return false;
         }
-        if (!ObjectUtilities.equal(getURLText(), that.getURLText())) {
+        if (!ObjectUtils.equal(getURLText(), that.getURLText())) {
             return false;
         }
         if (!(this.chart.equals(that.chart))) {
@@ -167,10 +167,10 @@ public class JFreeChartEntity extends ChartEntity {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 39;
-        result = HashUtilities.hashCode(result, getToolTipText());
-        result = HashUtilities.hashCode(result, getURLText());
+        result = HashUtils.hashCode(result, getToolTipText());
+        result = HashUtils.hashCode(result, getURLText());
         return result;
     }
 
@@ -183,7 +183,7 @@ public class JFreeChartEntity extends ChartEntity {
      *         entity.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -196,7 +196,7 @@ public class JFreeChartEntity extends ChartEntity {
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writeShape(getArea(), stream);
+        SerialUtils.writeShape(getArea(), stream);
      }
 
     /**
@@ -210,7 +210,7 @@ public class JFreeChartEntity extends ChartEntity {
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        setArea(SerialUtilities.readShape(stream));
+        setArea(SerialUtils.readShape(stream));
     }
 
 }

@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------
  * LegendTitle.java
  * ----------------
- * (C) Copyright 2002-2012, by Object Refinery Limited.
+ * (C) Copyright 2002-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Pierre-Marie Le Biot;
@@ -57,7 +57,8 @@
  * 19-Mar-2009 : Added entity support - see patch 2603321 by Peter Kolb (DG);
  * 11-Mar-2012 : Added sort-order support - patch 3500621 by Simon Kaczor (MH);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ * 10-Mar-2014 : Removed LegendItemCollection (DG);
+ *
  */
 
 package org.jfree.chart.title;
@@ -71,9 +72,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.List;
 
 import org.jfree.chart.LegendItem;
-import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.LegendItemSource;
 import org.jfree.chart.block.Arrangement;
 import org.jfree.chart.block.Block;
@@ -91,14 +92,14 @@ import org.jfree.chart.ui.RectangleAnchor;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
 import org.jfree.chart.ui.Size2D;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.util.SortOrder;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.entity.StandardEntityCollection;
 import org.jfree.chart.entity.TitleEntity;
 import org.jfree.chart.event.TitleChangeEvent;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A chart title that displays a legend for the data in the chart.
@@ -407,7 +408,7 @@ public class LegendTitle extends Title
 
     /**
      * Gets the order used to display legend items.
-     * 
+     *
      * @return The order (never <code>null</code>).
      * @since 1.0.15
      */
@@ -417,7 +418,7 @@ public class LegendTitle extends Title
 
     /**
      * Sets the order used to display legend items.
-     * 
+     *
      * @param order Specifies ascending or descending order (<code>null</code>
      *              not permitted).
      * @since 1.0.15
@@ -444,24 +445,18 @@ public class LegendTitle extends Title
         }
 
         if (this.sortOrder.equals(SortOrder.ASCENDING)) {
-            for (int s = 0; s < this.sources.length; s++) {
-                LegendItemCollection legendItems =
-                    this.sources[s].getLegendItems();
-                if (legendItems != null) {
-                    for (int i = 0; i < legendItems.getItemCount(); i++) {
-                        addItemBlock(legendItems.get(i));
-                    }
+            for (LegendItemSource source : this.sources) {
+                List<LegendItem> legendItems = source.getLegendItems();
+                for (LegendItem item: legendItems) {
+                    addItemBlock(item);
                 }
             }
         }
         else {
             for (int s = this.sources.length - 1; s >= 0; s--) {
-                LegendItemCollection legendItems =
-                    this.sources[s].getLegendItems();
-                if (legendItems != null) {
-                    for (int i = legendItems.getItemCount()-1; i >= 0; i--) {
-                        addItemBlock(legendItems.get(i));
-                    }
+                List<LegendItem> legendItems = this.sources[s].getLegendItems();
+                for (int i = legendItems.size() - 1; i >= 0; i--) {
+                    addItemBlock(legendItems.get(i));
                 }
             }
         }
@@ -480,7 +475,7 @@ public class LegendTitle extends Title
      * @return The block.
      */
     protected Block createLegendItemBlock(LegendItem item) {
-        BlockContainer result = null;
+        BlockContainer result;
         LegendGraphic lg = new LegendGraphic(item.getShape(),
                 item.getFillPaint());
         lg.setFillPaintTransformer(item.getFillPaintTransformer());
@@ -541,7 +536,7 @@ public class LegendTitle extends Title
      * @return The block size (in Java2D units, never <code>null</code>).
      */
     @Override
-	public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
+    public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
         Size2D result = new Size2D();
         fetchLegendItems();
         if (this.items.isEmpty()) {
@@ -566,7 +561,7 @@ public class LegendTitle extends Title
      * @param area  the available area for the title.
      */
     @Override
-	public void draw(Graphics2D g2, Rectangle2D area) {
+    public void draw(Graphics2D g2, Rectangle2D area) {
         draw(g2, area, null);
     }
 
@@ -581,7 +576,7 @@ public class LegendTitle extends Title
      *         <code>null</code>.
      */
     @Override
-	public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
+    public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
         Rectangle2D target = (Rectangle2D) area.clone();
         Rectangle2D hotspot = (Rectangle2D) area.clone();
         StandardEntityCollection sec = null;
@@ -642,7 +637,7 @@ public class LegendTitle extends Title
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -653,7 +648,7 @@ public class LegendTitle extends Title
             return false;
         }
         LegendTitle that = (LegendTitle) obj;
-        if (!PaintUtilities.equal(this.backgroundPaint, that.backgroundPaint)) {
+        if (!PaintUtils.equal(this.backgroundPaint, that.backgroundPaint)) {
             return false;
         }
         if (this.legendItemGraphicEdge != that.legendItemGraphicEdge) {
@@ -692,8 +687,8 @@ public class LegendTitle extends Title
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.backgroundPaint, stream);
-        SerialUtilities.writePaint(this.itemPaint, stream);
+        SerialUtils.writePaint(this.backgroundPaint, stream);
+        SerialUtils.writePaint(this.itemPaint, stream);
     }
 
     /**
@@ -707,8 +702,8 @@ public class LegendTitle extends Title
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.backgroundPaint = SerialUtilities.readPaint(stream);
-        this.itemPaint = SerialUtilities.readPaint(stream);
+        this.backgroundPaint = SerialUtils.readPaint(stream);
+        this.itemPaint = SerialUtils.readPaint(stream);
     }
 
 }

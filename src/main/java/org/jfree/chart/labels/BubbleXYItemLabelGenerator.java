@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------------
@@ -50,8 +50,8 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
-import org.jfree.chart.HashUtilities;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.HashUtils;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.renderer.xy.XYBubbleRenderer;
 import org.jfree.data.xy.XYDataset;
@@ -164,7 +164,7 @@ public class BubbleXYItemLabelGenerator extends AbstractXYItemLabelGenerator
      * @return The item label (possibly <code>null</code>).
      */
     @Override
-	public String generateLabel(XYDataset dataset, int series, int item) {
+    public String generateLabel(XYDataset dataset, int series, int item) {
         return generateLabelString(dataset, series, item);
     }
 
@@ -178,7 +178,7 @@ public class BubbleXYItemLabelGenerator extends AbstractXYItemLabelGenerator
      * @return The label (possibly <code>null</code>).
      */
     @Override
-	public String generateLabelString(XYDataset dataset, int series, int item) {
+    public String generateLabelString(XYDataset dataset, int series, int item) {
         String result = null;
         Object[] items = null;
         if (dataset instanceof XYZDataset) {
@@ -245,7 +245,7 @@ public class BubbleXYItemLabelGenerator extends AbstractXYItemLabelGenerator
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -256,10 +256,10 @@ public class BubbleXYItemLabelGenerator extends AbstractXYItemLabelGenerator
             return false;
         }
         BubbleXYItemLabelGenerator that = (BubbleXYItemLabelGenerator) obj;
-        if (!ObjectUtilities.equal(this.zFormat, that.zFormat)) {
+        if (!ObjectUtils.equal(this.zFormat, that.zFormat)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.zDateFormat, that.zDateFormat)) {
+        if (!ObjectUtils.equal(this.zDateFormat, that.zDateFormat)) {
             return false;
         }
         return true;
@@ -271,10 +271,10 @@ public class BubbleXYItemLabelGenerator extends AbstractXYItemLabelGenerator
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int h = super.hashCode();
-        h = HashUtilities.hashCode(h, this.zFormat);
-        h = HashUtilities.hashCode(h, this.zDateFormat);
+        h = HashUtils.hashCode(h, this.zFormat);
+        h = HashUtils.hashCode(h, this.zDateFormat);
         return h;
     }
 

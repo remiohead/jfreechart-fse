@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
  * StandardDialScale.java
  * ----------------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -65,10 +65,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.jfree.chart.ui.TextAnchor;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.text.TextUtilities;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A scale for a {@link DialPlot}.
@@ -197,7 +197,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      *     orientation as Java's <code>Arc2D</code> class).
      * @param extent  the extent (in degrees, counter-clockwise).
      * @param majorTickIncrement  the interval between major tick marks (must
-     *     be > 0).
+     *     be &gt; 0).
      * @param minorTickCount  the number of minor ticks between major tick
      *          marks.
      */
@@ -378,7 +378,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * Sets the increment (in data units) between major tick labels and sends a
      * {@link DialLayerChangeEvent} to all registered listeners.
      *
-     * @param increment  the increment (must be > 0).
+     * @param increment  the increment (must be &gt; 0).
      *
      * @see #getMajorTickIncrement()
      */
@@ -753,7 +753,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @return <code>true</code>.
      */
     @Override
-	public boolean isClippedToWindow() {
+    public boolean isClippedToWindow() {
         return true;
     }
 
@@ -768,7 +768,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      *     permitted).
      */
     @Override
-	public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
+    public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
             Rectangle2D view) {
 
         Rectangle2D arcRect = DialPlot.rectangleByRadius(frame,
@@ -856,7 +856,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @see #angleToValue(double)
      */
     @Override
-	public double valueToAngle(double value) {
+    public double valueToAngle(double value) {
         double range = this.upperBound - this.lowerBound;
         double unit = this.extent / range;
         return this.startAngle + unit * (value - this.lowerBound);
@@ -872,7 +872,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @see #valueToAngle(double)
      */
     @Override
-	public double angleToValue(double angle) {
+    public double angleToValue(double angle) {
         double range = this.upperBound - this.lowerBound;
         double unit = range / this.extent;
         return (angle - this.startAngle) * unit;
@@ -887,7 +887,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -916,7 +916,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
         if (this.majorTickLength != that.majorTickLength) {
             return false;
         }
-        if (!PaintUtilities.equal(this.majorTickPaint, that.majorTickPaint)) {
+        if (!PaintUtils.equal(this.majorTickPaint, that.majorTickPaint)) {
             return false;
         }
         if (!this.majorTickStroke.equals(that.majorTickStroke)) {
@@ -928,7 +928,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
         if (this.minorTickLength != that.minorTickLength) {
             return false;
         }
-        if (!PaintUtilities.equal(this.minorTickPaint, that.minorTickPaint)) {
+        if (!PaintUtils.equal(this.minorTickPaint, that.minorTickPaint)) {
             return false;
         }
         if (!this.minorTickStroke.equals(that.minorTickStroke)) {
@@ -943,7 +943,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
         if (!this.tickLabelFont.equals(that.tickLabelFont)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.tickLabelPaint, that.tickLabelPaint)) {
+        if (!PaintUtils.equal(this.tickLabelPaint, that.tickLabelPaint)) {
             return false;
         }
         return super.equals(obj);
@@ -955,7 +955,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 193;
         // lowerBound
         long temp = Double.doubleToLongBits(this.lowerBound);
@@ -996,7 +996,7 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      * @throws CloneNotSupportedException if this instance is not cloneable.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -1009,11 +1009,11 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.majorTickPaint, stream);
-        SerialUtilities.writeStroke(this.majorTickStroke, stream);
-        SerialUtilities.writePaint(this.minorTickPaint, stream);
-        SerialUtilities.writeStroke(this.minorTickStroke, stream);
-        SerialUtilities.writePaint(this.tickLabelPaint, stream);
+        SerialUtils.writePaint(this.majorTickPaint, stream);
+        SerialUtils.writeStroke(this.majorTickStroke, stream);
+        SerialUtils.writePaint(this.minorTickPaint, stream);
+        SerialUtils.writeStroke(this.minorTickStroke, stream);
+        SerialUtils.writePaint(this.tickLabelPaint, stream);
     }
 
     /**
@@ -1027,11 +1027,11 @@ public class StandardDialScale extends AbstractDialLayer implements DialScale,
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.majorTickPaint = SerialUtilities.readPaint(stream);
-        this.majorTickStroke = SerialUtilities.readStroke(stream);
-        this.minorTickPaint = SerialUtilities.readPaint(stream);
-        this.minorTickStroke = SerialUtilities.readStroke(stream);
-        this.tickLabelPaint = SerialUtilities.readPaint(stream);
+        this.majorTickPaint = SerialUtils.readPaint(stream);
+        this.majorTickStroke = SerialUtils.readStroke(stream);
+        this.minorTickPaint = SerialUtils.readPaint(stream);
+        this.minorTickStroke = SerialUtils.readStroke(stream);
+        this.tickLabelPaint = SerialUtils.readPaint(stream);
     }
 
 }

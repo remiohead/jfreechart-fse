@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -65,7 +65,7 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
     private static final long serialVersionUID = -8565933356596551832L;
 
     /** Storage for the URLs. */
-    private ArrayList urlSeries = new ArrayList();
+    private List<List<String>> urlSeries = new ArrayList<List<String>>();
 
     /**
      * Default constructor.
@@ -92,7 +92,7 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
      */
     public int getURLCount(int list) {
         int result = 0;
-        List urls = (List) this.urlSeries.get(list);
+        List<String> urls = this.urlSeries.get(list);
         if (urls != null) {
             result = urls.size();
         }
@@ -110,10 +110,10 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
     public String getURL(int series, int item) {
         String result = null;
         if (series < getListCount()) {
-            List urls = (List) this.urlSeries.get(series);
+            List<String> urls = this.urlSeries.get(series);
             if (urls != null) {
                 if (item < urls.size()) {
-                    result = (String) urls.get(item);
+                    result = urls.get(item);
                 }
             }
         }
@@ -130,7 +130,7 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
      * @return A string containing the URL (possibly <code>null</code>).
      */
     @Override
-	public String generateURL(XYDataset dataset, int series, int item) {
+    public String generateURL(XYDataset dataset, int series, int item) {
         return getURL(series, item);
     }
 
@@ -140,10 +140,10 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
      * @param urls  the list of URLs (<code>null</code> permitted, the list
      *     is copied).
      */
-    public void addURLSeries(List urls) {
-        List listToAdd = null;
+    public void addURLSeries(List<String> urls) {
+        List<String> listToAdd = null;
         if (urls != null) {
-            listToAdd = new java.util.ArrayList(urls);
+            listToAdd = new java.util.ArrayList<String>(urls);
         }
         this.urlSeries.add(listToAdd);
     }
@@ -156,7 +156,7 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -203,9 +203,9 @@ public class CustomXYURLGenerator implements XYURLGenerator, Cloneable,
      * @throws CloneNotSupportedException if there is a problem with cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         CustomXYURLGenerator clone = (CustomXYURLGenerator) super.clone();
-        clone.urlSeries = new java.util.ArrayList(this.urlSeries);
+        clone.urlSeries = new java.util.ArrayList<List<String>>(this.urlSeries);
         return clone;
     }
 

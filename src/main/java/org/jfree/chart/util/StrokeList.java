@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------
@@ -36,7 +36,7 @@
  * -------
  * 19-Aug-2003 : Version 1 (DG);
  * 17-Jun-2012 : Moved from JCommon to JFreeChart (DG);
- * 
+ *
  */
 
 package org.jfree.chart.util;
@@ -46,12 +46,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.jfree.chart.util.SerialUtilities;
-
 /**
  * A table of {@link Stroke} objects.
  */
-public class StrokeList extends AbstractObjectList {
+public class StrokeList extends AbstractObjectList<Stroke> {
 
     /**
      * Creates a new list.
@@ -68,7 +66,7 @@ public class StrokeList extends AbstractObjectList {
      * @return The object.
      */
     public Stroke getStroke(final int index) {
-        return (Stroke) get(index);
+        return get(index);
     }
 
     /**
@@ -83,16 +81,16 @@ public class StrokeList extends AbstractObjectList {
 
     /**
      * Returns an independent copy of the list.
-     * 
+     *
      * @return A clone.
-     * 
+     *
      * @throws CloneNotSupportedException if an item in the list cannot be cloned.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
-    
+
     /**
      * Tests the list for equality with another object (typically also a list).
      *
@@ -101,16 +99,16 @@ public class StrokeList extends AbstractObjectList {
      * @return A boolean.
      */
     @Override
-	public boolean equals(final Object o) {
+    public boolean equals(final Object o) {
 
         if (o == null) {
             return false;
         }
-        
+
         if (o == this) {
             return true;
         }
-        
+
         if (o instanceof StrokeList) {
             return super.equals(o);
         }
@@ -118,14 +116,14 @@ public class StrokeList extends AbstractObjectList {
         return false;
 
     }
-    
+
     /**
      * Returns a hash code value for the object.
      *
      * @return the hashcode
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return super.hashCode();
     }
 
@@ -145,7 +143,7 @@ public class StrokeList extends AbstractObjectList {
             final Stroke stroke = getStroke(i);
             if (stroke != null) {
                 stream.writeInt(i);
-                SerialUtilities.writeStroke(stroke, stream);
+                SerialUtils.writeStroke(stroke, stream);
             }
             else {
                 stream.writeInt(-1);
@@ -153,7 +151,7 @@ public class StrokeList extends AbstractObjectList {
         }
 
     }
-    
+
     /**
      * Provides serialization support.
      *
@@ -169,10 +167,10 @@ public class StrokeList extends AbstractObjectList {
         for (int i = 0; i < count; i++) {
             final int index = stream.readInt();
             if (index != -1) {
-                setStroke(index, SerialUtilities.readStroke(stream));
+                setStroke(index, SerialUtils.readStroke(stream));
             }
         }
-        
+
     }
 
 }

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------------
@@ -47,7 +47,7 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYZDataset;
 
@@ -164,7 +164,7 @@ public class StandardXYZToolTipGenerator extends StandardXYToolTipGenerator
      * @return The tooltip text (possibly <code>null</code>).
      */
     @Override
-	public String generateToolTip(XYZDataset dataset, int series, int item) {
+    public String generateToolTip(XYZDataset dataset, int series, int item) {
         return generateLabelString(dataset, series, item);
     }
 
@@ -178,7 +178,7 @@ public class StandardXYZToolTipGenerator extends StandardXYToolTipGenerator
      * @return The label (possibly <code>null</code>).
      */
     @Override
-	public String generateLabelString(XYDataset dataset, int series, int item) {
+    public String generateLabelString(XYDataset dataset, int series, int item) {
         String result = null;
         Object[] items = createItemArray((XYZDataset) dataset, series, item);
         result = MessageFormat.format(getFormatString(), items);
@@ -239,7 +239,7 @@ public class StandardXYZToolTipGenerator extends StandardXYToolTipGenerator
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -250,10 +250,10 @@ public class StandardXYZToolTipGenerator extends StandardXYToolTipGenerator
             return false;
         }
         StandardXYZToolTipGenerator that = (StandardXYZToolTipGenerator) obj;
-        if (!ObjectUtilities.equal(this.zFormat, that.zFormat)) {
+        if (!ObjectUtils.equal(this.zFormat, that.zFormat)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.zDateFormat, that.zDateFormat)) {
+        if (!ObjectUtils.equal(this.zDateFormat, that.zDateFormat)) {
             return false;
         }
         return true;

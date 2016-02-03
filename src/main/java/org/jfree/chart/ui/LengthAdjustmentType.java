@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -38,34 +38,25 @@
  * --------
  * 21-Jan-2005 : Version 1 (DG);
  * 16-Jun-2012 : Moved from JCommon to JFreeChart (DG);
- * 
+ *
  */
 
 package org.jfree.chart.ui;
-
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
  * Represents the three options for adjusting a length:  expand, contract, and
  * no change.
  */
-public final class LengthAdjustmentType implements Serializable {
+public enum LengthAdjustmentType {
 
-    /** For serialization. */
-    private static final long serialVersionUID = -6097408511380545010L;
-    
     /** NO_CHANGE. */
-    public static final LengthAdjustmentType NO_CHANGE 
-        = new LengthAdjustmentType("NO_CHANGE");
+    NO_CHANGE("NO_CHANGE"),
 
     /** EXPAND. */
-    public static final LengthAdjustmentType EXPAND 
-        = new LengthAdjustmentType("EXPAND");
+    EXPAND("EXPAND"),
 
     /** CONTRACT. */
-    public static final LengthAdjustmentType CONTRACT 
-        = new LengthAdjustmentType("CONTRACT");
+    CONTRACT("CONTRACT");
 
     /** The name. */
     private String name;
@@ -85,61 +76,8 @@ public final class LengthAdjustmentType implements Serializable {
      * @return The string.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return this.name;
     }
 
-    /**
-     * Returns <code>true</code> if this object is equal to the specified 
-     * object, and <code>false</code> otherwise.
-     *
-     * @param obj  the other object (<code>null</code> permitted).
-     *
-     * @return A boolean.
-     */
-    @Override
-	public boolean equals(final Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (!(obj instanceof LengthAdjustmentType)) {
-            return false;
-        }
-        final LengthAdjustmentType that = (LengthAdjustmentType) obj;
-        if (!this.name.equals(that.name)) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Returns a hash code value for the object.
-     *
-     * @return The hashcode
-     */
-    @Override
-	public int hashCode() {
-        return this.name.hashCode();
-    }
-
-    /**
-     * Ensures that serialization returns the unique instances.
-     * 
-     * @return The object.
-     * 
-     * @throws ObjectStreamException if there is a problem.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        if (this.equals(LengthAdjustmentType.NO_CHANGE)) {
-            return LengthAdjustmentType.NO_CHANGE;
-        }
-        else if (this.equals(LengthAdjustmentType.EXPAND)) {
-            return LengthAdjustmentType.EXPAND;
-        }
-        else if (this.equals(LengthAdjustmentType.CONTRACT)) {
-            return LengthAdjustmentType.CONTRACT;
-        }
-        return null;
-    }
-    
 }

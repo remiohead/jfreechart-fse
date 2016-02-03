@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
  * CategoryLabelWidthType.java
  * ---------------------------
- * (C) Copyright 2004-2008, by Object Refinery Limited.
+ * (C) Copyright 2004-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -40,26 +40,18 @@
 
 package org.jfree.chart.axis;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * Represents the width types for a category label.
  */
-public final class CategoryLabelWidthType implements Serializable {
-
-    /** For serialization. */
-    private static final long serialVersionUID = -6976024792582949656L;
+public enum CategoryLabelWidthType {
 
     /** Percentage of category. */
-    public static final CategoryLabelWidthType
-        CATEGORY = new CategoryLabelWidthType(
-            "CategoryLabelWidthType.CATEGORY"
-        );
+    CATEGORY("CategoryLabelWidthType.CATEGORY"),
 
     /** Percentage of range. */
-    public static final CategoryLabelWidthType
-        RANGE = new CategoryLabelWidthType("CategoryLabelWidthType.RANGE");
+    RANGE("CategoryLabelWidthType.RANGE");
 
     /** The name. */
     private String name;
@@ -67,65 +59,21 @@ public final class CategoryLabelWidthType implements Serializable {
     /**
      * Private constructor.
      *
-     * @param name  the name (<code>null</code> not permitted).
+     * @param name  the name ({@code null} not permitted).
      */
     private CategoryLabelWidthType(String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("Null 'name' argument.");
-        }
+        ParamChecks.nullNotPermitted(name, "name");
         this.name = name;
     }
 
     /**
      * Returns a string representing the object.
      *
-     * @return The string (never </code>null</code>).
+     * @return The string (never {@code null}).
      */
     @Override
-	public String toString() {
+    public String toString() {
         return this.name;
-    }
-
-    /**
-     * Returns <code>true</code> if this object is equal to the specified
-     * object, and <code>false</code> otherwise.
-     *
-     * @param obj  the other object.
-     *
-     * @return A boolean.
-     */
-    @Override
-	public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof CategoryLabelWidthType)) {
-            return false;
-        }
-        CategoryLabelWidthType t = (CategoryLabelWidthType) obj;
-        if (!this.name.equals(t.toString())) {
-            return false;
-        }
-        return true;
-
-    }
-
-    /**
-     * Ensures that serialization returns the unique instances.
-     *
-     * @return The object.
-     *
-     * @throws ObjectStreamException if there is a problem.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        if (this.equals(CategoryLabelWidthType.CATEGORY)) {
-            return CategoryLabelWidthType.CATEGORY;
-        }
-        else if (this.equals(CategoryLabelWidthType.RANGE)) {
-            return CategoryLabelWidthType.RANGE;
-        }
-        return null;
     }
 
 }

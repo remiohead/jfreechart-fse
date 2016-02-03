@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------
@@ -61,10 +61,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.jfree.chart.HashUtilities;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.HashUtils;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A standard frame for the {@link DialPlot} class.
@@ -328,7 +328,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      * @return The shape of the dial's window.
      */
     @Override
-	public Shape getWindow(Rectangle2D frame) {
+    public Shape getWindow(Rectangle2D frame) {
 
         Rectangle2D innerFrame = DialPlot.rectangleByRadius(frame,
                 this.innerRadius, this.innerRadius);
@@ -387,7 +387,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      * @param view  the dial's view rectangle.
      */
     @Override
-	public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
+    public void draw(Graphics2D g2, DialPlot plot, Rectangle2D frame,
             Rectangle2D view) {
 
         Shape window = getWindow(frame);
@@ -413,7 +413,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      * @return <code>false</code>.
      */
     @Override
-	public boolean isClippedToWindow() {
+    public boolean isClippedToWindow() {
         return false;
     }
 
@@ -425,7 +425,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -433,10 +433,10 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
             return false;
         }
         ArcDialFrame that = (ArcDialFrame) obj;
-        if (!PaintUtilities.equal(this.backgroundPaint, that.backgroundPaint)) {
+        if (!PaintUtils.equal(this.backgroundPaint, that.backgroundPaint)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.foregroundPaint, that.foregroundPaint)) {
+        if (!PaintUtils.equal(this.foregroundPaint, that.foregroundPaint)) {
             return false;
         }
         if (this.startAngle != that.startAngle) {
@@ -463,7 +463,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      * @return The hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 193;
         long temp = Double.doubleToLongBits(this.startAngle);
         result = 37 * result + (int) (temp ^ (temp >>> 32));
@@ -473,9 +473,9 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
         result = 37 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(this.outerRadius);
         result = 37 * result + (int) (temp ^ (temp >>> 32));
-        result = 37 * result + HashUtilities.hashCodeForPaint(
+        result = 37 * result + HashUtils.hashCodeForPaint(
                 this.backgroundPaint);
-        result = 37 * result + HashUtilities.hashCodeForPaint(
+        result = 37 * result + HashUtils.hashCodeForPaint(
                 this.foregroundPaint);
         result = 37 * result + this.stroke.hashCode();
         return result;
@@ -490,7 +490,7 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      *     cannot be cloned.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
@@ -503,9 +503,9 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.backgroundPaint, stream);
-        SerialUtilities.writePaint(this.foregroundPaint, stream);
-        SerialUtilities.writeStroke(this.stroke, stream);
+        SerialUtils.writePaint(this.backgroundPaint, stream);
+        SerialUtils.writePaint(this.foregroundPaint, stream);
+        SerialUtils.writeStroke(this.stroke, stream);
     }
 
     /**
@@ -519,9 +519,9 @@ public class ArcDialFrame extends AbstractDialLayer implements DialFrame,
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.backgroundPaint = SerialUtilities.readPaint(stream);
-        this.foregroundPaint = SerialUtilities.readPaint(stream);
-        this.stroke = SerialUtilities.readStroke(stream);
+        this.backgroundPaint = SerialUtils.readPaint(stream);
+        this.foregroundPaint = SerialUtils.readPaint(stream);
+        this.stroke = SerialUtils.readStroke(stream);
     }
 
 }

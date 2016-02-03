@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,16 +21,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------
  * FixedMillisecond.java
  * ---------------------
- * (C) Copyright 2002-2008, by Object Refinery Limited.
+ * (C) Copyright 2002-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
- * Contributor(s):   -;
+ * Contributor(s):   Ulrich Voigt;
  *
  * Changes
  * -------
@@ -44,6 +44,7 @@
  * ------------- JFREECHART 1.0.x ---------------------------------------------
  * 06-Oct-2006 : Added peg() method (DG);
  * 28-May-2008 : Fixed immutability problem (DG);
+ * 20-Aug-2014 : Remove unnecessary Date object creation in constructors (UV);
  *
  */
 
@@ -65,13 +66,13 @@ public class FixedMillisecond extends RegularTimePeriod
     private static final long serialVersionUID = 7867521484545646931L;
 
     /** The millisecond. */
-    private long time;
+    private final long time;
 
     /**
      * Constructs a millisecond based on the current system time.
      */
     public FixedMillisecond() {
-        this(new Date());
+        this(System.currentTimeMillis());
     }
 
     /**
@@ -80,20 +81,21 @@ public class FixedMillisecond extends RegularTimePeriod
      * @param millisecond  the millisecond (same encoding as java.util.Date).
      */
     public FixedMillisecond(long millisecond) {
-        this(new Date(millisecond));
+        this.time = millisecond;
     }
 
     /**
      * Constructs a millisecond.
      *
-     * @param time  the time.
+     * @param time  the time ({@code null} not permitted).
      */
     public FixedMillisecond(Date time) {
-        this.time = time.getTime();
+        this(time.getTime());
     }
 
     /**
-     * Returns the date/time.
+     * Returns the date/time (creates a new {@code Date} instance each time 
+     * this method is called).
      *
      * @return The date/time.
      */
@@ -109,7 +111,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @since 1.0.3
      */
     @Override
-	public void peg(Calendar calendar) {
+    public void peg(Calendar calendar) {
         // nothing to do
     }
 
@@ -119,7 +121,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The millisecond preceding this one.
      */
     @Override
-	public RegularTimePeriod previous() {
+    public RegularTimePeriod previous() {
         RegularTimePeriod result = null;
         long t = this.time;
         if (t != Long.MIN_VALUE) {
@@ -134,7 +136,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The millisecond following this one.
      */
     @Override
-	public RegularTimePeriod next() {
+    public RegularTimePeriod next() {
         RegularTimePeriod result = null;
         long t = this.time;
         if (t != Long.MAX_VALUE) {
@@ -151,7 +153,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object object) {
+    public boolean equals(Object object) {
         if (object instanceof FixedMillisecond) {
             FixedMillisecond m = (FixedMillisecond) object;
             return this.time == m.getFirstMillisecond();
@@ -168,7 +170,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         return (int) this.time;
     }
 
@@ -182,7 +184,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return negative == before, zero == same, positive == after.
      */
     @Override
-	public int compareTo(Object o1) {
+    public int compareTo(TimePeriod o1) {
 
         int result;
         long difference;
@@ -207,17 +209,11 @@ public class FixedMillisecond extends RegularTimePeriod
 
         // CASE 2 : Comparing to another TimePeriod object
         // -----------------------------------------------
-        else if (o1 instanceof RegularTimePeriod) {
+        else {
             // more difficult case - evaluate later...
             result = 0;
         }
 
-        // CASE 3 : Comparing to a non-TimePeriod object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
-        }
 
         return result;
 
@@ -229,7 +225,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The first millisecond of the time period.
      */
     @Override
-	public long getFirstMillisecond() {
+    public long getFirstMillisecond() {
         return this.time;
     }
 
@@ -242,7 +238,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The first millisecond of the time period.
      */
     @Override
-	public long getFirstMillisecond(Calendar calendar) {
+    public long getFirstMillisecond(Calendar calendar) {
         return this.time;
     }
 
@@ -252,7 +248,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The last millisecond of the time period.
      */
     @Override
-	public long getLastMillisecond() {
+    public long getLastMillisecond() {
         return this.time;
     }
 
@@ -264,7 +260,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The last millisecond of the time period.
      */
     @Override
-	public long getLastMillisecond(Calendar calendar) {
+    public long getLastMillisecond(Calendar calendar) {
         return this.time;
     }
 
@@ -274,7 +270,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The millisecond closest to the middle of the time period.
      */
     @Override
-	public long getMiddleMillisecond() {
+    public long getMiddleMillisecond() {
         return this.time;
     }
 
@@ -286,7 +282,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The millisecond closest to the middle of the time period.
      */
     @Override
-	public long getMiddleMillisecond(Calendar calendar) {
+    public long getMiddleMillisecond(Calendar calendar) {
         return this.time;
     }
 
@@ -296,7 +292,7 @@ public class FixedMillisecond extends RegularTimePeriod
      * @return The serial index number.
      */
     @Override
-	public long getSerialIndex() {
+    public long getSerialIndex() {
         return this.time;
     }
 

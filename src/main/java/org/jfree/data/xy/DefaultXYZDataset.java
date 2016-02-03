@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
@@ -48,6 +48,7 @@ package org.jfree.data.xy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.jfree.chart.util.ParamChecks;
 
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.DomainOrder;
@@ -66,22 +67,22 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * Storage for the series keys.  This list must be kept in sync with the
      * seriesList.
      */
-    private List seriesKeys;
+    private List<Comparable> seriesKeys;
 
     /**
      * Storage for the series in the dataset.  We use a list because the
      * order of the series is significant.  This list must be kept in sync
      * with the seriesKeys list.
      */
-    private List seriesList;
+    private List<double[][]> seriesList;
 
     /**
      * Creates a new <code>DefaultXYZDataset</code> instance, initially
      * containing no data.
      */
     public DefaultXYZDataset() {
-        this.seriesKeys = new java.util.ArrayList();
-        this.seriesList = new java.util.ArrayList();
+        this.seriesKeys = new java.util.ArrayList<Comparable>();
+        this.seriesList = new java.util.ArrayList<double[][]>();
     }
 
     /**
@@ -90,7 +91,7 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * @return The series count.
      */
     @Override
-	public int getSeriesCount() {
+    public int getSeriesCount() {
         return this.seriesList.size();
     }
 
@@ -106,11 +107,11 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *     specified range.
      */
     @Override
-	public Comparable getSeriesKey(int series) {
+    public Comparable getSeriesKey(int series) {
         if ((series < 0) || (series >= getSeriesCount())) {
             throw new IllegalArgumentException("Series index out of bounds");
         }
-        return (Comparable) this.seriesKeys.get(series);
+        return this.seriesKeys.get(series);
     }
 
     /**
@@ -122,7 +123,7 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * @return The index, or -1.
      */
     @Override
-	public int indexOf(Comparable seriesKey) {
+    public int indexOf(Comparable seriesKey) {
         return this.seriesKeys.indexOf(seriesKey);
     }
 
@@ -134,7 +135,7 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * @return <code>DomainOrder.NONE</code>.
      */
     @Override
-	public DomainOrder getDomainOrder() {
+    public DomainOrder getDomainOrder() {
         return DomainOrder.NONE;
     }
 
@@ -150,11 +151,11 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *     specified range.
      */
     @Override
-	public int getItemCount(int series) {
+    public int getItemCount(int series) {
         if ((series < 0) || (series >= getSeriesCount())) {
             throw new IllegalArgumentException("Series index out of bounds");
         }
-        double[][] seriesArray = (double[][]) this.seriesList.get(series);
+        double[][] seriesArray = this.seriesList.get(series);
         return seriesArray[0].length;
     }
 
@@ -168,16 +169,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The x-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getX(int, int)
      */
     @Override
-	public double getXValue(int series, int item) {
-        double[][] seriesData = (double[][]) this.seriesList.get(series);
+    public double getXValue(int series, int item) {
+        double[][] seriesData = this.seriesList.get(series);
         return seriesData[0][item];
     }
 
@@ -191,16 +190,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The x-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getXValue(int, int)
      */
     @Override
-	public Number getX(int series, int item) {
-        return new Double(getXValue(series, item));
+    public Number getX(int series, int item) {
+        return getXValue(series, item);
     }
 
     /**
@@ -213,16 +210,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The y-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getY(int, int)
      */
     @Override
-	public double getYValue(int series, int item) {
-        double[][] seriesData = (double[][]) this.seriesList.get(series);
+    public double getYValue(int series, int item) {
+        double[][] seriesData = this.seriesList.get(series);
         return seriesData[1][item];
     }
 
@@ -236,16 +231,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The y-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getX(int, int)
      */
     @Override
-	public Number getY(int series, int item) {
-        return new Double(getYValue(series, item));
+    public Number getY(int series, int item) {
+        return getYValue(series, item);
     }
 
     /**
@@ -258,16 +251,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The z-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getZ(int, int)
      */
     @Override
-	public double getZValue(int series, int item) {
-        double[][] seriesData = (double[][]) this.seriesList.get(series);
+    public double getZValue(int series, int item) {
+        double[][] seriesData = this.seriesList.get(series);
         return seriesData[2][item];
     }
 
@@ -281,16 +272,14 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *
      * @return The z-value.
      *
-     * @throws ArrayIndexOutOfBoundsException if <code>series</code> is not
-     *     within the specified range.
-     * @throws ArrayIndexOutOfBoundsException if <code>item</code> is not
+     * @throws ArrayIndexOutOfBoundsException if <code>series</code> or <code>item</code> is not
      *     within the specified range.
      *
      * @see #getZ(int, int)
      */
     @Override
-	public Number getZ(int series, int item) {
-        return new Double(getZValue(series, item));
+    public Number getZ(int series, int item) {
+        return getZValue(series, item);
     }
 
     /**
@@ -305,13 +294,8 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *     z-values).
      */
     public void addSeries(Comparable seriesKey, double[][] data) {
-        if (seriesKey == null) {
-            throw new IllegalArgumentException(
-                    "The 'seriesKey' cannot be null.");
-        }
-        if (data == null) {
-            throw new IllegalArgumentException("The 'data' is null.");
-        }
+        ParamChecks.nullNotPermitted(seriesKey, "seriesKey");
+        ParamChecks.nullNotPermitted(data, "data");
         if (data.length != 3) {
             throw new IllegalArgumentException(
                     "The 'data' array must have length == 3.");
@@ -365,7 +349,7 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -377,8 +361,8 @@ public class DefaultXYZDataset extends AbstractXYZDataset
             return false;
         }
         for (int i = 0; i < this.seriesList.size(); i++) {
-            double[][] d1 = (double[][]) this.seriesList.get(i);
-            double[][] d2 = (double[][]) that.seriesList.get(i);
+            double[][] d1 = this.seriesList.get(i);
+            double[][] d2 = that.seriesList.get(i);
             double[] d1x = d1[0];
             double[] d2x = d2[0];
             if (!Arrays.equals(d1x, d2x)) {
@@ -404,7 +388,7 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result;
         result = this.seriesKeys.hashCode();
         result = 29 * result + this.seriesList.hashCode();
@@ -421,12 +405,12 @@ public class DefaultXYZDataset extends AbstractXYZDataset
      *     series key).
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         DefaultXYZDataset clone = (DefaultXYZDataset) super.clone();
-        clone.seriesKeys = new java.util.ArrayList(this.seriesKeys);
-        clone.seriesList = new ArrayList(this.seriesList.size());
+        clone.seriesKeys = new java.util.ArrayList<Comparable>(this.seriesKeys);
+        clone.seriesList = new ArrayList<double[][]>(this.seriesList.size());
         for (int i = 0; i < this.seriesList.size(); i++) {
-            double[][] data = (double[][]) this.seriesList.get(i);
+            double[][] data = this.seriesList.get(i);
             double[] x = data[0];
             double[] y = data[1];
             double[] z = data[2];

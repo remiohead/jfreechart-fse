@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2013, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------
  * LookupPaintScale.java
  * ---------------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2013, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -53,9 +53,10 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.chart.util.PublicCloneable;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A paint scale that uses a lookup table to associate paint instances
@@ -63,13 +64,13 @@ import org.jfree.chart.util.SerialUtilities;
  *
  * @since 1.0.4
  */
-public class LookupPaintScale
-        implements PaintScale, PublicCloneable, Serializable {
+public class LookupPaintScale implements PaintScale, PublicCloneable,
+        Serializable {
 
     /**
      * Stores the paint for a value.
      */
-    static class PaintItem implements Comparable, Serializable {
+    static class PaintItem implements Comparable<PaintItem>, Serializable {
 
         /** For serialization. */
         static final long serialVersionUID = 698920578512361570L;
@@ -94,13 +95,12 @@ public class LookupPaintScale
         /**
          * Compares this item to an arbitrary object.
          *
-         * @param obj  the object.
+         * @param that  the object.
          *
          * @return An int defining the relative order of the objects.
          */
         @Override
-		public int compareTo(Object obj) {
-            PaintItem that = (PaintItem) obj;
+        public int compareTo(PaintItem that) {
             double d1 = this.value;
             double d2 = that.value;
             if (d1 > d2) {
@@ -120,7 +120,7 @@ public class LookupPaintScale
          * @return A boolean.
          */
         @Override
-		public boolean equals(Object obj) {
+        public boolean equals(Object obj) {
             if (obj == this) {
                 return true;
             }
@@ -131,10 +131,19 @@ public class LookupPaintScale
             if (this.value != that.value) {
                 return false;
             }
-            if (!PaintUtilities.equal(this.paint, that.paint)) {
+            if (!PaintUtils.equal(this.paint, that.paint)) {
                 return false;
             }
             return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 37 * hash + (int) (Double.doubleToLongBits(this.value)
+                    ^ (Double.doubleToLongBits(this.value) >>> 32));
+            hash = 37 * hash + (this.paint != null ? this.paint.hashCode() : 0);
+            return hash;
         }
 
         /**
@@ -146,7 +155,7 @@ public class LookupPaintScale
          */
         private void writeObject(ObjectOutputStream stream) throws IOException {
             stream.defaultWriteObject();
-            SerialUtilities.writePaint(this.paint, stream);
+            SerialUtils.writePaint(this.paint, stream);
         }
 
         /**
@@ -160,7 +169,7 @@ public class LookupPaintScale
         private void readObject(ObjectInputStream stream)
                 throws IOException, ClassNotFoundException {
             stream.defaultReadObject();
-            this.paint = SerialUtilities.readPaint(stream);
+            this.paint = SerialUtils.readPaint(stream);
         }
 
     }
@@ -178,7 +187,7 @@ public class LookupPaintScale
     private transient Paint defaultPaint;
 
     /** The lookup table. */
-    private List lookupTable;
+    private List<PaintItem> lookupTable;
 
     /**
      * Creates a new paint scale.
@@ -201,13 +210,11 @@ public class LookupPaintScale
             throw new IllegalArgumentException(
                     "Requires lowerBound < upperBound.");
         }
-        if (defaultPaint == null) {
-            throw new IllegalArgumentException("Null 'paint' argument.");
-        }
+        ParamChecks.nullNotPermitted(defaultPaint, "defaultPaint");
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.defaultPaint = defaultPaint;
-        this.lookupTable = new java.util.ArrayList();
+        this.lookupTable = new java.util.ArrayList<PaintItem>();
     }
 
     /**
@@ -227,7 +234,7 @@ public class LookupPaintScale
      * @see #getUpperBound()
      */
     @Override
-	public double getLowerBound() {
+    public double getLowerBound() {
         return this.lowerBound;
     }
 
@@ -239,7 +246,7 @@ public class LookupPaintScale
      * @see #getLowerBound()
      */
     @Override
-	public double getUpperBound() {
+    public double getUpperBound() {
         return this.upperBound;
     }
 
@@ -249,11 +256,14 @@ public class LookupPaintScale
      * <code>paint</code>.
      *
      * @param value  the data value.
-     * @param paint  the paint.
+     * @param paint  the paint (<code>null</code> not permitted).
      *
      * @since 1.0.6
      */
     public void add(double value, Paint paint) {
+        ParamChecks.requireInRange(value, "value", lowerBound, upperBound);
+        ParamChecks.nullNotPermitted(paint, "paint");
+
         PaintItem item = new PaintItem(value, paint);
         int index = Collections.binarySearch(this.lookupTable, item);
         if (index >= 0) {
@@ -274,13 +284,11 @@ public class LookupPaintScale
      * @see #getDefaultPaint()
      */
     @Override
-	public Paint getPaint(double value) {
+    public Paint getPaint(double value) {
 
         // handle value outside bounds...
-        if (value < this.lowerBound) {
-            return this.defaultPaint;
-        }
-        if (value > this.upperBound) {
+        if (value < this.lowerBound || value > this.upperBound
+                || Double.isNaN(value)) {
             return this.defaultPaint;
         }
 
@@ -290,7 +298,7 @@ public class LookupPaintScale
         }
 
         // handle special case where value is less that item zero
-        PaintItem item = (PaintItem) this.lookupTable.get(0);
+        PaintItem item = this.lookupTable.get(0);
         if (value < item.value) {
             return this.defaultPaint;
         }
@@ -300,7 +308,7 @@ public class LookupPaintScale
         int high = this.lookupTable.size() - 1;
         while (high - low > 1) {
             int current = (low + high) / 2;
-            item = (PaintItem) this.lookupTable.get(current);
+            item = this.lookupTable.get(current);
             if (value >= item.value) {
                 low = current;
             }
@@ -309,9 +317,9 @@ public class LookupPaintScale
             }
         }
         if (high > low) {
-            item = (PaintItem) this.lookupTable.get(high);
+            item = this.lookupTable.get(high);
             if (value < item.value) {
-                item = (PaintItem) this.lookupTable.get(low);
+                item = this.lookupTable.get(low);
             }
         }
         return (item != null ? item.paint : this.defaultPaint);
@@ -326,7 +334,7 @@ public class LookupPaintScale
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -340,13 +348,27 @@ public class LookupPaintScale
         if (this.upperBound != that.upperBound) {
             return false;
         }
-        if (!PaintUtilities.equal(this.defaultPaint, that.defaultPaint)) {
+        if (!PaintUtils.equal(this.defaultPaint, that.defaultPaint)) {
             return false;
         }
         if (!this.lookupTable.equals(that.lookupTable)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.lowerBound)
+                ^ (Double.doubleToLongBits(this.lowerBound) >>> 32));
+        hash = 59 * hash + (int) (Double.doubleToLongBits(this.upperBound)
+                ^ (Double.doubleToLongBits(this.upperBound) >>> 32));
+        hash = 59 * hash + (this.defaultPaint != null
+                ? this.defaultPaint.hashCode() : 0);
+        hash = 59 * hash + (this.lookupTable != null
+                ? this.lookupTable.hashCode() : 0);
+        return hash;
     }
 
     /**
@@ -358,9 +380,9 @@ public class LookupPaintScale
      *     instance.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         LookupPaintScale clone = (LookupPaintScale) super.clone();
-        clone.lookupTable = new java.util.ArrayList(this.lookupTable);
+        clone.lookupTable = new java.util.ArrayList<PaintItem>(this.lookupTable);
         return clone;
     }
 
@@ -373,7 +395,7 @@ public class LookupPaintScale
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.defaultPaint, stream);
+        SerialUtils.writePaint(this.defaultPaint, stream);
     }
 
     /**
@@ -387,7 +409,7 @@ public class LookupPaintScale
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.defaultPaint = SerialUtilities.readPaint(stream);
+        this.defaultPaint = SerialUtils.readPaint(stream);
     }
 
 }

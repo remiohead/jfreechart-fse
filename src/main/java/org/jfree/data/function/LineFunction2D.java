@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------
@@ -44,7 +44,7 @@ package org.jfree.data.function;
 
 import java.io.Serializable;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 
 /**
  * A function in the form y = a + bx.
@@ -98,7 +98,7 @@ public class LineFunction2D implements Function2D, Serializable {
      * @return The value.
      */
     @Override
-	public double getValue(double x) {
+    public double getValue(double x) {
         return this.a + this.b * x;
     }
 
@@ -110,7 +110,7 @@ public class LineFunction2D implements Function2D, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (!(obj instanceof LineFunction2D)) {
             return false;
         }
@@ -126,14 +126,14 @@ public class LineFunction2D implements Function2D, Serializable {
 
     /**
      * Returns a hash code for this instance.
-     * 
+     *
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 29;
-        result = HashUtilities.hashCode(result, this.a);
-        result = HashUtilities.hashCode(result, this.b);
+        result = HashUtils.hashCode(result, this.a);
+        result = HashUtils.hashCode(result, this.b);
         return result;
     }
 }

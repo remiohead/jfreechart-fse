@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------------
  * StackedAreaRenderer.java
  * ------------------------
- * (C) Copyright 2002-2012, by Dan Rivett (d.rivett@ukonline.co.uk) and
+ * (C) Copyright 2002-2014, by Dan Rivett (d.rivett@ukonline.co.uk) and
  *                          Contributors.
  *
  * Original Author:  Dan Rivett (adapted from AreaRenderer);
@@ -95,7 +95,7 @@ import org.jfree.data.general.DatasetUtilities;
  * JFreeChart Demo Collection:
  * <br><br>
  * <img src="../../../../../images/StackedAreaRendererSample.png"
- * alt="StackedAreaRendererSample.png" />
+ * alt="StackedAreaRendererSample.png">
  */
 public class StackedAreaRenderer extends AreaRenderer
         implements Cloneable, PublicCloneable, Serializable {
@@ -159,7 +159,7 @@ public class StackedAreaRenderer extends AreaRenderer
      * @return The number of passes required by the renderer.
      */
     @Override
-	public int getPassCount() {
+    public int getPassCount() {
         return 2;
     }
 
@@ -172,7 +172,7 @@ public class StackedAreaRenderer extends AreaRenderer
      * @return The range (or <code>null</code> if the dataset is empty).
      */
     @Override
-	public Range findRangeBounds(CategoryDataset dataset) {
+    public Range findRangeBounds(CategoryDataset dataset) {
         if (dataset == null) {
             return null;
         }
@@ -199,7 +199,7 @@ public class StackedAreaRenderer extends AreaRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2,
+    public void drawItem(Graphics2D g2,
                          CategoryItemRendererState state,
                          Rectangle2D dataArea,
                          CategoryPlot plot,
@@ -213,7 +213,7 @@ public class StackedAreaRenderer extends AreaRenderer
         if (!isSeriesVisible(row)) {
             return;
         }
-        
+
         // setup for collecting optional entity info...
         Shape entityArea = null;
         EntityCollection entities = state.getEntityCollection();
@@ -413,6 +413,7 @@ public class StackedAreaRenderer extends AreaRenderer
      * @param dataset  the dataset (<code>null</code> not permitted).
      * @param series  the series index.
      * @param index  the item index.
+     * @param validRows  the row numbers to include.
      *
      * @return An array containing the cumulative negative and positive values
      *     for all series values up to but excluding <code>series</code>
@@ -423,7 +424,7 @@ public class StackedAreaRenderer extends AreaRenderer
         double[] result = new double[2];
         double total = 0.0;
         if (this.renderAsPercentages) {
-            total = DataUtilities.calculateColumnTotal(dataset, index, 
+            total = DataUtilities.calculateColumnTotal(dataset, index,
                     validRows);
         }
         for (int i = 0; i < series; i++) {
@@ -500,7 +501,7 @@ public class StackedAreaRenderer extends AreaRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -56,12 +56,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.event.AxisChangeEvent;
 import org.jfree.chart.text.TextBlock;
 import org.jfree.chart.text.TextFragment;
 import org.jfree.chart.text.TextLine;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * An extended version of the {@link CategoryAxis} class that supports
@@ -73,7 +73,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
     static final long serialVersionUID = -3004429093959826567L;
 
     /** Storage for the sublabels. */
-    private Map sublabels;
+    private Map<Comparable, String> sublabels;
 
     /** The sublabel font. */
     private Font sublabelFont;
@@ -88,7 +88,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
      */
     public ExtendedCategoryAxis(String label) {
         super(label);
-        this.sublabels = new HashMap();
+        this.sublabels = new HashMap<Comparable, String>();
         this.sublabelFont = new Font("SansSerif", Font.PLAIN, 10);
         this.sublabelPaint = Color.BLACK;
     }
@@ -169,10 +169,10 @@ public class ExtendedCategoryAxis extends CategoryAxis {
      * @return A label.
      */
     @Override
-	protected TextBlock createLabel(Comparable category, float width,
+    protected TextBlock createLabel(Comparable category, float width,
                                     RectangleEdge edge, Graphics2D g2) {
         TextBlock label = super.createLabel(category, width, edge, g2);
-        String s = (String) this.sublabels.get(category);
+        String s = this.sublabels.get(category);
         if (s != null) {
             if (edge == RectangleEdge.TOP || edge == RectangleEdge.BOTTOM) {
                 TextLine line = new TextLine(s, this.sublabelFont,
@@ -199,7 +199,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -210,7 +210,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
         if (!this.sublabelFont.equals(that.sublabelFont)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.sublabelPaint, that.sublabelPaint)) {
+        if (!PaintUtils.equal(this.sublabelPaint, that.sublabelPaint)) {
             return false;
         }
         if (!this.sublabels.equals(that.sublabels)) {
@@ -227,9 +227,9 @@ public class ExtendedCategoryAxis extends CategoryAxis {
      * @throws CloneNotSupportedException if there is a problem cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         ExtendedCategoryAxis clone = (ExtendedCategoryAxis) super.clone();
-        clone.sublabels = new HashMap(this.sublabels);
+        clone.sublabels = new HashMap<Comparable, String>(this.sublabels);
         return clone;
     }
 
@@ -242,7 +242,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.sublabelPaint, stream);
+        SerialUtils.writePaint(this.sublabelPaint, stream);
     }
 
     /**
@@ -256,7 +256,7 @@ public class ExtendedCategoryAxis extends CategoryAxis {
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.sublabelPaint = SerialUtilities.readPaint(stream);
+        this.sublabelPaint = SerialUtils.readPaint(stream);
     }
 
 }

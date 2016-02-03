@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -27,7 +27,7 @@
  * ------------------------------
  * XIntervalSeriesCollection.java
  * ------------------------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -46,8 +46,7 @@ package org.jfree.data.xy;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.ParamChecks;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.general.DatasetChangeEvent;
@@ -217,7 +216,7 @@ public class XIntervalSeriesCollection extends AbstractIntervalXYDataset
     public Number getY(int series, int item) {
         XIntervalSeries s = this.data.get(series);
         XIntervalDataItem di = (XIntervalDataItem) s.getDataItem(item);
-        return new Double(di.getYValue());
+        return di.getYValue();
     }
 
     /**
@@ -232,7 +231,7 @@ public class XIntervalSeriesCollection extends AbstractIntervalXYDataset
     public Number getStartX(int series, int item) {
         XIntervalSeries s = this.data.get(series);
         XIntervalDataItem di = (XIntervalDataItem) s.getDataItem(item);
-        return new Double(di.getXLowValue());
+        return di.getXLowValue();
     }
 
     /**
@@ -247,7 +246,7 @@ public class XIntervalSeriesCollection extends AbstractIntervalXYDataset
     public Number getEndX(int series, int item) {
         XIntervalSeries s = this.data.get(series);
         XIntervalDataItem di = (XIntervalDataItem) s.getDataItem(item);
-        return new Double(di.getXHighValue());
+        return di.getXHighValue();
     }
 
     /**
@@ -345,7 +344,7 @@ public class XIntervalSeriesCollection extends AbstractIntervalXYDataset
             return false;
         }
         XIntervalSeriesCollection that = (XIntervalSeriesCollection) obj;
-        return ObjectUtilities.equal(this.data, that.data);
+        return ObjectUtils.equal(this.data, that.data);
     }
 
     /**
@@ -359,7 +358,7 @@ public class XIntervalSeriesCollection extends AbstractIntervalXYDataset
     public Object clone() throws CloneNotSupportedException {
         XIntervalSeriesCollection clone
                 = (XIntervalSeriesCollection) super.clone();
-        clone.data = (List) ObjectUtilities.deepClone(this.data);
+        clone.data = (List) ObjectUtils.deepClone(this.data);
         return clone;
     }
 

@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -27,7 +27,7 @@
  * ---------------------------
  * VectorSeriesCollection.java
  * ---------------------------
- * (C) Copyright 2007-2012, by Object Refinery Limited.
+ * (C) Copyright 2007-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -47,8 +47,7 @@ package org.jfree.data.xy;
 
 import java.io.Serializable;
 import java.util.List;
-
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.ParamChecks;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.general.DatasetChangeEvent;
@@ -108,17 +107,14 @@ public class VectorSeriesCollection extends AbstractXYDataset
      * {@link DatasetChangeEvent} to all registered listeners.
      */
     public void removeAllSeries() {
-
         // deregister the collection as a change listener to each series in the
         // collection
         for (VectorSeries series : this.data) {
             series.removeChangeListener(this);
         }
-
         // remove all the series from the collection and notify listeners.
         this.data.clear();
         fireDatasetChanged();
-
     }
 
     /**
@@ -145,7 +141,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
         if ((series < 0) || (series >= getSeriesCount())) {
             throw new IllegalArgumentException("Series index out of bounds");
         }
-        return (VectorSeries) this.data.get(series);
+        return this.data.get(series);
     }
 
     /**
@@ -221,7 +217,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
      */
     @Override
     public Number getX(int series, int item) {
-        return new Double(getXValue(series, item));
+        return getXValue(series, item);
     }
 
     /**
@@ -234,7 +230,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
      */
     @Override
     public double getYValue(int series, int item) {
-        VectorSeries s = (VectorSeries) this.data.get(series);
+        VectorSeries s = this.data.get(series);
         VectorDataItem di = (VectorDataItem) s.getDataItem(item);
         return di.getYValue();
     }
@@ -251,7 +247,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
      */
     @Override
     public Number getY(int series, int item) {
-        return new Double(getYValue(series, item));
+        return getYValue(series, item);
     }
 
     /**
@@ -315,7 +311,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
             return false;
         }
         VectorSeriesCollection that = (VectorSeriesCollection) obj;
-        return ObjectUtilities.equal(this.data, that.data);
+        return ObjectUtils.equal(this.data, that.data);
     }
 
     /**
@@ -329,7 +325,7 @@ public class VectorSeriesCollection extends AbstractXYDataset
     public Object clone() throws CloneNotSupportedException {
         VectorSeriesCollection clone
                 = (VectorSeriesCollection) super.clone();
-        clone.data = (List) ObjectUtilities.deepClone(this.data);
+        clone.data = ObjectUtils.deepClone(this.data);
         return clone;
     }
 

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------
@@ -61,7 +61,7 @@ import org.jfree.chart.block.LengthConstraintType;
 import org.jfree.chart.block.RectangleConstraint;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.Size2D;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.event.AxisChangeEvent;
 import org.jfree.chart.event.AxisChangeListener;
@@ -69,7 +69,7 @@ import org.jfree.chart.event.TitleChangeEvent;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.PaintScale;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 
 /**
@@ -413,7 +413,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      * @since 1.0.13
      */
     @Override
-	public void axisChanged(AxisChangeEvent event) {
+    public void axisChanged(AxisChangeEvent event) {
         if (this.axis == event.getAxis()) {
             notifyListeners(new TitleChangeEvent(this));
         }
@@ -429,7 +429,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      * @return The block size (in Java2D units, never <code>null</code>).
      */
     @Override
-	public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
+    public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
         RectangleConstraint cc = toContentConstraint(constraint);
         LengthConstraintType w = cc.getWidthConstraintType();
         LengthConstraintType h = cc.getHeightConstraintType();
@@ -521,7 +521,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      * @param area  the drawing area (<code>null</code> not permitted).
      */
     @Override
-	public void draw(Graphics2D g2, Rectangle2D area) {
+    public void draw(Graphics2D g2, Rectangle2D area) {
         draw(g2, area, null);
     }
 
@@ -535,7 +535,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      * @return <code>null</code>.
      */
     @Override
-	public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
+    public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
 
         Rectangle2D target = (Rectangle2D) area.clone();
         target = trimMargin(target);
@@ -625,7 +625,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
                     g2.setPaint(this.stripOutlinePaint);
                     g2.setStroke(this.stripOutlineStroke);
                     g2.draw(new Rectangle2D.Double(target.getMaxX()
-                            - this.stripWidth, target.getMinY(), 
+                            - this.stripWidth, target.getMinY(),
                             this.stripWidth, target.getHeight()));
                 }
                 this.axis.draw(g2, target.getMaxX() - this.stripWidth
@@ -669,7 +669,7 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (!(obj instanceof PaintScaleLegend)) {
             return false;
         }
@@ -692,14 +692,14 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
         if (this.stripOutlineVisible != that.stripOutlineVisible) {
             return false;
         }
-        if (!PaintUtilities.equal(this.stripOutlinePaint,
+        if (!PaintUtils.equal(this.stripOutlinePaint,
                 that.stripOutlinePaint)) {
             return false;
         }
         if (!this.stripOutlineStroke.equals(that.stripOutlineStroke)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.backgroundPaint, that.backgroundPaint)) {
+        if (!PaintUtils.equal(this.backgroundPaint, that.backgroundPaint)) {
             return false;
         }
         if (this.subdivisions != that.subdivisions) {
@@ -717,9 +717,9 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.backgroundPaint, stream);
-        SerialUtilities.writePaint(this.stripOutlinePaint, stream);
-        SerialUtilities.writeStroke(this.stripOutlineStroke, stream);
+        SerialUtils.writePaint(this.backgroundPaint, stream);
+        SerialUtils.writePaint(this.stripOutlinePaint, stream);
+        SerialUtils.writeStroke(this.stripOutlineStroke, stream);
     }
 
     /**
@@ -733,9 +733,9 @@ public class PaintScaleLegend extends Title implements AxisChangeListener,
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.backgroundPaint = SerialUtilities.readPaint(stream);
-        this.stripOutlinePaint = SerialUtilities.readPaint(stream);
-        this.stripOutlineStroke = SerialUtilities.readStroke(stream);
+        this.backgroundPaint = SerialUtils.readPaint(stream);
+        this.stripOutlinePaint = SerialUtils.readPaint(stream);
+        this.stripOutlineStroke = SerialUtils.readStroke(stream);
     }
 
 }

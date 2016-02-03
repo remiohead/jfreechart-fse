@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------
  * AbstractSeriesDataset.java
  * --------------------------
- * (C) Copyright 2001-2008, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -69,7 +69,7 @@ public abstract class AbstractSeriesDataset extends AbstractDataset
      * @return The series count.
      */
     @Override
-	public abstract int getSeriesCount();
+    public abstract int getSeriesCount();
 
     /**
      * Returns the key for a series.
@@ -84,17 +84,17 @@ public abstract class AbstractSeriesDataset extends AbstractDataset
      * @return The series key.
      */
     @Override
-	public abstract Comparable getSeriesKey(int series);
+    public abstract Comparable getSeriesKey(int series);
 
     /**
      * Returns the index of the named series, or -1.
      *
-     * @param seriesKey  the series key (<code>null</code> permitted).
+     * @param seriesKey  the series key ({@code null} permitted).
      *
      * @return The index.
      */
     @Override
-	public int indexOf(Comparable seriesKey) {
+    public int indexOf(Comparable seriesKey) {
         int seriesCount = getSeriesCount();
         for (int s = 0; s < seriesCount; s++) {
            if (getSeriesKey(s).equals(seriesKey)) {
@@ -110,7 +110,7 @@ public abstract class AbstractSeriesDataset extends AbstractDataset
      * @param event  information about the change.
      */
     @Override
-	public void seriesChanged(SeriesChangeEvent event) {
+    public void seriesChanged(SeriesChangeEvent event) {
         fireDatasetChanged();
     }
 

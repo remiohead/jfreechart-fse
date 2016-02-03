@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2013, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------------
  * PeriodAxisLabelInfo.java
  * ------------------------
- * (C) Copyright 2004-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2004-2013, by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -56,25 +56,22 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ParamChecks;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.time.RegularTimePeriod;
 
 /**
  * A record that contains information for one "band" of date labels in
  * a {@link PeriodAxis}.
  */
-public class PeriodAxisLabelInfo implements Cloneable, Serializable {
-
-    // TODO: this class is mostly immutable, so implementing Cloneable isn't
-    // really necessary.  But there is still a hole in that you can get the
-    // dateFormat and modify it.  We could return a copy, but that would slow
-    // things down. Needs resolving.
+public class PeriodAxisLabelInfo implements Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = 5710451740920277357L;
@@ -97,7 +94,7 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
     public static final Paint DEFAULT_DIVIDER_PAINT = Color.GRAY;
 
     /** The subclass of {@link RegularTimePeriod} to use for this band. */
-    private Class periodClass;
+    private Class<? extends RegularTimePeriod> periodClass;
 
     /** Controls the gaps around the band. */
     private RectangleInsets padding;
@@ -127,12 +124,11 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
      *                     (<code>null</code> not permitted).
      * @param dateFormat  the date format (<code>null</code> not permitted).
      */
-    public PeriodAxisLabelInfo(Class periodClass, DateFormat dateFormat) {
-        this(
-            periodClass, dateFormat, DEFAULT_INSETS, DEFAULT_FONT,
+    public PeriodAxisLabelInfo(Class<? extends RegularTimePeriod> periodClass, 
+            DateFormat dateFormat) {
+        this(periodClass, dateFormat, DEFAULT_INSETS, DEFAULT_FONT,
             DEFAULT_LABEL_PAINT, true, DEFAULT_DIVIDER_STROKE,
-            DEFAULT_DIVIDER_PAINT
-        );
+            DEFAULT_DIVIDER_PAINT);
     }
 
     /**
@@ -151,35 +147,20 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
      * @param dividerPaint  the paint used to draw the dividers
      *                      (<code>null</code> not permitted).
      */
-    public PeriodAxisLabelInfo(Class periodClass, DateFormat dateFormat,
-                               RectangleInsets padding,
-                               Font labelFont, Paint labelPaint,
-                               boolean drawDividers, Stroke dividerStroke,
-                               Paint dividerPaint) {
-        if (periodClass == null) {
-            throw new IllegalArgumentException("Null 'periodClass' argument.");
-        }
-        if (dateFormat == null) {
-            throw new IllegalArgumentException("Null 'dateFormat' argument.");
-        }
-        if (padding == null) {
-            throw new IllegalArgumentException("Null 'padding' argument.");
-        }
-        if (labelFont == null) {
-            throw new IllegalArgumentException("Null 'labelFont' argument.");
-        }
-        if (labelPaint == null) {
-            throw new IllegalArgumentException("Null 'labelPaint' argument.");
-        }
-        if (dividerStroke == null) {
-            throw new IllegalArgumentException(
-                    "Null 'dividerStroke' argument.");
-        }
-        if (dividerPaint == null) {
-            throw new IllegalArgumentException("Null 'dividerPaint' argument.");
-        }
+    public PeriodAxisLabelInfo(Class<? extends RegularTimePeriod> periodClass, 
+            DateFormat dateFormat, RectangleInsets padding, Font labelFont, 
+            Paint labelPaint, boolean drawDividers, Stroke dividerStroke,
+            Paint dividerPaint) {
+ 
+        ParamChecks.nullNotPermitted(periodClass, "periodClass");
+        ParamChecks.nullNotPermitted(dateFormat, "dateFormat");
+        ParamChecks.nullNotPermitted(padding, "padding");
+        ParamChecks.nullNotPermitted(labelFont, "labelFont");
+        ParamChecks.nullNotPermitted(labelPaint, "labelPaint");
+        ParamChecks.nullNotPermitted(dividerStroke, "dividerStroke");
+        ParamChecks.nullNotPermitted(dividerPaint, "dividerPaint");
         this.periodClass = periodClass;
-        this.dateFormat = dateFormat;
+        this.dateFormat = (DateFormat) dateFormat.clone();
         this.padding = padding;
         this.labelFont = labelFont;
         this.labelPaint = labelPaint;
@@ -199,12 +180,12 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
     }
 
     /**
-     * Returns the date formatter.
+     * Returns a copy of the date formatter.
      *
-     * @return The date formatter (never <code>null</code>).
+     * @return A copy of the date formatter (never <code>null</code>).
      */
     public DateFormat getDateFormat() {
-        return this.dateFormat;
+        return (DateFormat) this.dateFormat.clone();
     }
 
     /**
@@ -277,14 +258,23 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
             Locale locale) {
         RegularTimePeriod result = null;
         try {
-            Constructor c = this.periodClass.getDeclaredConstructor(
+            Constructor<? extends RegularTimePeriod> c = this.periodClass.getDeclaredConstructor(
                     new Class[] {Date.class, TimeZone.class, Locale.class});
-            result = (RegularTimePeriod) c.newInstance(new Object[] {
-                    millisecond, zone, locale});
+            result = c.newInstance(millisecond, zone, locale);
         }
-        catch (Exception e) {
-            // do nothing
+        catch (InvocationTargetException e) {
+            //ignore
         }
+        catch (IllegalAccessException e) {
+            //ignore
+        }
+        catch (NoSuchMethodException e) {
+            //ignore
+        }
+        catch (InstantiationException e) {
+            //ignore
+        }
+
         return result;
     }
 
@@ -296,7 +286,7 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -337,24 +327,11 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 41;
-        result = 37 * this.periodClass.hashCode();
-        result = 37 * this.dateFormat.hashCode();
+        result += 37 * this.periodClass.hashCode();
+        result += 37 * this.dateFormat.hashCode();
         return result;
-    }
-
-    /**
-     * Returns a clone of the object.
-     *
-     * @return A clone.
-     *
-     * @throws CloneNotSupportedException if cloning is not supported.
-     */
-    @Override
-	public Object clone() throws CloneNotSupportedException {
-        PeriodAxisLabelInfo clone = (PeriodAxisLabelInfo) super.clone();
-        return clone;
     }
 
     /**
@@ -366,9 +343,9 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.labelPaint, stream);
-        SerialUtilities.writeStroke(this.dividerStroke, stream);
-        SerialUtilities.writePaint(this.dividerPaint, stream);
+        SerialUtils.writePaint(this.labelPaint, stream);
+        SerialUtils.writeStroke(this.dividerStroke, stream);
+        SerialUtils.writePaint(this.dividerPaint, stream);
     }
 
     /**
@@ -382,9 +359,9 @@ public class PeriodAxisLabelInfo implements Cloneable, Serializable {
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.labelPaint = SerialUtilities.readPaint(stream);
-        this.dividerStroke = SerialUtilities.readStroke(stream);
-        this.dividerPaint = SerialUtilities.readPaint(stream);
+        this.labelPaint = SerialUtils.readPaint(stream);
+        this.dividerStroke = SerialUtils.readStroke(stream);
+        this.dividerPaint = SerialUtils.readPaint(stream);
     }
 
 }

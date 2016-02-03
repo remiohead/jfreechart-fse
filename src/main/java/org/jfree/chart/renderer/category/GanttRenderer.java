@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------
@@ -50,7 +50,7 @@
  * 26-Jun-2008 : Added crosshair support (DG);
  * 19-May-2009 : Fixed FindBugs warnings, patch by Michal Wozniak (DG);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.renderer.category;
@@ -68,13 +68,13 @@ import java.io.Serializable;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.gantt.GanttCategoryDataset;
 
@@ -84,7 +84,7 @@ import org.jfree.data.gantt.GanttCategoryDataset;
  * included in the JFreeChart Demo Collection:
  * <br><br>
  * <img src="../../../../../images/GanttRendererSample.png"
- * alt="GanttRendererSample.png" />
+ * alt="GanttRendererSample.png">
  */
 public class GanttRenderer extends IntervalBarRenderer
         implements Serializable {
@@ -243,7 +243,7 @@ public class GanttRenderer extends IntervalBarRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2,
+    public void drawItem(Graphics2D g2,
                          CategoryItemRendererState state,
                          Rectangle2D dataArea,
                          CategoryPlot plot,
@@ -392,7 +392,7 @@ public class GanttRenderer extends IntervalBarRenderer
 
             if (subinterval == count - 1) {
                 // submit the current data point as a crosshair candidate
-                int datasetIndex = plot.indexOf(dataset);
+                int datasetIndex = plot.findDatasetIndex(dataset);
                 Comparable columnKey = dataset.getColumnKey(column);
                 Comparable rowKey = dataset.getRowKey(row);
                 double xx = domainAxis.getCategorySeriesMiddle(columnKey,
@@ -542,7 +542,7 @@ public class GanttRenderer extends IntervalBarRenderer
         }
 
         // submit the current data point as a crosshair candidate
-        int datasetIndex = plot.indexOf(dataset);
+        int datasetIndex = plot.findDatasetIndex(dataset);
         Comparable columnKey = dataset.getColumnKey(column);
         Comparable rowKey = dataset.getRowKey(row);
         double xx = domainAxis.getCategorySeriesMiddle(columnKey, rowKey,
@@ -574,7 +574,7 @@ public class GanttRenderer extends IntervalBarRenderer
      * @since 1.0.11
      */
     @Override
-	public double getItemMiddle(Comparable rowKey, Comparable columnKey,
+    public double getItemMiddle(Comparable rowKey, Comparable columnKey,
             CategoryDataset dataset, CategoryAxis axis, Rectangle2D area,
             RectangleEdge edge) {
         return axis.getCategorySeriesMiddle(columnKey, rowKey, dataset,
@@ -589,7 +589,7 @@ public class GanttRenderer extends IntervalBarRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -597,10 +597,10 @@ public class GanttRenderer extends IntervalBarRenderer
             return false;
         }
         GanttRenderer that = (GanttRenderer) obj;
-        if (!PaintUtilities.equal(this.completePaint, that.completePaint)) {
+        if (!PaintUtils.equal(this.completePaint, that.completePaint)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.incompletePaint, that.incompletePaint)) {
+        if (!PaintUtils.equal(this.incompletePaint, that.incompletePaint)) {
             return false;
         }
         if (this.startPercent != that.startPercent) {
@@ -621,8 +621,8 @@ public class GanttRenderer extends IntervalBarRenderer
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.completePaint, stream);
-        SerialUtilities.writePaint(this.incompletePaint, stream);
+        SerialUtils.writePaint(this.completePaint, stream);
+        SerialUtils.writePaint(this.incompletePaint, stream);
     }
 
     /**
@@ -636,8 +636,8 @@ public class GanttRenderer extends IntervalBarRenderer
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.completePaint = SerialUtilities.readPaint(stream);
-        this.incompletePaint = SerialUtilities.readPaint(stream);
+        this.completePaint = SerialUtils.readPaint(stream);
+        this.incompletePaint = SerialUtils.readPaint(stream);
     }
 
 }

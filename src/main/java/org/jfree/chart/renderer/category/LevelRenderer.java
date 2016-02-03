@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------------
@@ -59,7 +59,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
@@ -80,7 +80,7 @@ import org.jfree.data.category.CategoryDataset;
  * Demo Collection:
  * <br><br>
  * <img src="../../../../../images/LevelRendererSample.png"
- * alt="LevelRendererSample.png" />
+ * alt="LevelRendererSample.png">
  */
 public class LevelRenderer extends AbstractCategoryItemRenderer
         implements Cloneable, PublicCloneable, Serializable {
@@ -305,7 +305,7 @@ public class LevelRenderer extends AbstractCategoryItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, CategoryItemRendererState state,
+    public void drawItem(Graphics2D g2, CategoryItemRendererState state,
             Rectangle2D dataArea, CategoryPlot plot, CategoryAxis domainAxis,
             ValueAxis rangeAxis, CategoryDataset dataset, int row, int column,
             int pass) {
@@ -361,7 +361,7 @@ public class LevelRenderer extends AbstractCategoryItemRenderer
         }
 
         // submit the current data point as a crosshair candidate
-        int datasetIndex = plot.indexOf(dataset);
+        int datasetIndex = plot.findDatasetIndex(dataset);
         updateCrosshairValues(state.getCrosshairState(),
                 dataset.getRowKey(row), dataset.getColumnKey(column), value,
                 datasetIndex, barW0, barL, orientation);
@@ -449,8 +449,8 @@ public class LevelRenderer extends AbstractCategoryItemRenderer
     @Override
     public int hashCode() {
         int hash = super.hashCode();
-        hash = HashUtilities.hashCode(hash, this.itemMargin);
-        hash = HashUtilities.hashCode(hash, this.maxItemWidth);
+        hash = HashUtils.hashCode(hash, this.itemMargin);
+        hash = HashUtils.hashCode(hash, this.maxItemWidth);
         return hash;
     }
 

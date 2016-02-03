@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
  * XYBlockRenderer.java
  * --------------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -63,6 +63,7 @@ import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.LookupPaintScale;
 import org.jfree.chart.renderer.PaintScale;
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.data.Range;
 import org.jfree.data.general.DatasetUtilities;
 import org.jfree.data.xy.XYDataset;
@@ -76,7 +77,7 @@ import org.jfree.data.xy.XYZDataset;
  * demo collection:
  * <br><br>
  * <img src="../../../../../images/XYBlockRendererSample.png"
- * alt="XYBlockRendererSample.png" />
+ * alt="XYBlockRendererSample.png">
  *
  * @since 1.0.4
  */
@@ -132,7 +133,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * Sets the width of the blocks used to represent each data item and
      * sends a {@link RendererChangeEvent} to all registered listeners.
      *
-     * @param width  the new width, in data/axis units (must be > 0.0).
+     * @param width  the new width, in data/axis units (must be &gt; 0.0).
      *
      * @see #getBlockWidth()
      */
@@ -161,7 +162,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * Sets the height of the blocks used to represent each data item and
      * sends a {@link RendererChangeEvent} to all registered listeners.
      *
-     * @param height  the new height, in data/axis units (must be > 0.0).
+     * @param height  the new height, in data/axis units (must be &gt; 0.0).
      *
      * @see #getBlockHeight()
      */
@@ -196,9 +197,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * @see #getBlockAnchor()
      */
     public void setBlockAnchor(RectangleAnchor anchor) {
-        if (anchor == null) {
-            throw new IllegalArgumentException("Null 'anchor' argument.");
-        }
+        ParamChecks.nullNotPermitted(anchor, "anchor");
         if (this.blockAnchor.equals(anchor)) {
             return;  // no change
         }
@@ -291,7 +290,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * @see #findRangeBounds(XYDataset)
      */
     @Override
-	public Range findDomainBounds(XYDataset dataset) {
+    public Range findDomainBounds(XYDataset dataset) {
         if (dataset == null) {
             return null;
         }
@@ -315,7 +314,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * @see #findDomainBounds(XYDataset)
      */
     @Override
-	public Range findRangeBounds(XYDataset dataset) {
+    public Range findRangeBounds(XYDataset dataset) {
         if (dataset != null) {
             Range r = DatasetUtilities.findRangeBounds(dataset, false);
             if (r == null) {
@@ -348,7 +347,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, XYItemRendererState state,
+    public void drawItem(Graphics2D g2, XYItemRendererState state,
             Rectangle2D dataArea, PlotRenderingInfo info, XYPlot plot,
             ValueAxis domainAxis, ValueAxis rangeAxis, XYDataset dataset,
             int series, int item, CrosshairState crosshairState, int pass) {
@@ -407,7 +406,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -439,7 +438,7 @@ public class XYBlockRenderer extends AbstractXYItemRenderer
      *     clone.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         XYBlockRenderer clone = (XYBlockRenderer) super.clone();
         if (this.paintScale instanceof PublicCloneable) {
             PublicCloneable pc = (PublicCloneable) this.paintScale;

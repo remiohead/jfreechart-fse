@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
@@ -43,7 +43,7 @@ package org.jfree.data.function;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 
 /**
  * A function in the form <code>y = a0 + a1 * x + a2 * x^2 + ... + an *
@@ -67,7 +67,7 @@ public class PolynomialFunction2D implements Function2D, Serializable {
         if (coefficients == null) {
             throw new IllegalArgumentException("Null 'coefficients' argument");
         }
-        this.coefficients = (double[]) coefficients.clone();
+        this.coefficients = coefficients.clone();
     }
 
     /**
@@ -77,7 +77,7 @@ public class PolynomialFunction2D implements Function2D, Serializable {
      * @return The coefficients array.
      */
     public double[] getCoefficients() {
-        return (double[]) this.coefficients.clone();
+        return this.coefficients.clone();
     }
 
     /**
@@ -97,7 +97,7 @@ public class PolynomialFunction2D implements Function2D, Serializable {
      * @return The value.
      */
     @Override
-	public double getValue(double x) {
+    public double getValue(double x) {
         double y = 0;
         for(int i = 0; i < this.coefficients.length; i++){
             y += coefficients[i] * Math.pow(x, i);
@@ -113,7 +113,7 @@ public class PolynomialFunction2D implements Function2D, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (!(obj instanceof PolynomialFunction2D)) {
             return false;
         }
@@ -127,8 +127,8 @@ public class PolynomialFunction2D implements Function2D, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
-        return HashUtilities.hashCodeForDoubleArray(this.coefficients);
+    public int hashCode() {
+        return HashUtils.hashCodeForDoubleArray(this.coefficients);
     }
 
 }

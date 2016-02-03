@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -27,7 +27,7 @@
  * -------------------------------
  * CombinedDomainCategoryPlot.java
  * -------------------------------
- * (C) Copyright 2003-2012, by Object Refinery Limited.
+ * (C) Copyright 2003-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Nicolas Brodu;
@@ -61,6 +61,7 @@
  * 11-Aug-2008 : Don't store totalWeight of subplots, calculate it as
  *               required (DG);
  * 12-Jun-2012 : Removed JCommon dependencies (DG);
+ * 10-Mar-2014 : Removed LegendItemCollection (DG);
  *
  */
 
@@ -69,20 +70,22 @@ package org.jfree.chart.plot;
 import java.awt.Graphics2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import org.jfree.chart.LegendItem;
 
-import org.jfree.chart.LegendItemCollection;
 import org.jfree.chart.axis.AxisSpace;
 import org.jfree.chart.axis.AxisState;
 import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
 import org.jfree.chart.ui.RectangleInsets;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.event.PlotChangeEvent;
 import org.jfree.chart.event.PlotChangeListener;
+import org.jfree.chart.util.ParamChecks;
+import org.jfree.chart.util.ShadowGenerator;
 import org.jfree.data.Range;
 
 /**
@@ -124,9 +127,11 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
     }
 
     /**
-     * Returns the space between subplots.
+     * Returns the space between subplots.  The default value is 5.0.
      *
      * @return The gap (in Java2D units).
+     *
+     * @see #setGap(double)
      */
     public double getGap() {
         return this.gap;
@@ -137,6 +142,8 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * {@link PlotChangeEvent} to all registered listeners.
      *
      * @param gap  the gap between subplots (in Java2D units).
+     *
+     * @see #getGap()
      */
     public void setGap(double gap) {
         this.gap = gap;
@@ -164,12 +171,10 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * must ensure that the subplot has a non-null range axis.
      *
      * @param subplot  the subplot (<code>null</code> not permitted).
-     * @param weight  the weight (must be >= 1).
+     * @param weight  the weight (must be &gt;= 1).
      */
     public void add(CategoryPlot subplot, int weight) {
-        if (subplot == null) {
-            throw new IllegalArgumentException("Null 'subplot' argument.");
-        }
+        ParamChecks.nullNotPermitted(subplot, "subplot");
         if (weight < 1) {
             throw new IllegalArgumentException("Require weight >= 1.");
         }
@@ -196,9 +201,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * @param subplot  the subplot (<code>null</code> not permitted).
      */
     public void remove(CategoryPlot subplot) {
-        if (subplot == null) {
-            throw new IllegalArgumentException("Null 'subplot' argument.");
-        }
+        ParamChecks.nullNotPermitted(subplot, "subplot");
         int position = -1;
         int size = this.subplots.size();
         int i = 0;
@@ -245,12 +248,8 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * @return A subplot (possibly <code>null</code>).
      */
     public CategoryPlot findSubplot(PlotRenderingInfo info, Point2D source) {
-        if (info == null) {
-            throw new IllegalArgumentException("Null 'info' argument.");
-        }
-        if (source == null) {
-            throw new IllegalArgumentException("Null 'source' argument.");
-        }
+        ParamChecks.nullNotPermitted(info, "info");
+        ParamChecks.nullNotPermitted(source, "source");
         CategoryPlot result = null;
         int subplotIndex = info.getSubplotIndex(source);
         if (subplotIndex >= 0) {
@@ -291,9 +290,8 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
         else {
             // if the source point doesn't fall within a subplot, we do the
             // zoom on all subplots...
-            Iterator iterator = getSubplots().iterator();
-            while (iterator.hasNext()) {
-                subplot = (CategoryPlot) iterator.next();
+            for (CategoryPlot categoryPlot : getSubplots()) {
+                subplot = categoryPlot;
                 subplot.zoomRangeAxes(factor, info, source, useAnchor);
             }
         }
@@ -318,9 +316,8 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
         else {
             // if the source point doesn't fall within a subplot, we do the
             // zoom on all subplots...
-            Iterator iterator = getSubplots().iterator();
-            while (iterator.hasNext()) {
-                subplot = (CategoryPlot) iterator.next();
+            for (CategoryPlot categoryPlot : getSubplots()) {
+                subplot = categoryPlot;
                 subplot.zoomRangeAxes(lowerPercent, upperPercent, info, source);
             }
         }
@@ -374,8 +371,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
         // work out the maximum height or width of the non-shared axes...
         int n = this.subplots.size();
         int totalWeight = 0;
-        for (int i = 0; i < n; i++) {
-            CategoryPlot sub = (CategoryPlot) this.subplots.get(i);
+        for (CategoryPlot sub : this.subplots) {
             totalWeight += sub.getWeight();
         }
         this.subplotAreas = new Rectangle2D[n];
@@ -512,12 +508,28 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
     }
 
     /**
+     * Sets the shadow generator for the plot (and all subplots) and sends
+     * a {@link PlotChangeEvent} to all registered listeners.
+     * 
+     * @param generator  the new generator (<code>null</code> permitted).
+     */
+    @Override
+    public void setShadowGenerator(ShadowGenerator generator) {
+        setNotify(false);
+        super.setShadowGenerator(generator);
+        for (CategoryPlot plot : this.subplots) {
+            plot.setShadowGenerator(generator);
+        }
+        setNotify(true);
+    }
+
+    /**
      * Returns a range representing the extent of the data values in this plot
      * (obtained from the subplots) that will be rendered against the specified
      * axis.  NOTE: This method is intended for internal JFreeChart use, and
      * is public only so that code in the axis classes can call it.  Since,
      * for this class, the domain axis is a {@link CategoryAxis}
-     * (not a <code>ValueAxis</code}) and subplots have independent range axes,
+     * (not a {@code ValueAxis}) and subplots have independent range axes,
      * the JFreeChart code will never call this method (although this is not
      * checked/enforced).
      *
@@ -537,13 +549,13 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * @return The legend items.
      */
     @Override
-    public LegendItemCollection getLegendItems() {
-        LegendItemCollection result = getFixedLegendItems();
+    public List<LegendItem> getLegendItems() {
+        List<LegendItem> result = getFixedLegendItems();
         if (result == null) {
-            result = new LegendItemCollection();
+            result = new ArrayList<LegendItem>();
             if (this.subplots != null) {
                 for (CategoryPlot plot : this.subplots) {
-                    LegendItemCollection more = plot.getLegendItems();
+                    List<LegendItem> more = plot.getLegendItems();
                     result.addAll(more);
                 }
             }
@@ -558,14 +570,12 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * @return The list.
      */
     @Override
-    public List getCategories() {
-        List result = new java.util.ArrayList();
+    public List<Comparable> getCategories() {
+        List<Comparable> result = new java.util.ArrayList<Comparable>();
         if (this.subplots != null) {
             for (CategoryPlot plot : this.subplots) {
-                List more = plot.getCategories();
-                Iterator moreIterator = more.iterator();
-                while (moreIterator.hasNext()) {
-                    Comparable category = (Comparable) moreIterator.next();
+                List<Comparable> more = plot.getCategories();
+                for (Comparable category : more) {
                     if (!result.contains(category)) {
                         result.add(category);
                     }
@@ -585,7 +595,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
      * @since 1.0.3
      */
     @Override
-    public List getCategoriesForAxis(CategoryAxis axis) {
+    public List<Comparable> getCategoriesForAxis(CategoryAxis axis) {
         // FIXME:  this code means that it is not possible to use more than
         // one domain axis for the combined plots...
         return getCategories();
@@ -604,7 +614,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
         Rectangle2D dataArea = info.getDataArea();
         if (dataArea.contains(x, y)) {
             for (int i = 0; i < this.subplots.size(); i++) {
-                CategoryPlot subplot = (CategoryPlot) this.subplots.get(i);
+                CategoryPlot subplot = this.subplots.get(i);
                 PlotRenderingInfo subplotInfo = info.getSubplotInfo(i);
                 subplot.handleClick(x, y, subplotInfo);
             }
@@ -642,7 +652,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
         if (this.gap != that.gap) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.subplots, that.subplots)) {
+        if (!ObjectUtils.equal(this.subplots, that.subplots)) {
             return false;
         }
         return super.equals(obj);
@@ -660,7 +670,7 @@ public class CombinedDomainCategoryPlot extends CategoryPlot
     public Object clone() throws CloneNotSupportedException {
         CombinedDomainCategoryPlot result
             = (CombinedDomainCategoryPlot) super.clone();
-        result.subplots = (List) ObjectUtilities.deepClone(this.subplots);
+        result.subplots = ObjectUtils.deepClone(this.subplots);
         for (CategoryPlot child : this.subplots) {
             child.setParent(result);
         }

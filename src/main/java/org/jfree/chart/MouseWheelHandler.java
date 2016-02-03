@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
  * MouseWheelHandler.java
  * ----------------------
- * (C) Copyright 2009, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2009-2014 by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Ulrich Voigt - patch 2686040;
@@ -48,8 +48,8 @@ package org.jfree.chart;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.Point2D;
-
 import java.io.Serializable;
+
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotRenderingInfo;
@@ -57,8 +57,6 @@ import org.jfree.chart.plot.Zoomable;
 
 /**
  * A class that handles mouse wheel events for the {@link ChartPanel} class.
- * Mouse wheel event support was added in JDK 1.4, so this class will be omitted
- * from JFreeChart if you build it using JDK 1.3.
  *
  * @since 1.0.13
  */
@@ -110,7 +108,7 @@ class MouseWheelHandler implements MouseWheelListener, Serializable {
      * @param e  the event.
      */
     @Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
+    public void mouseWheelMoved(MouseWheelEvent e) {
         JFreeChart chart = this.chartPanel.getChart();
         if (chart == null) {
             return;

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------
@@ -57,11 +57,10 @@ import java.awt.Graphics2D;
 import java.awt.font.LineMetrics;
 import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.plot.IntervalMarker;
 import org.jfree.chart.text.TextUtilities;
 
@@ -92,7 +91,7 @@ public class MarkerAxisBand implements Serializable {
     private Font font;
 
     /** Storage for the markers. */
-    private List markers;
+    private List<IntervalMarker> markers;
 
     /**
      * Constructs a new axis band.
@@ -114,7 +113,7 @@ public class MarkerAxisBand implements Serializable {
         this.bottomOuterGap = bottomOuterGap;
         this.bottomInnerGap = bottomInnerGap;
         this.font = font;
-        this.markers = new java.util.ArrayList();
+        this.markers = new java.util.ArrayList<IntervalMarker>();
     }
 
     /**
@@ -187,29 +186,27 @@ public class MarkerAxisBand implements Serializable {
                      double x, double y) {
 
         double h = getHeight(g2);
-        Iterator iterator = this.markers.iterator();
-        while (iterator.hasNext()) {
-            IntervalMarker marker = (IntervalMarker) iterator.next();
-            double start =  Math.max(
-                marker.getStartValue(), this.axis.getRange().getLowerBound()
+        for (IntervalMarker marker : this.markers) {
+            double start = Math.max(
+                    marker.getStartValue(), this.axis.getRange().getLowerBound()
             );
             double end = Math.min(
-                marker.getEndValue(), this.axis.getRange().getUpperBound()
+                    marker.getEndValue(), this.axis.getRange().getUpperBound()
             );
             double s = this.axis.valueToJava2D(
-                start, dataArea, RectangleEdge.BOTTOM
+                    start, dataArea, RectangleEdge.BOTTOM
             );
             double e = this.axis.valueToJava2D(
-                end, dataArea, RectangleEdge.BOTTOM
+                    end, dataArea, RectangleEdge.BOTTOM
             );
             Rectangle2D r = new Rectangle2D.Double(
-                s, y + this.topOuterGap, e - s,
-                h - this.topOuterGap - this.bottomOuterGap
+                    s, y + this.topOuterGap, e - s,
+                    h - this.topOuterGap - this.bottomOuterGap
             );
 
             Composite originalComposite = g2.getComposite();
             g2.setComposite(AlphaComposite.getInstance(
-                AlphaComposite.SRC_OVER, marker.getAlpha())
+                    AlphaComposite.SRC_OVER, marker.getAlpha())
             );
             g2.setPaint(marker.getPaint());
             g2.fill(r);
@@ -232,7 +229,7 @@ public class MarkerAxisBand implements Serializable {
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -252,10 +249,10 @@ public class MarkerAxisBand implements Serializable {
         if (this.bottomOuterGap != that.bottomOuterGap) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.font, that.font)) {
+        if (!ObjectUtils.equal(this.font, that.font)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.markers, that.markers)) {
+        if (!ObjectUtils.equal(this.markers, that.markers)) {
             return false;
         }
         return true;
@@ -267,7 +264,7 @@ public class MarkerAxisBand implements Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 37;
         result = 19 * result + this.font.hashCode();
         result = 19 * result + this.markers.hashCode();

@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
@@ -47,7 +47,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.data.general.Series;
 import org.jfree.data.general.SeriesChangeEvent;
 import org.jfree.data.general.SeriesException;
@@ -61,7 +61,7 @@ public class ComparableObjectSeries extends Series
         implements Cloneable, Serializable {
 
     /** Storage for the data items in the series. */
-    protected List data;
+    protected List<ComparableObjectItem> data;
 
     /** The maximum number of items for the series. */
     private int maximumItemCount = Integer.MAX_VALUE;
@@ -96,7 +96,7 @@ public class ComparableObjectSeries extends Series
     public ComparableObjectSeries(Comparable key, boolean autoSort,
             boolean allowDuplicateXValues) {
         super(key);
-        this.data = new java.util.ArrayList();
+        this.data = new java.util.ArrayList<ComparableObjectItem>();
         this.autoSort = autoSort;
         this.allowDuplicateXValues = allowDuplicateXValues;
     }
@@ -128,7 +128,7 @@ public class ComparableObjectSeries extends Series
      * @return The item count.
      */
     @Override
-	public int getItemCount() {
+    public int getItemCount() {
         return this.data.size();
     }
 
@@ -279,8 +279,7 @@ public class ComparableObjectSeries extends Series
         }
         else {
             for (int i = 0; i < this.data.size(); i++) {
-                ComparableObjectItem item = (ComparableObjectItem)
-                        this.data.get(i);
+                ComparableObjectItem item = this.data.get(i);
                 if (item.getComparable().equals(x)) {
                     return i;
                 }
@@ -331,7 +330,7 @@ public class ComparableObjectSeries extends Series
      * @return The data item with the specified index.
      */
     protected ComparableObjectItem getDataItem(int index) {
-        return (ComparableObjectItem) this.data.get(index);
+        return this.data.get(index);
     }
 
     /**
@@ -369,7 +368,7 @@ public class ComparableObjectSeries extends Series
      * @return The item removed.
      */
     protected ComparableObjectItem remove(int index) {
-        ComparableObjectItem result = (ComparableObjectItem) this.data.remove(
+        ComparableObjectItem result = this.data.remove(
                 index);
         fireSeriesChanged();
         return result;
@@ -396,7 +395,7 @@ public class ComparableObjectSeries extends Series
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -416,7 +415,7 @@ public class ComparableObjectSeries extends Series
         if (this.allowDuplicateXValues != that.allowDuplicateXValues) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.data, that.data)) {
+        if (!ObjectUtils.equal(this.data, that.data)) {
             return false;
         }
         return true;
@@ -428,7 +427,7 @@ public class ComparableObjectSeries extends Series
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = super.hashCode();
         // it is too slow to look at every data item, so let's just look at
         // the first, middle and last items...

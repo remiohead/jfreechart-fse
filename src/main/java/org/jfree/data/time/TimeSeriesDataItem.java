@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------------
@@ -44,14 +44,14 @@
  * ------------- JFREECHART 1.0.x ---------------------------------------------
  * 09-Jun-2009 : Tidied up equals() (DG);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.data.time;
 
 import java.io.Serializable;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 
 /**
  * Represents one data item in a time series.
@@ -78,7 +78,7 @@ import org.jfree.chart.util.ObjectUtilities;
  * sorting can be used to keep the data items in order.
  *
  */
-public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
+public class TimeSeriesDataItem implements Cloneable, Comparable<TimeSeriesDataItem>, Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = -2235346966016401302L;
@@ -152,7 +152,7 @@ public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }
@@ -160,10 +160,10 @@ public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
             return false;
         }
         TimeSeriesDataItem that = (TimeSeriesDataItem) obj;
-        if (!ObjectUtilities.equal(this.period, that.period)) {
+        if (!ObjectUtils.equal(this.period, that.period)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.value, that.value)) {
+        if (!ObjectUtils.equal(this.value, that.value)) {
             return false;
         }
         return true;
@@ -175,7 +175,7 @@ public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result;
         result = (this.period != null ? this.period.hashCode() : 0);
         result = 29 * result + (this.value != null ? this.value.hashCode() : 0);
@@ -195,26 +195,8 @@ public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
      *         relative to another object.
      */
     @Override
-	public int compareTo(Object o1) {
-
-        int result;
-
-        // CASE 1 : Comparing to another TimeSeriesDataItem object
-        // -------------------------------------------------------
-        if (o1 instanceof TimeSeriesDataItem) {
-            TimeSeriesDataItem datapair = (TimeSeriesDataItem) o1;
-            result = getPeriod().compareTo(datapair.getPeriod());
-        }
-
-        // CASE 2 : Comparing to a general object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
-        }
-
-        return result;
-
+    public int compareTo(TimeSeriesDataItem o1) {
+        return getPeriod().compareTo(o1.getPeriod());
     }
 
     /**
@@ -224,7 +206,7 @@ public class TimeSeriesDataItem implements Cloneable, Comparable, Serializable {
      * @return A clone of the data item.
      */
     @Override
-	public Object clone() {
+    public Object clone() {
         Object clone = null;
         try {
             clone = super.clone();

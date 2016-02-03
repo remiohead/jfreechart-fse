@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------------------
  * StatisticalBarRenderer.java
  * ---------------------------
- * (C) Copyright 2002-2012, by Pascal Collet and Contributors.
+ * (C) Copyright 2002-2014, by Pascal Collet and Contributors.
  *
  * Original Author:  Pascal Collet;
  * Contributor(s):   David Gilbert (for Object Refinery Limited);
@@ -82,15 +82,15 @@ import org.jfree.chart.axis.CategoryAxis;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.GradientPaintTransformer;
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.ObjectUtilities;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
 import org.jfree.chart.labels.CategoryItemLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.statistics.StatisticalCategoryDataset;
@@ -102,7 +102,7 @@ import org.jfree.data.statistics.StatisticalCategoryDataset;
  * included in the JFreeChart Demo Collection:
  * <br><br>
  * <img src="../../../../../images/StatisticalBarRendererSample.png"
- * alt="StatisticalBarRendererSample.png" />
+ * alt="StatisticalBarRendererSample.png">
  */
 public class StatisticalBarRenderer extends BarRenderer
         implements CategoryItemRenderer, Cloneable, PublicCloneable,
@@ -198,7 +198,7 @@ public class StatisticalBarRenderer extends BarRenderer
      *         <code>null</code> or empty).
      */
     @Override
-	public Range findRangeBounds(CategoryDataset dataset) {
+    public Range findRangeBounds(CategoryDataset dataset) {
          return findRangeBounds(dataset, true);
     }
 
@@ -218,7 +218,7 @@ public class StatisticalBarRenderer extends BarRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2,
+    public void drawItem(Graphics2D g2,
                          CategoryItemRendererState state,
                          Rectangle2D dataArea,
                          CategoryPlot plot,
@@ -277,7 +277,7 @@ public class StatisticalBarRenderer extends BarRenderer
                                       int column) {
 
         // BAR Y
-        double rectY = calculateBarW0(plot, PlotOrientation.HORIZONTAL, 
+        double rectY = calculateBarW0(plot, PlotOrientation.HORIZONTAL,
                 dataArea, domainAxis, state, visibleRow, column);
 
         // BAR X
@@ -553,7 +553,7 @@ public class StatisticalBarRenderer extends BarRenderer
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -561,11 +561,11 @@ public class StatisticalBarRenderer extends BarRenderer
             return false;
         }
         StatisticalBarRenderer that = (StatisticalBarRenderer) obj;
-        if (!PaintUtilities.equal(this.errorIndicatorPaint,
+        if (!PaintUtils.equal(this.errorIndicatorPaint,
                 that.errorIndicatorPaint)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.errorIndicatorStroke,
+        if (!ObjectUtils.equal(this.errorIndicatorStroke,
                 that.errorIndicatorStroke)) {
             return false;
         }
@@ -581,8 +581,8 @@ public class StatisticalBarRenderer extends BarRenderer
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.errorIndicatorPaint, stream);
-        SerialUtilities.writeStroke(this.errorIndicatorStroke, stream);
+        SerialUtils.writePaint(this.errorIndicatorPaint, stream);
+        SerialUtils.writeStroke(this.errorIndicatorStroke, stream);
     }
 
     /**
@@ -596,8 +596,8 @@ public class StatisticalBarRenderer extends BarRenderer
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.errorIndicatorPaint = SerialUtilities.readPaint(stream);
-        this.errorIndicatorStroke = SerialUtilities.readStroke(stream);
+        this.errorIndicatorPaint = SerialUtils.readPaint(stream);
+        this.errorIndicatorStroke = SerialUtils.readStroke(stream);
     }
 
 }

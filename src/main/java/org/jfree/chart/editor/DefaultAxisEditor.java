@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -27,7 +27,7 @@
  * ----------------------
  * DefaultAxisEditor.java
  * ----------------------
- * (C) Copyright 2005-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2005-2014, by Object Refinery Limited and Contributors.
  *
  * Original Author:  David Gilbert;
  * Contributor(s):   Andrzej Porebski;
@@ -70,6 +70,7 @@ import org.jfree.chart.ui.FontDisplayField;
 import org.jfree.chart.ui.LCBLayout;
 import org.jfree.chart.ui.PaintSample;
 import org.jfree.chart.ui.RectangleInsets;
+import org.jfree.chart.util.AttributedStringUtils;
 import org.jfree.chart.util.ResourceBundleWrapper;
 
 /**
@@ -146,7 +147,7 @@ class DefaultAxisEditor extends JPanel implements ActionListener {
      * @param axis  the axis whose properties are to be displayed/edited in
      *              the panel.
      *
-     * @return A panel or <code>null</code< if axis is <code>null</code>.
+     * @return A panel or {@code null} if axis is {@code null}.
      */
     public static DefaultAxisEditor getInstance(Axis axis) {
 
@@ -200,7 +201,9 @@ class DefaultAxisEditor extends JPanel implements ActionListener {
         JPanel interior = new JPanel(new LCBLayout(5));
         interior.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         interior.add(new JLabel(localizationResources.getString("Label")));
-        this.label = new JTextField(axis.getLabel());
+        String axisLabel = AttributedStringUtils.toString(
+                axis.getLabel().getIterator());
+        this.label = new JTextField(axisLabel);
         interior.add(this.label);
         interior.add(new JPanel());
 

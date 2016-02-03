@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------
  * DateTickUnit.java
  * -----------------
- * (C) Copyright 2000-2012, by Object Refinery Limited.
+ * (C) Copyright 2000-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Chris Boek;
@@ -62,7 +62,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * A tick unit for use by subclasses of {@link DateAxis}.  Instances of this
@@ -100,7 +101,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * Creates a new date tick unit.
      *
      * @param unitType  the unit type (<code>null</code> not permitted).
-     * @param multiple  the multiple (of the unit type, must be > 0).
+     * @param multiple  the multiple (of the unit type, must be &gt; 0).
      *
      * @since 1.0.13
      */
@@ -112,7 +113,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * Creates a new date tick unit.
      *
      * @param unitType  the unit type (<code>null</code> not permitted).
-     * @param multiple  the multiple (of the unit type, must be > 0).
+     * @param multiple  the multiple (of the unit type, must be &gt; 0).
      * @param formatter  the date formatter (<code>null</code> not permitted).
      *
      * @since 1.0.13
@@ -137,9 +138,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
             DateTickUnitType rollUnitType, int rollMultiple,
             DateFormat formatter) {
         super(DateTickUnit.getMillisecondCount(unitType, multiple));
-        if (formatter == null) {
-            throw new IllegalArgumentException("Null 'formatter' argument.");
-        }
+        ParamChecks.nullNotPermitted(formatter, "formatter");
         if (multiple <= 0) {
             throw new IllegalArgumentException("Requires 'multiple' > 0.");
         }
@@ -167,7 +166,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
     /**
      * Returns the unit multiple.
      *
-     * @return The unit multiple (always > 0).
+     * @return The unit multiple (always &gt; 0).
      */
     public int getMultiple() {
         return this.count;
@@ -203,7 +202,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * @return The formatted date.
      */
     @Override
-	public String valueToString(double milliseconds) {
+    public String valueToString(double milliseconds) {
         return this.formatter.format(new Date((long) milliseconds));
     }
 
@@ -323,7 +322,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
             return count;
         }
         else {
-            throw new IllegalArgumentException("The 'unit' argument has a " 
+            throw new IllegalArgumentException("The 'unit' argument has a "
                     + "value that is not recognised.");
         }
 
@@ -354,7 +353,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -371,7 +370,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
         if (this.count != that.count) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.formatter, that.formatter)) {
+        if (!ObjectUtils.equal(this.formatter, that.formatter)) {
             return false;
         }
         return true;
@@ -383,7 +382,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 19;
         result = 37 * result + this.unitType.hashCode();
         result = 37 * result + this.count;
@@ -398,7 +397,7 @@ public class DateTickUnit extends TickUnit implements Serializable {
      * @return A string representation of this instance.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return "DateTickUnit[" + this.unitType.toString() + ", "
                 + this.count + "]";
     }

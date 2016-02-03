@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------------
  * XYBoxAndWhiskerRenderer.java
  * ----------------------------
- * (C) Copyright 2003-2012, by David Browning and Contributors.
+ * (C) Copyright 2003-2014, by David Browning and Contributors.
  *
  * Original Author:  David Browning (for Australian Institute of Marine
  *                   Science);
@@ -94,12 +94,11 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.ui.RectangleEdge;
-import org.jfree.chart.util.PaintUtilities;
+import org.jfree.chart.util.PaintUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.event.RendererChangeEvent;
@@ -111,7 +110,7 @@ import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.Outlier;
 import org.jfree.chart.renderer.OutlierList;
 import org.jfree.chart.renderer.OutlierListCollection;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.Range;
 import org.jfree.data.statistics.BoxAndWhiskerXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -123,7 +122,7 @@ import org.jfree.data.xy.XYDataset;
  * included in the JFreeChart demo collection:
  * <br><br>
  * <img src="../../../../../images/XYBoxAndWhiskerRendererSample.png"
- * alt="XYBoxAndWhiskerRendererSample.png" />
+ * alt="XYBoxAndWhiskerRendererSample.png">
  * <P>
  * This renderer does not include any code to calculate the crosshair point.
  */
@@ -289,7 +288,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
      * @see #findDomainBounds(XYDataset)
      */
     @Override
-	public Range findRangeBounds(XYDataset dataset) {
+    public Range findRangeBounds(XYDataset dataset) {
         return findRangeBounds(dataset, true);
     }
 
@@ -337,7 +336,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
      * @param pass  the pass index.
      */
     @Override
-	public void drawItem(Graphics2D g2, XYItemRendererState state,
+    public void drawItem(Graphics2D g2, XYItemRendererState state,
             Rectangle2D dataArea, PlotRenderingInfo info, XYPlot plot,
             ValueAxis domainAxis, ValueAxis rangeAxis, XYDataset dataset,
             int series, int item, CrosshairState crosshairState, int pass) {
@@ -449,7 +448,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
                 xx + width / 2));
 
         // draw the body
-        Shape box = null;
+        Shape box;
         if (yyQ1Median < yyQ3Median) {
             box = new Rectangle2D.Double(yyQ1Median, xx - width / 2,
                     yyQ3Median - yyQ1Median, width);
@@ -534,7 +533,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
         Number yAverage = boxAndWhiskerData.getMeanValue(series, item);
         Number yQ1Median = boxAndWhiskerData.getQ1Value(series, item);
         Number yQ3Median = boxAndWhiskerData.getQ3Value(series, item);
-        List yOutliers = boxAndWhiskerData.getOutliers(series, item);
+        List<Number> yOutliers = boxAndWhiskerData.getOutliers(series, item);
         // yOutliers can be null, but we'd prefer it to be an empty list in
         // that case...
         if (yOutliers == null) {
@@ -596,7 +595,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
                 yyMin));
 
         // draw the body
-        Shape box = null;
+        Shape box;
         if (yyQ1Median > yyQ3Median) {
             box = new Rectangle2D.Double(xx - width / 2, yyQ3Median, width,
                     yyQ1Median - yyQ3Median);
@@ -635,7 +634,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
             }
         }
 
-        List outliers = new ArrayList();
+        List<Outlier> outliers = new ArrayList<Outlier>();
         OutlierListCollection outlierListCollection
                 = new OutlierListCollection();
 
@@ -643,23 +642,20 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
          * an arraylist. If there are any farouts, set the flag on the
          * OutlierListCollection
          */
-        for (int i = 0; i < yOutliers.size(); i++) {
-            double outlier = ((Number) yOutliers.get(i)).doubleValue();
+        for (Number yOutlier : yOutliers) {
+            double outlier = yOutlier.doubleValue();
             if (outlier > boxAndWhiskerData.getMaxOutlier(series,
                     item).doubleValue()) {
                 outlierListCollection.setHighFarOut(true);
-            }
-            else if (outlier < boxAndWhiskerData.getMinOutlier(series,
+            } else if (outlier < boxAndWhiskerData.getMinOutlier(series,
                     item).doubleValue()) {
                 outlierListCollection.setLowFarOut(true);
-            }
-            else if (outlier > boxAndWhiskerData.getMaxRegularValue(series,
+            } else if (outlier > boxAndWhiskerData.getMaxRegularValue(series,
                     item).doubleValue()) {
                 yyOutlier = rangeAxis.valueToJava2D(outlier, dataArea,
                         location);
                 outliers.add(new Outlier(xx, yyOutlier, oRadius));
-            }
-            else if (outlier < boxAndWhiskerData.getMinRegularValue(series,
+            } else if (outlier < boxAndWhiskerData.getMinRegularValue(series,
                     item).doubleValue()) {
                 yyOutlier = rangeAxis.valueToJava2D(outlier, dataArea,
                         location);
@@ -670,8 +666,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
 
         // Process outliers. Each outlier is either added to the appropriate
         // outlier list or a new outlier list is made
-        for (Iterator iterator = outliers.iterator(); iterator.hasNext();) {
-            Outlier outlier = (Outlier) iterator.next();
+        for (Outlier outlier : outliers) {
             outlierListCollection.add(outlier);
         }
 
@@ -682,16 +677,13 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
                 dataArea, location) - aRadius;
 
         // draw outliers
-        for (Iterator iterator = outlierListCollection.iterator();
-                iterator.hasNext();) {
-            OutlierList list = (OutlierList) iterator.next();
+        for (OutlierList list : outlierListCollection) {
             Outlier outlier = list.getAveragedOutlier();
             Point2D point = outlier.getPoint();
 
             if (list.isMultiple()) {
                 drawMultipleEllipse(point, width, oRadius, g2);
-            }
-            else {
+            } else {
                 drawEllipse(point, oRadius, g2);
             }
         }
@@ -785,7 +777,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
      * @return <code>true</code> or <code>false</code>.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -799,10 +791,10 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
         if (this.boxWidth != that.getBoxWidth()) {
             return false;
         }
-        if (!PaintUtilities.equal(this.boxPaint, that.boxPaint)) {
+        if (!PaintUtils.equal(this.boxPaint, that.boxPaint)) {
             return false;
         }
-        if (!PaintUtilities.equal(this.artifactPaint, that.artifactPaint)) {
+        if (!PaintUtils.equal(this.artifactPaint, that.artifactPaint)) {
             return false;
         }
         if (this.fillBox != that.fillBox) {
@@ -821,8 +813,8 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.boxPaint, stream);
-        SerialUtilities.writePaint(this.artifactPaint, stream);
+        SerialUtils.writePaint(this.boxPaint, stream);
+        SerialUtils.writePaint(this.artifactPaint, stream);
     }
 
     /**
@@ -837,8 +829,8 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
         throws IOException, ClassNotFoundException {
 
         stream.defaultReadObject();
-        this.boxPaint = SerialUtilities.readPaint(stream);
-        this.artifactPaint = SerialUtilities.readPaint(stream);
+        this.boxPaint = SerialUtils.readPaint(stream);
+        this.artifactPaint = SerialUtils.readPaint(stream);
     }
 
     /**
@@ -849,7 +841,7 @@ public class XYBoxAndWhiskerRenderer extends AbstractXYItemRenderer
      * @throws CloneNotSupportedException  if the renderer cannot be cloned.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

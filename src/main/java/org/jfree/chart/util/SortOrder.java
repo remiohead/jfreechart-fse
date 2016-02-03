@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------
@@ -39,31 +39,23 @@
  * 27-Aug-2003 : Moved from JFreeChart --> JCommon (DG);
  * 29-Jul-2004 : Fixed error in readResolve() method (DG);
  * 16-Jun-2012 : Moved from JCommon to JFreeChart (DG);
- * 
+ *
  */
 
 package org.jfree.chart.util;
-
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 
 /**
  * Defines tokens used to indicate sorting order (ascending or descending).
  *
  * @author David Gilbert
  */
-public final class SortOrder implements Serializable {
+public enum SortOrder {
 
-    /** For serialization. */
-    private static final long serialVersionUID = -2124469847758108312L;
-    
     /** Ascending order. */
-    public static final SortOrder ASCENDING 
-        = new SortOrder("SortOrder.ASCENDING");
+    ASCENDING("SortOrder.ASCENDING"),
 
     /** Descending order. */
-    public static final SortOrder DESCENDING 
-        = new SortOrder("SortOrder.DESCENDING");
+    DESCENDING("SortOrder.DESCENDING");
 
     /** The name. */
     private String name;
@@ -83,60 +75,8 @@ public final class SortOrder implements Serializable {
      * @return The string.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return this.name;
     }
 
-    /**
-     * Returns <code>true</code> if this object is equal to the specified 
-     * object, and <code>false</code> otherwise.
-     *
-     * @param obj  the other object.
-     *
-     * @return A boolean.
-     */
-    @Override
-	public boolean equals(final Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof SortOrder)) {
-            return false;
-        }
-
-        final SortOrder that = (SortOrder) obj;
-        if (!this.name.equals(that.toString())) {
-            return false;
-        }
-
-        return true;
-    }
-    
-    /**
-     * Returns a hash code value for the object.
-     *
-     * @return The hashcode
-     */
-    @Override
-	public int hashCode() {
-        return this.name.hashCode();
-    }
-
-    /**
-     * Ensures that serialization returns the unique instances.
-     * 
-     * @return The object.
-     * 
-     * @throws ObjectStreamException if there is a problem.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        if (this.equals(SortOrder.ASCENDING)) {
-            return SortOrder.ASCENDING;
-        }
-        else if (this.equals(SortOrder.DESCENDING)) {
-            return SortOrder.DESCENDING;
-        }
-        return null;
-    }
 }

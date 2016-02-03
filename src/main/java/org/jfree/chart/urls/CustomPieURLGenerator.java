@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------
@@ -46,7 +46,7 @@ package org.jfree.chart.urls;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -64,7 +64,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
     private static final long serialVersionUID = 7100607670144900503L;
 
     /** Storage for the URLs. */
-    private ArrayList urls;
+    private List<Map<Comparable, String>> urls;
 
     /**
      * Creates a new <code>CustomPieURLGenerator</code> instance, initially
@@ -72,7 +72,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      * used.
      */
     public CustomPieURLGenerator() {
-        this.urls = new ArrayList();
+        this.urls = new ArrayList<Map<Comparable, String>>();
     }
 
     /**
@@ -87,7 +87,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      * @see #getURL(Comparable, int)
      */
     @Override
-	public String generateURL(PieDataset dataset, Comparable key,
+    public String generateURL(PieDataset dataset, Comparable key,
                               int pieIndex) {
         return getURL(key, pieIndex);
     }
@@ -115,7 +115,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      */
     public int getURLCount(int list) {
         int result = 0;
-        Map urlMap = (Map) this.urls.get(list);
+        Map<Comparable, String> urlMap = this.urls.get(list);
         if (urlMap != null) {
             result = urlMap.size();
         }
@@ -133,9 +133,9 @@ public class CustomPieURLGenerator implements PieURLGenerator,
     public String getURL(Comparable key, int mapIndex) {
         String result = null;
         if (mapIndex < getListCount()) {
-            Map urlMap = (Map) this.urls.get(mapIndex);
+            Map<Comparable, String> urlMap = this.urls.get(mapIndex);
             if (urlMap != null) {
-                result = (String) urlMap.get(key);
+                result = urlMap.get(key);
             }
         }
         return result;
@@ -152,7 +152,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      *
      * @param urlMap  the URLs (<code>null</code> permitted).
      */
-    public void addURLs(Map urlMap) {
+    public void addURLs(Map<Comparable, String> urlMap) {
         this.urls.add(urlMap);
     }
 
@@ -164,7 +164,7 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object o) {
+    public boolean equals(Object o) {
 
         if (o == this) {
             return true;
@@ -175,15 +175,12 @@ public class CustomPieURLGenerator implements PieURLGenerator,
             if (getListCount() != generator.getListCount()) {
                 return false;
             }
-            Set keySet;
             for (int pieItem = 0; pieItem < getListCount(); pieItem++) {
                 if (getURLCount(pieItem) != generator.getURLCount(pieItem)) {
                     return false;
                 }
-                keySet = ((HashMap) this.urls.get(pieItem)).keySet();
-                String key;
-                for (Iterator i = keySet.iterator(); i.hasNext();) {
-                key = (String) i.next();
+                Set<Comparable> keySet = this.urls.get(pieItem).keySet();
+                for (Comparable key : keySet) {
                     if (!getURL(key, pieItem).equals(
                             generator.getURL(key, pieItem))) {
                         return false;
@@ -203,23 +200,18 @@ public class CustomPieURLGenerator implements PieURLGenerator,
      * @throws CloneNotSupportedException if cloning is not supported.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
-        CustomPieURLGenerator urlGen = new CustomPieURLGenerator();
-        Map map;
-        Map newMap;
-        String key;
+    public Object clone() throws CloneNotSupportedException {
+        CustomPieURLGenerator urlGen = (CustomPieURLGenerator) super.clone();
+        urlGen.urls = new ArrayList<Map<Comparable, String>>();
 
-        for (Iterator i = this.urls.iterator(); i.hasNext();) {
-            map = (Map) i.next();
+        for (Map<Comparable, String> map : this.urls) {
 
-            newMap = new HashMap();
-            for (Iterator j = map.keySet().iterator(); j.hasNext();) {
-                key = (String) j.next();
-                newMap.put(key, map.get(key));
+            Map<Comparable, String> newMap = new HashMap<Comparable, String>();
+            for (Map.Entry<Comparable, String> entry : map.entrySet()) {
+                newMap.put(entry.getKey(), entry.getValue());
             }
 
             urlGen.addURLs(newMap);
-            newMap = null;
         }
 
         return urlGen;

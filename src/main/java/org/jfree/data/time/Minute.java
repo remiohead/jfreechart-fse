@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------
  * Minute.java
  * -----------
- * (C) Copyright 2001-2009, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -70,6 +70,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * Represents a minute.  This class is immutable, which is a requirement for
@@ -112,7 +113,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * Constructs a new Minute.
      *
      * @param minute  the minute (0 to 59).
-     * @param hour  the hour (<code>null</code> not permitted).
+     * @param hour  the hour ({@code null} not permitted).
      */
     public Minute(int minute, Hour hour) {
         if (hour == null) {
@@ -128,9 +129,9 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * Constructs a new instance, based on the supplied date/time and
      * the default time zone.
      *
-     * @param time  the time (<code>null</code> not permitted).
+     * @param time  the time ({@code null} not permitted).
      *
-     * @see #Minute(Date, TimeZone)
+     * @see #Minute(Date, TimeZone, Locale)
      */
     public Minute(Date time) {
         // defer argument checking
@@ -140,22 +141,16 @@ public class Minute extends RegularTimePeriod implements Serializable {
     /**
      * Constructs a new Minute, based on the supplied date/time and timezone.
      *
-     * @param time  the time (<code>null</code> not permitted).
-     * @param zone  the time zone (<code>null</code> not permitted).
-     * @param locale  the locale (<code>null</code> not permitted).
+     * @param time  the time ({@code null} not permitted).
+     * @param zone  the time zone ({@code null} not permitted).
+     * @param locale  the locale ({@code null} not permitted).
      *
      * @since 1.0.13
      */
     public Minute(Date time, TimeZone zone, Locale locale) {
-        if (time == null) {
-            throw new IllegalArgumentException("Null 'time' argument.");
-        }
-        if (zone == null) {
-            throw new IllegalArgumentException("Null 'zone' argument.");
-        }
-        if (locale == null) {
-            throw new IllegalArgumentException("Null 'locale' argument.");
-        }
+        ParamChecks.nullNotPermitted(time, "time");
+        ParamChecks.nullNotPermitted(zone, "zone");
+        ParamChecks.nullNotPermitted(locale, "locale");
         Calendar calendar = Calendar.getInstance(zone, locale);
         calendar.setTime(time);
         int min = calendar.get(Calendar.MINUTE);
@@ -192,7 +187,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
     /**
      * Returns the hour.
      *
-     * @return The hour (never <code>null</code>).
+     * @return The hour (never {@code null}).
      */
     public Hour getHour() {
         return new Hour(this.hour, this.day);
@@ -229,7 +224,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @see #getLastMillisecond()
      */
     @Override
-	public long getFirstMillisecond() {
+    public long getFirstMillisecond() {
         return this.firstMillisecond;
     }
 
@@ -244,7 +239,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @see #getFirstMillisecond()
      */
     @Override
-	public long getLastMillisecond() {
+    public long getLastMillisecond() {
         return this.lastMillisecond;
     }
 
@@ -252,12 +247,12 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * Recalculates the start date/time and end date/time for this time period
      * relative to the supplied calendar (which incorporates a time zone).
      *
-     * @param calendar  the calendar (<code>null</code> not permitted).
+     * @param calendar  the calendar ({@code null} not permitted).
      *
      * @since 1.0.3
      */
     @Override
-	public void peg(Calendar calendar) {
+    public void peg(Calendar calendar) {
         this.firstMillisecond = getFirstMillisecond(calendar);
         this.lastMillisecond = getLastMillisecond(calendar);
     }
@@ -268,7 +263,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @return The minute preceding this one.
      */
     @Override
-	public RegularTimePeriod previous() {
+    public RegularTimePeriod previous() {
         Minute result;
         if (this.minute != FIRST_MINUTE_IN_HOUR) {
             result = new Minute(this.minute - 1, getHour());
@@ -291,7 +286,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @return The minute following this one.
      */
     @Override
-	public RegularTimePeriod next() {
+    public RegularTimePeriod next() {
         Minute result;
         if (this.minute != LAST_MINUTE_IN_HOUR) {
             result = new Minute(this.minute + 1, getHour());
@@ -314,7 +309,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @return The serial index number.
      */
     @Override
-	public long getSerialIndex() {
+    public long getSerialIndex() {
         long hourIndex = this.day.getSerialIndex() * 24L + this.hour;
         return hourIndex * 60L + this.minute;
     }
@@ -323,15 +318,14 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * Returns the first millisecond of the minute.
      *
      * @param calendar  the calendar which defines the timezone
-     *     (<code>null</code> not permitted).
+     *     ({@code null} not permitted).
      *
      * @return The first millisecond.
-     *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * 
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getFirstMillisecond(Calendar calendar) {
+    public long getFirstMillisecond(Calendar calendar) {
         int year = this.day.getYear();
         int month = this.day.getMonth() - 1;
         int day = this.day.getDayOfMonth();
@@ -346,22 +340,20 @@ public class Minute extends RegularTimePeriod implements Serializable {
     /**
      * Returns the last millisecond of the minute.
      *
-     * @param calendar  the calendar / timezone (<code>null</code> not
-     *     permitted).
+     * @param calendar  the calendar / timezone ({@code null} not permitted).
      *
      * @return The last millisecond.
-     *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * 
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getLastMillisecond(Calendar calendar) {
+    public long getLastMillisecond(Calendar calendar) {
         int year = this.day.getYear();
         int month = this.day.getMonth() - 1;
-        int day = this.day.getDayOfMonth();
+        int d = this.day.getDayOfMonth();
 
         calendar.clear();
-        calendar.set(year, month, day, this.hour, this.minute, 59);
+        calendar.set(year, month, d, this.hour, this.minute, 59);
         calendar.set(Calendar.MILLISECOND, 999);
 
         return calendar.getTimeInMillis();
@@ -373,13 +365,13 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * This method will return true ONLY if the object is a Minute object
      * representing the same minute as this instance.
      *
-     * @param obj  the object to compare (<code>null</code> permitted).
+     * @param obj  the object to compare ({@code null} permitted).
      *
      * @return <code>true</code> if the minute and hour value of this and the
      *      object are the same.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -406,7 +398,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 17;
         result = 37 * result + this.minute;
         result = 37 * result + this.hour;
@@ -425,7 +417,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      * @return negative == before, zero == same, positive == after.
      */
     @Override
-	public int compareTo(Object o1) {
+    public int compareTo(TimePeriod o1) {
         int result;
 
         // CASE 1 : Comparing to another Minute object
@@ -440,16 +432,9 @@ public class Minute extends RegularTimePeriod implements Serializable {
 
         // CASE 2 : Comparing to another TimePeriod object
         // -----------------------------------------------
-        else if (o1 instanceof RegularTimePeriod) {
+        else {
             // more difficult case - evaluate later...
             result = 0;
-        }
-
-        // CASE 3 : Comparing to a non-TimePeriod object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
         }
 
         return result;
@@ -462,7 +447,7 @@ public class Minute extends RegularTimePeriod implements Serializable {
      *
      * @param s  the minute string to parse.
      *
-     * @return <code>null</code>, if the string is not parseable, the minute
+     * @return {@code null}, if the string is not parseable, the minute
      *      otherwise.
      */
     public static Minute parseMinute(String s) {

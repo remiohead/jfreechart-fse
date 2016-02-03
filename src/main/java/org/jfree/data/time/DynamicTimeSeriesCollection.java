@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,16 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------------------
  * DynamicTimeSeriesCollection.java
  * --------------------------------
- * (C) Copyright 2002-2008, by I. H. Thomae and Contributors.
+ * (C) Copyright 2002-2014, by I. H. Thomae and Contributors.
  *
  * Original Author:  I. H. Thomae (ithomae@ists.dartmouth.edu);
  * Contributor(s):   David Gilbert (for Object Refinery Limited);
+ *                   Ricardo JL Rufino (patch #310);
  *
  * Changes
  * -------
@@ -78,13 +79,11 @@ import org.jfree.data.xy.IntervalXYDataset;
  * real-time applications this subclass adds the ability to append new
  * data and discard the oldest.
  * In this class, the arrays used in FastTimeSeriesCollection become FIFO's.
- * NOTE:As presented here, all data is assumed >= 0, an assumption which is
+ * NOTE:As presented here, all data is assumed &gt;= 0, an assumption which is
  * embodied only in methods associated with interface RangeInfo.
  */
 public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
-                                         implements IntervalXYDataset,
-                                                    DomainInfo,
-                                                    RangeInfo {
+        implements IntervalXYDataset, DomainInfo, RangeInfo {
 
     /**
      * Useful constant for controlling the x-value returned for a time
@@ -188,7 +187,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      */
     private boolean domainIsPointsInTime;
 
-    /** index for mapping: points to the oldest valid time & data. */
+    /** index for mapping: points to the oldest valid time and data. */
     private int oldestAt;  // as a class variable, initializes == 0
 
     /** Index of the newest data item. */
@@ -212,7 +211,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
     //   A single set of extrema covers the entire SeriesCollection
 
     /** The minimum value. */
-    private Float minValue = new Float(0.0f);
+    private Float minValue = 0.0f;
 
     /** The maximum value. */
     private Float maxValue = null;
@@ -228,10 +227,8 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param nMoments the number of TimePeriods to be spanned.
      */
     public DynamicTimeSeriesCollection(int nSeries, int nMoments) {
-
         this(nSeries, nMoments, new Millisecond(), TimeZone.getDefault());
         this.newestAt = nMoments - 1;
-
     }
 
     /**
@@ -242,7 +239,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param zone the timezone.
      */
     public DynamicTimeSeriesCollection(int nSeries, int nMoments,
-                                       TimeZone zone) {
+            TimeZone zone) {
         this(nSeries, nMoments, new Millisecond(), zone);
         this.newestAt = nMoments - 1;
     }
@@ -254,8 +251,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param nMoments  the number of items per series.
      * @param timeSample  a time period sample.
      */
-    public DynamicTimeSeriesCollection(int nSeries,
-                                       int nMoments,
+    public DynamicTimeSeriesCollection(int nSeries, int nMoments,
                                        RegularTimePeriod timeSample) {
         this(nSeries, nMoments, timeSample, TimeZone.getDefault());
     }
@@ -268,10 +264,8 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param timeSample  a time period sample.
      * @param zone  the time zone.
      */
-    public DynamicTimeSeriesCollection(int nSeries,
-                                       int nMoments,
-                                       RegularTimePeriod timeSample,
-                                       TimeZone zone) {
+    public DynamicTimeSeriesCollection(int nSeries, int nMoments,
+            RegularTimePeriod timeSample, TimeZone zone) {
 
         // the first initialization must precede creation of the ValueSet array:
         this.maximumItemCount = nMoments;  // establishes length of each array
@@ -286,13 +280,13 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
         this.timePeriodClass = timeSample.getClass();
 
         /// Expand the following for all defined TimePeriods:
-        if (this.timePeriodClass == Second.class) {
+        if (this.timePeriodClass == Millisecond.class) {
+            this.pointsInTime = new Millisecond[nMoments];
+        } else if (this.timePeriodClass == Second.class) {
             this.pointsInTime = new Second[nMoments];
-        }
-        else if (this.timePeriodClass == Minute.class) {
+        } else if (this.timePeriodClass == Minute.class) {
             this.pointsInTime = new Minute[nMoments];
-        }
-        else if (this.timePeriodClass == Hour.class) {
+        } else if (this.timePeriodClass == Hour.class) {
             this.pointsInTime = new Hour[nMoments];
         }
         ///  .. etc....
@@ -313,7 +307,6 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return ??.
      */
     public synchronized long setTimeBase(RegularTimePeriod start) {
-
         if (this.pointsInTime[0] == null) {
             this.pointsInTime[0] = start;
             for (int i = 1; i < this.historyCount; i++) {
@@ -321,17 +314,14 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
             }
         }
         long oldestL = this.pointsInTime[0].getFirstMillisecond(
-            this.workingCalendar
-        );
+                this.workingCalendar);
         long nextL = this.pointsInTime[1].getFirstMillisecond(
-            this.workingCalendar
-        );
+                this.workingCalendar);
         this.deltaTime = nextL - oldestL;
         this.oldestAt = 0;
         this.newestAt = this.historyCount - 1;
         findDomainLimits();
         return this.deltaTime;
-
     }
 
     /**
@@ -339,7 +329,6 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * because it's called from within another method that already is.
      */
     protected void findDomainLimits() {
-
         long startL = getOldestTime().getFirstMillisecond(this.workingCalendar);
         long endL;
         if (this.domainIsPointsInTime) {
@@ -348,10 +337,9 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
         else {
             endL = getNewestTime().getLastMillisecond(this.workingCalendar);
         }
-        this.domainStart = new Long(startL);
-        this.domainEnd = new Long(endL);
+        this.domainStart = startL;
+        this.domainEnd = endL;
         this.domainRange = new Range(startL, endL);
-
     }
 
     /**
@@ -383,8 +371,8 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * Use this as-is during setup only, or add the synchronized keyword around
      * the copy loop.
      */
-    public void addSeries(float[] values,
-                          int seriesNumber, Comparable seriesKey) {
+    public void addSeries(float[] values, int seriesNumber, 
+            Comparable seriesKey) {
 
         invalidateRangeInfo();
         int i;
@@ -426,7 +414,6 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
             this.seriesKeys[seriesNumber] = seriesKey;
         }
         fireSeriesChanged();
-
     }
 
     /**
@@ -447,7 +434,6 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param value  the value.
      */
     public void addValue(int seriesNumber, int index, float value) {
-
         invalidateRangeInfo();
         if (seriesNumber >= this.valueHistory.length) {
             throw new IllegalArgumentException(
@@ -474,7 +460,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The series count.
      */
     @Override
-	public int getSeriesCount() {
+    public int getSeriesCount() {
         return this.seriesCount;
     }
 
@@ -488,7 +474,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The item count.
      */
     @Override
-	public int getItemCount(int series) {  // all arrays equal length,
+    public int getItemCount(int series) {  // all arrays equal length,
                                            // so ignore argument:
         return this.historyCount;
     }
@@ -573,7 +559,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
         boolean extremaChanged = false;
         float oldMax = 0.0f;
         if (this.maxValue != null) {
-            oldMax = this.maxValue.floatValue();
+            oldMax = this.maxValue;
         }
         for (int s = 0; s < getSeriesCount(); s++) {
             if (this.valueHistory[s].getData(this.oldestAt) == oldMax) {
@@ -599,10 +585,10 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
             this.oldestAt = 0;
         }
         // Update the domain limits:
-        long startL = this.domainStart.longValue();  //(time is kept in msec)
-        this.domainStart = new Long(startL + this.deltaTime);
-        long endL = this.domainEnd.longValue();
-        this.domainEnd = new Long(endL + this.deltaTime);
+        long startL = this.domainStart;  //(time is kept in msec)
+        this.domainStart = startL + this.deltaTime;
+        long endL = this.domainEnd;
+        this.domainEnd = endL + this.deltaTime;
         this.domainRange = new Range(startL, endL);
         fireSeriesChanged();
         return nextInstant;
@@ -667,8 +653,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
         int nDataPoints = newData.length;
         if (nDataPoints > this.valueHistory.length) {
             throw new IllegalArgumentException(
-               "More data than series to put them in"
-            );
+                    "More data than series to put them in");
         }
         int s;   // index to select the "series"
         for (s = 0; s < nDataPoints; s++) {
@@ -688,14 +673,13 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @param  newData  the data
      * @param  insertionIndex  the index value at which to put it
      * @param  refresh  value of n in "refresh the display on every nth call"
-     *                 (ignored if <= 0 )
+     *                 (ignored if &lt;= 0)
      */
      public void appendData(float[] newData, int insertionIndex, int refresh) {
          int nDataPoints = newData.length;
          if (nDataPoints > this.valueHistory.length) {
              throw new IllegalArgumentException(
-                 "More data than series to put them " + "in"
-             );
+                    "More data than series to put them in");
          }
          for (int s = 0; s < nDataPoints; s++) {
              if (this.valueHistory[s] == null) {
@@ -740,9 +724,9 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
     // getXxx() ftns can ignore the "series" argument:
     // Don't synchronize this!! Instead, synchronize the loop that calls it.
     @Override
-	public Number getX(int series, int item) {
+    public Number getX(int series, int item) {
         RegularTimePeriod tp = this.pointsInTime[translateGet(item)];
-        return new Long(getX(tp));
+        return getX(tp);
     }
 
     /**
@@ -754,7 +738,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public double getYValue(int series, int item) {
+    public double getYValue(int series, int item) {
         // Don't synchronize this!!
         // Instead, synchronize the loop that calls it.
         ValueSequence values = this.valueHistory[series];
@@ -770,7 +754,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getY(int series, int item) {
+    public Number getY(int series, int item) {
         return new Float(getYValue(series, item));
     }
 
@@ -783,9 +767,9 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getStartX(int series, int item) {
+    public Number getStartX(int series, int item) {
         RegularTimePeriod tp = this.pointsInTime[translateGet(item)];
-        return new Long(tp.getFirstMillisecond(this.workingCalendar));
+        return tp.getFirstMillisecond(this.workingCalendar);
     }
 
     /**
@@ -797,9 +781,9 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getEndX(int series, int item) {
+    public Number getEndX(int series, int item) {
         RegularTimePeriod tp = this.pointsInTime[translateGet(item)];
-        return new Long(tp.getLastMillisecond(this.workingCalendar));
+        return tp.getLastMillisecond(this.workingCalendar);
     }
 
     /**
@@ -811,7 +795,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getStartY(int series, int item) {
+    public Number getStartY(int series, int item) {
         return getY(series, item);
     }
 
@@ -824,7 +808,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The value.
      */
     @Override
-	public Number getEndY(int series, int item) {
+    public Number getEndY(int series, int item) {
         return getY(series, item);
     }
 
@@ -847,7 +831,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The key.
      */
     @Override
-	public Comparable getSeriesKey(int series) {
+    public Comparable getSeriesKey(int series) {
         return this.seriesKeys[series];
     }
 
@@ -872,7 +856,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The minimum value.
      */
     @Override
-	public double getDomainLowerBound(boolean includeInterval) {
+    public double getDomainLowerBound(boolean includeInterval) {
         return this.domainStart.doubleValue();
         // a Long kept updated by advanceTime()
     }
@@ -886,7 +870,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The maximum value.
      */
     @Override
-	public double getDomainUpperBound(boolean includeInterval) {
+    public double getDomainUpperBound(boolean includeInterval) {
         return this.domainEnd.doubleValue();
         // a Long kept updated by advanceTime()
     }
@@ -900,7 +884,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The range.
      */
     @Override
-	public Range getDomainBounds(boolean includeInterval) {
+    public Range getDomainBounds(boolean includeInterval) {
         if (this.domainRange == null) {
             findDomainLimits();
         }
@@ -942,7 +926,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The minimum range value.
      */
     @Override
-	public double getRangeLowerBound(boolean includeInterval) {
+    public double getRangeLowerBound(boolean includeInterval) {
         double result = Double.NaN;
         if (this.minValue != null) {
             result = this.minValue.doubleValue();
@@ -959,7 +943,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The maximum range value.
      */
     @Override
-	public double getRangeUpperBound(boolean includeInterval) {
+    public double getRangeUpperBound(boolean includeInterval) {
         double result = Double.NaN;
         if (this.maxValue != null) {
             result = this.maxValue.doubleValue();
@@ -976,7 +960,7 @@ public class DynamicTimeSeriesCollection extends AbstractIntervalXYDataset
      * @return The range.
      */
     @Override
-	public Range getRangeBounds(boolean includeInterval) {
+    public Range getRangeBounds(boolean includeInterval) {
         if (this.valueRange == null) {
             double max = getRangeUpperBound(includeInterval);
             this.valueRange = new Range(0.0, max);

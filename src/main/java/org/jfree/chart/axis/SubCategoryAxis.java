@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
@@ -61,7 +61,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.ui.RectangleEdge;
@@ -71,7 +70,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.Plot;
 import org.jfree.chart.plot.PlotRenderingInfo;
 import org.jfree.chart.text.TextUtilities;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.SerialUtils;
 import org.jfree.data.category.CategoryDataset;
 
 /**
@@ -84,7 +83,7 @@ public class SubCategoryAxis extends CategoryAxis
     private static final long serialVersionUID = -1279463299793228344L;
 
     /** Storage for the sub-categories (these need to be set manually). */
-    private List subCategories;
+    private List<Comparable> subCategories;
 
     /** The font for the sub-category labels. */
     private Font subLabelFont = new Font("SansSerif", Font.PLAIN, 10);
@@ -99,7 +98,7 @@ public class SubCategoryAxis extends CategoryAxis
      */
     public SubCategoryAxis(String label) {
         super(label);
-        this.subCategories = new java.util.ArrayList();
+        this.subCategories = new java.util.ArrayList<Comparable>();
     }
 
     /**
@@ -182,7 +181,7 @@ public class SubCategoryAxis extends CategoryAxis
      * @return The space required to draw the axis.
      */
     @Override
-	public AxisSpace reserveSpace(Graphics2D g2, Plot plot,
+    public AxisSpace reserveSpace(Graphics2D g2, Plot plot,
                                   Rectangle2D plotArea,
                                   RectangleEdge edge, AxisSpace space) {
 
@@ -220,16 +219,13 @@ public class SubCategoryAxis extends CategoryAxis
         double result = 0.0;
         g2.setFont(this.subLabelFont);
         FontMetrics fm = g2.getFontMetrics();
-        Iterator iterator = this.subCategories.iterator();
-        while (iterator.hasNext()) {
-            Comparable subcategory = (Comparable) iterator.next();
+        for (Comparable subcategory : this.subCategories) {
             String label = subcategory.toString();
             Rectangle2D bounds = TextUtilities.getTextBounds(label, g2, fm);
             double dim = 0.0;
             if (RectangleEdge.isLeftOrRight(edge)) {
                 dim = bounds.getWidth();
-            }
-            else {  // must be top or bottom
+            } else {  // must be top or bottom
                 dim = bounds.getHeight();
             }
             result = Math.max(result, dim);
@@ -254,7 +250,7 @@ public class SubCategoryAxis extends CategoryAxis
      * @return The axis state (never <code>null</code>).
      */
     @Override
-	public AxisState draw(Graphics2D g2,
+    public AxisState draw(Graphics2D g2,
                           double cursor,
                           Rectangle2D plotArea,
                           Rectangle2D dataArea,
@@ -272,7 +268,7 @@ public class SubCategoryAxis extends CategoryAxis
 
         // draw the category labels and axis label
         AxisState state = new AxisState(cursor);
-        state = drawSubCategoryLabels(g2, plotArea, dataArea, edge, state, 
+        state = drawSubCategoryLabels(g2, plotArea, dataArea, edge, state,
                 plotState);
         state = drawCategoryLabels(g2, plotArea, dataArea, edge, state,
                 plotState);
@@ -405,7 +401,7 @@ public class SubCategoryAxis extends CategoryAxis
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -434,7 +430,7 @@ public class SubCategoryAxis extends CategoryAxis
      */
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
-        SerialUtilities.writePaint(this.subLabelPaint, stream);
+        SerialUtils.writePaint(this.subLabelPaint, stream);
     }
 
     /**
@@ -448,7 +444,7 @@ public class SubCategoryAxis extends CategoryAxis
     private void readObject(ObjectInputStream stream)
         throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.subLabelPaint = SerialUtilities.readPaint(stream);
+        this.subLabelPaint = SerialUtils.readPaint(stream);
     }
 
 }

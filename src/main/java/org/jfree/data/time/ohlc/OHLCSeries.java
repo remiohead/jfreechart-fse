@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2013, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------
  * OHLCSeries.java
  * ---------------
- * (C) Copyright 2006-2009, by Object Refinery Limited.
+ * (C) Copyright 2006-2013, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -41,6 +41,7 @@
 
 package org.jfree.data.time.ohlc;
 
+import org.jfree.chart.util.ParamChecks;
 import org.jfree.data.ComparableObjectItem;
 import org.jfree.data.ComparableObjectSeries;
 import org.jfree.data.time.RegularTimePeriod;
@@ -85,7 +86,7 @@ public class OHLCSeries extends ComparableObjectSeries {
      * @return The data item.
      */
     @Override
-	public ComparableObjectItem getDataItem(int index) {
+    public ComparableObjectItem getDataItem(int index) {
         return super.getDataItem(index);
     }
 
@@ -111,6 +112,20 @@ public class OHLCSeries extends ComparableObjectSeries {
     }
 
     /**
+     * Adds a data item to the series.  The values from the item passed to
+     * this method will be copied into a new object.
+     * 
+     * @param item  the item (<code>null</code> not permitted).
+     * 
+     * @since 1.0.17
+     */
+    public void add(OHLCItem item) {
+        ParamChecks.nullNotPermitted(item, "item");
+        add(item.getPeriod(), item.getOpenValue(), item.getHighValue(),
+                item.getLowValue(), item.getCloseValue());
+    }
+
+    /**
      * Removes the item with the specified index.
      *
      * @param index  the item index.
@@ -118,7 +133,7 @@ public class OHLCSeries extends ComparableObjectSeries {
      * @since 1.0.14
      */
     @Override
-	public ComparableObjectItem remove(int index) {
+    public ComparableObjectItem remove(int index) {
         return super.remove(index);
     }
 

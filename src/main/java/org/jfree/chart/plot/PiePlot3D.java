@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------
@@ -84,7 +84,7 @@
  * 10-Oct-2011 : Localization fix: bug #3353913 (MH);
  * 18-Oct-2011 : Fix tooltip offset with shadow generator (DG);
  * 17-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.plot;
@@ -107,7 +107,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.ui.RectangleInsets;
@@ -231,7 +230,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
      *              (<code>null</code> permitted).
      */
     @Override
-	public void draw(Graphics2D g2, Rectangle2D plotArea, Point2D anchor,
+    public void draw(Graphics2D g2, Rectangle2D plotArea, Point2D anchor,
                      PlotState parentState,
                      PlotRenderingInfo info) {
 
@@ -379,9 +378,9 @@ public class PiePlot3D extends PiePlot implements Serializable {
                     plotArea.getCenterY() - min, 2 * min, 2 * min);
         }
         // get a list of keys...
-        List sectionKeys = dataset.getKeys();
+        List<Comparable> sectionKeys = dataset.getKeys();
 
-        if (sectionKeys.size() == 0) {
+        if (sectionKeys.isEmpty()) {
             return;
         }
 
@@ -400,16 +399,13 @@ public class PiePlot3D extends PiePlot implements Serializable {
             return;  // if depth is negative don't draw anything
         }
 
-        ArrayList arcList = new ArrayList();
+        ArrayList<Arc2D.Double> arcList = new ArrayList<Arc2D.Double>();
         Arc2D.Double arc;
         Paint paint;
         Paint outlinePaint;
         Stroke outlineStroke;
 
-        Iterator iterator = sectionKeys.iterator();
-        while (iterator.hasNext()) {
-
-            Comparable currentKey = (Comparable) iterator.next();
+        for (Comparable currentKey : sectionKeys) {
             Number dataValue = dataset.getValue(currentKey);
             if (dataValue == null) {
                 arcList.add(null);
@@ -472,7 +468,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
         int categoryCount = arcList.size();
         for (int categoryIndex = 0; categoryIndex < categoryCount;
                  categoryIndex++) {
-            arc = (Arc2D.Double) arcList.get(categoryIndex);
+            arc = arcList.get(categoryIndex);
             if (arc == null) {
                 continue;
             }
@@ -510,9 +506,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
 
         // cycle through once drawing only the sides at the back...
         int cat = 0;
-        iterator = arcList.iterator();
-        while (iterator.hasNext()) {
-            Arc2D segment = (Arc2D) iterator.next();
+        for (Arc2D.Double segment : arcList) {
             if (segment != null) {
                 Comparable key = getSectionKey(cat);
                 paint = lookupSectionPaint(key);
@@ -526,9 +520,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
 
         // cycle through again drawing only the sides at the front...
         cat = 0;
-        iterator = arcList.iterator();
-        while (iterator.hasNext()) {
-            Arc2D segment = (Arc2D) iterator.next();
+        for (Arc2D.Double segment : arcList) {
             if (segment != null) {
                 Comparable key = getSectionKey(cat);
                 paint = lookupSectionPaint(key);
@@ -546,7 +538,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
         Arc2D upperArc;
         for (int sectionIndex = 0; sectionIndex < categoryCount;
                  sectionIndex++) {
-            arc = (Arc2D.Double) arcList.get(sectionIndex);
+            arc = arcList.get(sectionIndex);
             if (arc == null) {
                 continue;
             }
@@ -554,7 +546,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
                     pieArea.getHeight() - depth, arc.getAngleStart(),
                     arc.getAngleExtent(), Arc2D.PIE);
 
-            Comparable currentKey = (Comparable) sectionKeys.get(sectionIndex);
+            Comparable currentKey = sectionKeys.get(sectionIndex);
             paint = lookupSectionPaint(currentKey, true);
             outlinePaint = lookupSectionOutlinePaint(currentKey);
             outlineStroke = lookupSectionOutlineStroke(currentKey);
@@ -588,7 +580,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
             }
         }
 
-        List keys = dataset.getKeys();
+        List<Comparable> keys = dataset.getKeys();
         Rectangle2D adjustedPlotArea = new Rectangle2D.Double(
                 originalPlotArea.getX(), originalPlotArea.getY(),
                 originalPlotArea.getWidth(), originalPlotArea.getHeight()
@@ -603,12 +595,12 @@ public class PiePlot3D extends PiePlot implements Serializable {
         }
 
         if (getShadowGenerator() != null) {
-            BufferedImage shadowImage 
+            BufferedImage shadowImage
                     = getShadowGenerator().createDropShadow(dataImage);
             g2 = savedG2;
-            g2.drawImage(shadowImage, (int) plotArea.getX() 
+            g2.drawImage(shadowImage, (int) plotArea.getX()
                     + getShadowGenerator().calculateOffsetX(),
-                    (int) plotArea.getY() 
+                    (int) plotArea.getY()
                     + getShadowGenerator().calculateOffsetY(), null);
             g2.drawImage(dataImage, (int) plotArea.getX(),
                     (int) plotArea.getY(), null);
@@ -1002,7 +994,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
      * @return <i>Pie 3D Plot</i>.
      */
     @Override
-	public String getPlotType() {
+    public String getPlotType() {
         return localizationResources.getString("Pie_3D_Plot");
     }
 
@@ -1040,7 +1032,7 @@ public class PiePlot3D extends PiePlot implements Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }

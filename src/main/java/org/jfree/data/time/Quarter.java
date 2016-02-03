@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ------------
  * Quarter.java
  * ------------
- * (C) Copyright 2001-2008, by Object Refinery Limited.
+ * (C) Copyright 2001-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -152,7 +152,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      *
      * @param time  the date/time (<code>null</code> not permitted).
      *
-     * @see #Quarter(Date, TimeZone)
+     * @see #Quarter(Date, TimeZone, Locale)
      */
     public Quarter(Date time) {
         this(time, TimeZone.getDefault(), Locale.getDefault());
@@ -217,7 +217,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @see #getLastMillisecond()
      */
     @Override
-	public long getFirstMillisecond() {
+    public long getFirstMillisecond() {
         return this.firstMillisecond;
     }
 
@@ -232,7 +232,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @see #getFirstMillisecond()
      */
     @Override
-	public long getLastMillisecond() {
+    public long getLastMillisecond() {
         return this.lastMillisecond;
     }
 
@@ -245,7 +245,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @since 1.0.3
      */
     @Override
-	public void peg(Calendar calendar) {
+    public void peg(Calendar calendar) {
         this.firstMillisecond = getFirstMillisecond(calendar);
         this.lastMillisecond = getLastMillisecond(calendar);
     }
@@ -257,7 +257,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      *     Q1 1900).
      */
     @Override
-	public RegularTimePeriod previous() {
+    public RegularTimePeriod previous() {
         Quarter result;
         if (this.quarter > FIRST_QUARTER) {
             result = new Quarter(this.quarter - 1, this.year);
@@ -279,7 +279,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @return The quarter following this one (or null if this is Q4 9999).
      */
     @Override
-	public RegularTimePeriod next() {
+    public RegularTimePeriod next() {
         Quarter result;
         if (this.quarter < LAST_QUARTER) {
             result = new Quarter(this.quarter + 1, this.year);
@@ -301,7 +301,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @return The serial index number.
      */
     @Override
-	public long getSerialIndex() {
+    public long getSerialIndex() {
         return this.year * 4L + this.quarter;
     }
 
@@ -317,18 +317,13 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      *         the same.
      */
     @Override
-	public boolean equals(Object obj) {
-
-        if (obj != null) {
-            if (obj instanceof Quarter) {
-                Quarter target = (Quarter) obj;
-                return (this.quarter == target.getQuarter()
-                        && (this.year == target.getYearValue()));
-            }
-            return false;
+    public boolean equals(Object obj) {
+        if (obj instanceof Quarter) {
+            Quarter target = (Quarter) obj;
+            return (this.quarter == target.getQuarter()
+                    && (this.year == target.getYearValue()));
         }
         return false;
-
     }
 
     /**
@@ -341,7 +336,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 17;
         result = 37 * result + this.quarter;
         result = 37 * result + this.year;
@@ -359,7 +354,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @return negative == before, zero == same, positive == after.
      */
     @Override
-	public int compareTo(Object o1) {
+    public int compareTo(TimePeriod o1) {
 
         int result;
 
@@ -375,16 +370,9 @@ public class Quarter extends RegularTimePeriod implements Serializable {
 
         // CASE 2 : Comparing to another TimePeriod object
         // -----------------------------------------------
-        else if (o1 instanceof RegularTimePeriod) {
+        else  {
             // more difficult case - evaluate later...
             result = 0;
-        }
-
-        // CASE 3 : Comparing to a non-TimePeriod object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
         }
 
         return result;
@@ -397,7 +385,7 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      * @return A string representing the quarter.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return "Q" + this.quarter + "/" + this.year;
     }
 
@@ -409,11 +397,10 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      *
      * @return The first millisecond in the Quarter.
      *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getFirstMillisecond(Calendar calendar) {
+    public long getFirstMillisecond(Calendar calendar) {
         int month = Quarter.FIRST_MONTH_IN_QUARTER[this.quarter];
         calendar.set(this.year, month - 1, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
@@ -428,11 +415,10 @@ public class Quarter extends RegularTimePeriod implements Serializable {
      *
      * @return The last millisecond of the Quarter.
      *
-     * @throws NullPointerException if <code>calendar</code> is
-     *     <code>null</code>.
+     * @throws NullPointerException if {@code calendar} is {@code null}.
      */
     @Override
-	public long getLastMillisecond(Calendar calendar) {
+    public long getLastMillisecond(Calendar calendar) {
         int month = Quarter.LAST_MONTH_IN_QUARTER[this.quarter];
         int eom = SerialDate.lastDayOfMonth(month, this.year);
         calendar.set(this.year, month - 1, eom, 23, 59, 59);

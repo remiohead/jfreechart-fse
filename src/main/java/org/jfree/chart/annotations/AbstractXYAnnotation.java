@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2013, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------------
  * AbstractXYAnnotation.java
  * -------------------------
- * (C) Copyright 2004-2012, by Object Refinery Limited.
+ * (C) Copyright 2004-2013, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   Peter Kolb (patch 2809117);
@@ -39,7 +39,7 @@
  * 06-Mar-2007 : Implemented hashCode() (DG);
  * 24-Jun-2009 : Now extends AbstractAnnotation (see patch 2809117 by PK) (DG);
  * 16-Jun-2012 : Removed JCommon dependencies (DG);
- * 
+ *
  */
 
 package org.jfree.chart.annotations;
@@ -49,7 +49,7 @@ import java.awt.Shape;
 import java.awt.geom.Rectangle2D;
 
 import org.jfree.chart.axis.ValueAxis;
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.entity.XYAnnotationEntity;
 import org.jfree.chart.plot.PlotRenderingInfo;
@@ -99,6 +99,7 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      */
     public void setToolTipText(String text) {
         this.toolTipText = text;
+        fireAnnotationChanged();
     }
 
     /**
@@ -122,6 +123,7 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      */
     public void setURL(String url) {
         this.url = url;
+        fireAnnotationChanged();
     }
 
     /**
@@ -137,10 +139,9 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      *              entity information.
      */
     @Override
-	public abstract void draw(Graphics2D g2, XYPlot plot, Rectangle2D dataArea,
-                              ValueAxis domainAxis, ValueAxis rangeAxis,
-                              int rendererIndex,
-                              PlotRenderingInfo info);
+    public abstract void draw(Graphics2D g2, XYPlot plot, Rectangle2D dataArea,
+            ValueAxis domainAxis, ValueAxis rangeAxis, int rendererIndex,
+            PlotRenderingInfo info);
 
     /**
      * A utility method for adding an {@link XYAnnotationEntity} to
@@ -152,9 +153,8 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      * @param toolTipText  the tool tip text.
      * @param urlText  the URL text.
      */
-    protected void addEntity(PlotRenderingInfo info,
-                             Shape hotspot, int rendererIndex,
-                             String toolTipText, String urlText) {
+    protected void addEntity(PlotRenderingInfo info, Shape hotspot, 
+            int rendererIndex, String toolTipText, String urlText) {
         if (info == null) {
             return;
         }
@@ -175,7 +175,7 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -183,10 +183,10 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
             return false;
         }
         AbstractXYAnnotation that = (AbstractXYAnnotation) obj;
-        if (!ObjectUtilities.equal(this.toolTipText, that.toolTipText)) {
+        if (!ObjectUtils.equal(this.toolTipText, that.toolTipText)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.url, that.url)) {
+        if (!ObjectUtils.equal(this.url, that.url)) {
             return false;
         }
         return true;
@@ -198,7 +198,7 @@ public abstract class AbstractXYAnnotation extends AbstractAnnotation
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 193;
         if (this.toolTipText != null) {
             result = 37 * result + this.toolTipText.hashCode();

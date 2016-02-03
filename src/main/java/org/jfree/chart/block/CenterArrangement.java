@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
@@ -73,7 +73,7 @@ public class CenterArrangement implements Arrangement, Serializable {
      * @param key  a key that controls the position of the block.
      */
     @Override
-	public void add(Block block, Object key) {
+    public void add(Block block, Object key) {
         // since the flow layout is relatively straightforward,
         // no information needs to be recorded here
     }
@@ -91,7 +91,7 @@ public class CenterArrangement implements Arrangement, Serializable {
      * @return The size of the container after arrangement of the contents.
      */
     @Override
-	public Size2D arrange(BlockContainer container, Graphics2D g2,
+    public Size2D arrange(BlockContainer container, Graphics2D g2,
                           RectangleConstraint constraint) {
 
         LengthConstraintType w = constraint.getWidthConstraintType();
@@ -146,8 +146,8 @@ public class CenterArrangement implements Arrangement, Serializable {
     protected Size2D arrangeFN(BlockContainer container, Graphics2D g2,
                                RectangleConstraint constraint) {
 
-        List blocks = container.getBlocks();
-        Block b = (Block) blocks.get(0);
+        List<Block> blocks = container.getBlocks();
+        Block b = blocks.get(0);
         Size2D s = b.arrange(g2, RectangleConstraint.NONE);
         double width = constraint.getWidth();
         Rectangle2D bounds = new Rectangle2D.Double((width - s.width) / 2.0,
@@ -282,8 +282,8 @@ public class CenterArrangement implements Arrangement, Serializable {
      * @return The size after the arrangement.
      */
     protected Size2D arrangeNN(BlockContainer container, Graphics2D g2) {
-        List blocks = container.getBlocks();
-        Block b = (Block) blocks.get(0);
+        List<Block> blocks = container.getBlocks();
+        Block b = blocks.get(0);
         Size2D s = b.arrange(g2, RectangleConstraint.NONE);
         b.setBounds(new Rectangle2D.Double(0.0, 0.0, s.width, s.height));
         return new Size2D(s.width, s.height);
@@ -309,7 +309,7 @@ public class CenterArrangement implements Arrangement, Serializable {
      * Clears any cached information.
      */
     @Override
-	public void clear() {
+    public void clear() {
         // no action required.
     }
 
@@ -321,7 +321,7 @@ public class CenterArrangement implements Arrangement, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }

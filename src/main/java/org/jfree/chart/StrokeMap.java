@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------
  * StrokeMap.java
  * --------------
- * (C) Copyright 2006-2012, by Object Refinery Limited.
+ * (C) Copyright 2006-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -46,13 +46,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-import org.jfree.chart.util.ObjectUtilities;
-import org.jfree.chart.util.SerialUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.ParamChecks;
+import org.jfree.chart.util.SerialUtils;
 
 /**
  * A storage structure that maps <code>Comparable</code> instances with
@@ -70,13 +71,13 @@ public class StrokeMap implements Cloneable, Serializable {
     static final long serialVersionUID = -8148916785963525169L;
 
     /** Storage for the keys and values. */
-    private transient Map store;
+    private transient Map<Comparable<?>, Stroke> store;
 
     /**
      * Creates a new (empty) map.
      */
     public StrokeMap() {
-        this.store = new TreeMap();
+        this.store = new TreeMap<Comparable<?>, Stroke>();
     }
 
     /**
@@ -91,10 +92,8 @@ public class StrokeMap implements Cloneable, Serializable {
      *     <code>null</code>.
      */
     public Stroke getStroke(Comparable key) {
-        if (key == null) {
-            throw new IllegalArgumentException("Null 'key' argument.");
-        }
-        return (Stroke) this.store.get(key);
+        ParamChecks.nullNotPermitted(key, "key");
+        return this.store.get(key);
     }
 
     /**
@@ -118,9 +117,7 @@ public class StrokeMap implements Cloneable, Serializable {
      * @param stroke  the stroke.
      */
     public void put(Comparable key, Stroke stroke) {
-        if (key == null) {
-            throw new IllegalArgumentException("Null 'key' argument.");
-        }
+        ParamChecks.nullNotPermitted(key, "key");
         this.store.put(key, stroke);
     }
 
@@ -139,7 +136,7 @@ public class StrokeMap implements Cloneable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -150,13 +147,11 @@ public class StrokeMap implements Cloneable, Serializable {
         if (this.store.size() != that.store.size()) {
             return false;
         }
-        Set keys = this.store.keySet();
-        Iterator iterator = keys.iterator();
-        while (iterator.hasNext()) {
-            Comparable key = (Comparable) iterator.next();
+        Set<Comparable<?>> keys = this.store.keySet();
+        for (Comparable key : keys) {
             Stroke s1 = getStroke(key);
             Stroke s2 = that.getStroke(key);
-            if (!ObjectUtilities.equal(s1, s2)) {
+            if (!ObjectUtils.equal(s1, s2)) {
                 return false;
             }
         }
@@ -171,10 +166,13 @@ public class StrokeMap implements Cloneable, Serializable {
      * @throws CloneNotSupportedException if any key is not cloneable.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
+        StrokeMap clone = (StrokeMap) super.clone();
+        clone.store = new TreeMap<Comparable<?>, Stroke>();
+        clone.store.putAll(this.store);
         // TODO: I think we need to make sure the keys are actually cloned,
         // whereas the stroke instances are always immutable so they're OK
-        return super.clone();
+        return clone;
     }
 
     /**
@@ -187,13 +185,11 @@ public class StrokeMap implements Cloneable, Serializable {
     private void writeObject(ObjectOutputStream stream) throws IOException {
         stream.defaultWriteObject();
         stream.writeInt(this.store.size());
-        Set keys = this.store.keySet();
-        Iterator iterator = keys.iterator();
-        while (iterator.hasNext()) {
-            Comparable key = (Comparable) iterator.next();
+        Set<Comparable<?>> keys = this.store.keySet();
+        for (Comparable key : keys) {
             stream.writeObject(key);
             Stroke stroke = getStroke(key);
-            SerialUtilities.writeStroke(stroke, stream);
+            SerialUtils.writeStroke(stroke, stream);
         }
     }
 
@@ -208,11 +204,11 @@ public class StrokeMap implements Cloneable, Serializable {
     private void readObject(ObjectInputStream stream)
             throws IOException, ClassNotFoundException {
         stream.defaultReadObject();
-        this.store = new TreeMap();
+        this.store = new TreeMap<Comparable<?>, Stroke>();
         int keyCount = stream.readInt();
         for (int i = 0; i < keyCount; i++) {
             Comparable key = (Comparable) stream.readObject();
-            Stroke stroke = SerialUtilities.readStroke(stream);
+            Stroke stroke = SerialUtils.readStroke(stream);
             this.store.put(key, stroke);
         }
     }

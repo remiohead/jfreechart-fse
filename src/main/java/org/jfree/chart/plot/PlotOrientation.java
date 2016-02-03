@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * --------------------
  * PlotOrientation.java
  * --------------------
- * (C) Copyright 2003-2008, by Object Refinery Limited.
+ * (C) Copyright 2003-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -42,24 +42,16 @@
 
 package org.jfree.chart.plot;
 
-import java.io.ObjectStreamException;
-import java.io.Serializable;
-
 /**
  * Used to indicate the orientation (horizontal or vertical) of a 2D plot.
  */
-public final class PlotOrientation implements Serializable {
+public enum PlotOrientation {
 
-    /** For serialization. */
-    private static final long serialVersionUID = -2508771828190337782L;
-
-    /** For a plot where the range axis is horizontal. */
-    public static final PlotOrientation HORIZONTAL
-            = new PlotOrientation("PlotOrientation.HORIZONTAL");
+   /** For a plot where the range axis is horizontal. */
+    HORIZONTAL("PlotOrientation.HORIZONTAL"),
 
     /** For a plot where the range axis is vertical. */
-    public static final PlotOrientation VERTICAL
-            = new PlotOrientation("PlotOrientation.VERTICAL");
+    VERTICAL("PlotOrientation.VERTICAL");
 
     /** The name. */
     private String name;
@@ -74,64 +66,35 @@ public final class PlotOrientation implements Serializable {
     }
 
     /**
+     * Returns {@code true} if the orientation is {@code HORIZONTAL} and 
+     * {@code false} otherwise.  This method isn't strictly required but using
+     * it can improve code readability in some cases.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isHorizontal() {
+        return this.name.equals("PlotOrientation.HORIZONTAL");
+    }
+    
+    /**
+     * Returns {@code true} if the orientation is {@code VERTICAL} and 
+     * {@code false} otherwise.  This method isn't strictly required but using
+     * it can improve code readability in some cases.
+     * 
+     * @return A boolean. 
+     */
+    public boolean isVertical() {
+        return this.name.equals("PlotOrientation.VERTICAL");
+    }
+    
+    /**
      * Returns a string representing the object.
      *
-     * @return The string.
+     * @return The string (never {@code null}).
      */
     @Override
-	public String toString() {
+    public String toString() {
         return this.name;
-    }
-
-    /**
-     * Returns <code>true</code> if this object is equal to the specified
-     * object, and <code>false</code> otherwise.
-     *
-     * @param obj  the object (<code>null</code> permitted).
-     *
-     * @return A boolean.
-     */
-    @Override
-	public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (!(obj instanceof PlotOrientation)) {
-            return false;
-        }
-        PlotOrientation orientation = (PlotOrientation) obj;
-        if (!this.name.equals(orientation.toString())) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Returns a hash code for this instance.
-     *
-     * @return A hash code.
-     */
-    @Override
-	public int hashCode() {
-        return this.name.hashCode();
-    }
-
-    /**
-     * Ensures that serialization returns the unique instances.
-     *
-     * @return The object.
-     *
-     * @throws ObjectStreamException if there is a problem.
-     */
-    private Object readResolve() throws ObjectStreamException {
-        Object result = null;
-        if (this.equals(PlotOrientation.HORIZONTAL)) {
-            result = PlotOrientation.HORIZONTAL;
-        }
-        else if (this.equals(PlotOrientation.VERTICAL)) {
-            result = PlotOrientation.VERTICAL;
-        }
-        return result;
     }
 
 }

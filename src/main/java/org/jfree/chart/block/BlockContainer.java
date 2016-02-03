@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -------------------
@@ -53,7 +53,6 @@ import java.awt.geom.Rectangle2D;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.jfree.chart.ui.Size2D;
@@ -72,7 +71,7 @@ public class BlockContainer extends AbstractBlock
     private static final long serialVersionUID = 8199508075695195293L;
 
     /** The blocks within the container. */
-    private List blocks;
+    private List<Block> blocks;
 
     /** The object responsible for laying out the blocks. */
     private Arrangement arrangement;
@@ -95,7 +94,7 @@ public class BlockContainer extends AbstractBlock
             throw new IllegalArgumentException("Null 'arrangement' argument.");
         }
         this.arrangement = arrangement;
-        this.blocks = new ArrayList();
+        this.blocks = new ArrayList<Block>();
     }
 
     /**
@@ -135,7 +134,7 @@ public class BlockContainer extends AbstractBlock
      *
      * @return A list of blocks.
      */
-    public List getBlocks() {
+    public List<Block> getBlocks() {
         return Collections.unmodifiableList(this.blocks);
     }
 
@@ -177,7 +176,7 @@ public class BlockContainer extends AbstractBlock
      * @return The block size (in Java2D units, never <code>null</code>).
      */
     @Override
-	public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
+    public Size2D arrange(Graphics2D g2, RectangleConstraint constraint) {
         return this.arrangement.arrange(this, g2, constraint);
     }
 
@@ -188,7 +187,7 @@ public class BlockContainer extends AbstractBlock
      * @param area  the area.
      */
     @Override
-	public void draw(Graphics2D g2, Rectangle2D area) {
+    public void draw(Graphics2D g2, Rectangle2D area) {
         draw(g2, area, null);
     }
 
@@ -203,9 +202,9 @@ public class BlockContainer extends AbstractBlock
      * @return An instance of {@link EntityBlockResult}, or <code>null</code>.
      */
     @Override
-	public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
+    public Object draw(Graphics2D g2, Rectangle2D area, Object params) {
         // check if we need to collect chart entities from the container
-        EntityBlockParams ebp = null;
+        EntityBlockParams ebp;
         StandardEntityCollection sec = null;
         if (params instanceof EntityBlockParams) {
             ebp = (EntityBlockParams) params;
@@ -218,9 +217,7 @@ public class BlockContainer extends AbstractBlock
         drawBorder(g2, contentArea);
         contentArea = trimBorder(contentArea);
         contentArea = trimPadding(contentArea);
-        Iterator iterator = this.blocks.iterator();
-        while (iterator.hasNext()) {
-            Block block = (Block) iterator.next();
+        for (Block block : this.blocks) {
             Rectangle2D bounds = block.getBounds();
             Rectangle2D drawArea = new Rectangle2D.Double(bounds.getX()
                     + area.getX(), bounds.getY() + area.getY(),
@@ -250,7 +247,7 @@ public class BlockContainer extends AbstractBlock
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -278,7 +275,7 @@ public class BlockContainer extends AbstractBlock
      * @throws CloneNotSupportedException if there is a problem cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         BlockContainer clone = (BlockContainer) super.clone();
         // TODO : complete this
         return clone;

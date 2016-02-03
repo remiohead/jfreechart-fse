@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2012, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------------
  * XYDataItem.java
  * ---------------
- * (C) Copyright 2003-2012, by Object Refinery Limited.
+ * (C) Copyright 2003-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -48,14 +48,15 @@
 package org.jfree.data.xy;
 
 import java.io.Serializable;
-
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
+import org.jfree.chart.util.ParamChecks;
 
 /**
  * Represents one (x, y) data item for an {@link XYSeries}.  Note that
  * subclasses are REQUIRED to support cloning.
  */
-public class XYDataItem implements Cloneable, Comparable, Serializable {
+public class XYDataItem implements Cloneable, Comparable<XYDataItem>, 
+        Serializable {
 
     /** For serialization. */
     private static final long serialVersionUID = 2751513470325494890L;
@@ -73,9 +74,7 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * @param y  the y-value (<code>null</code> permitted).
      */
     public XYDataItem(Number x, Number y) {
-        if (x == null) {
-            throw new IllegalArgumentException("Null 'x' argument.");
-        }
+        ParamChecks.nullNotPermitted(x, "x");
         this.x = x;
         this.y = y;
     }
@@ -168,44 +167,27 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * For the order we consider only the x-value:
      * negative == "less-than", zero == "equal", positive == "greater-than".
      *
-     * @param o1  the object being compared to.
+     * @param dataItem  the object being compared to.
      *
      * @return An integer indicating the order of this data pair object
      *      relative to another object.
      */
     @Override
-	public int compareTo(Object o1) {
-
+    public int compareTo(XYDataItem dataItem) {
         int result;
-
-        // CASE 1 : Comparing to another TimeSeriesDataPair object
-        // -------------------------------------------------------
-        if (o1 instanceof XYDataItem) {
-            XYDataItem dataItem = (XYDataItem) o1;
-            double compare = this.x.doubleValue()
-                             - dataItem.getX().doubleValue();
-            if (compare > 0.0) {
-                result = 1;
+        double compare = this.x.doubleValue()
+                         - dataItem.getX().doubleValue();
+        if (compare > 0.0) {
+            result = 1;
+        } else {
+            if (compare < 0.0) {
+                result = -1;
             }
             else {
-                if (compare < 0.0) {
-                    result = -1;
-                }
-                else {
-                    result = 0;
-                }
+                result = 0;
             }
         }
-
-        // CASE 2 : Comparing to a general object
-        // ---------------------------------------------
-        else {
-            // consider time periods to be ordered after general objects
-            result = 1;
-        }
-
         return result;
-
     }
 
     /**
@@ -214,15 +196,16 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * @return A clone.
      */
     @Override
-	public Object clone() {
-        Object clone = null;
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
+
+    public XYDataItem copy() {
         try {
-            clone = super.clone();
+            return (XYDataItem) clone();
+        } catch (CloneNotSupportedException e) {
+            return null;
         }
-        catch (CloneNotSupportedException e) { // won't get here...
-            e.printStackTrace();
-        }
-        return clone;
     }
 
     /**
@@ -234,7 +217,7 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -245,7 +228,7 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
         if (!this.x.equals(that.x)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.y, that.y)) {
+        if (!ObjectUtils.equal(this.y, that.y)) {
             return false;
         }
         return true;
@@ -257,7 +240,7 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result;
         result = this.x.hashCode();
         result = 29 * result + (this.y != null ? this.y.hashCode() : 0);
@@ -271,7 +254,7 @@ public class XYDataItem implements Cloneable, Comparable, Serializable {
      * @return A string.
      */
     @Override
-	public String toString() {
+    public String toString() {
         return "[" + getXValue() + ", " + getYValue() + "]";
     }
 

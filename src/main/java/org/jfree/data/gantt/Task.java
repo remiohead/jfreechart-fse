@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ---------
@@ -44,14 +44,14 @@
 
 package org.jfree.data.gantt;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-
-import org.jfree.chart.util.ObjectUtilities;
+import org.jfree.chart.util.ObjectUtils;
 import org.jfree.chart.util.PublicCloneable;
 import org.jfree.data.time.SimpleTimePeriod;
 import org.jfree.data.time.TimePeriod;
+
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A simple representation of a task.  The task has a description and a
@@ -72,7 +72,7 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
     private Double percentComplete;
 
     /** Storage for the sub-tasks (if any). */
-    private List subtasks;
+    private List<Task> subtasks;
 
     /**
      * Creates a new task.
@@ -88,7 +88,7 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
         this.description = description;
         this.duration = duration;
         this.percentComplete = null;
-        this.subtasks = new java.util.ArrayList();
+        this.subtasks = new java.util.ArrayList<Task>();
     }
 
     /**
@@ -207,7 +207,7 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
      * @return The sub-task.
      */
     public Task getSubtask(int index) {
-        return (Task) this.subtasks.get(index);
+        return this.subtasks.get(index);
     }
 
     /**
@@ -218,7 +218,7 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object object) {
+    public boolean equals(Object object) {
         if (object == this) {
             return true;
         }
@@ -226,17 +226,17 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
             return false;
         }
         Task that = (Task) object;
-        if (!ObjectUtilities.equal(this.description, that.description)) {
+        if (!ObjectUtils.equal(this.description, that.description)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.duration, that.duration)) {
+        if (!ObjectUtils.equal(this.duration, that.duration)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.percentComplete,
+        if (!ObjectUtils.equal(this.percentComplete,
                 that.percentComplete)) {
             return false;
         }
-        if (!ObjectUtilities.equal(this.subtasks, that.subtasks)) {
+        if (!ObjectUtils.equal(this.subtasks, that.subtasks)) {
             return false;
         }
         return true;
@@ -251,7 +251,7 @@ public class Task implements Cloneable, PublicCloneable, Serializable {
      *         subclasses may not support cloning.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         Task clone = (Task) super.clone();
         return clone;
     }

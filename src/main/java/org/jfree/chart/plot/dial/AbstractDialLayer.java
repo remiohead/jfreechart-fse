@@ -21,7 +21,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * ----------------------
@@ -50,7 +50,7 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
-import org.jfree.chart.HashUtilities;
+import org.jfree.chart.util.HashUtils;
 
 /**
  * A base class that can be used to implement a {@link DialLayer}.  It includes
@@ -83,7 +83,7 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @see #setVisible(boolean)
      */
     @Override
-	public boolean isVisible() {
+    public boolean isVisible() {
         return this.visible;
     }
 
@@ -109,7 +109,7 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @return A boolean.
      */
     @Override
-	public boolean equals(Object obj) {
+    public boolean equals(Object obj) {
         if (obj == this) {
             return true;
         }
@@ -126,9 +126,9 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @return A hash code.
      */
     @Override
-	public int hashCode() {
+    public int hashCode() {
         int result = 23;
-        result = HashUtilities.hashCode(result, this.visible);
+        result = HashUtils.hashCode(result, this.visible);
         return result;
     }
 
@@ -141,7 +141,7 @@ public abstract class AbstractDialLayer implements DialLayer {
      *     instance.
      */
     @Override
-	public Object clone() throws CloneNotSupportedException {
+    public Object clone() throws CloneNotSupportedException {
         AbstractDialLayer clone = (AbstractDialLayer) super.clone();
         // we don't clone the listeners
         clone.listenerList = new EventListenerList();
@@ -156,7 +156,7 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @see #removeChangeListener(DialLayerChangeListener)
      */
     @Override
-	public void addChangeListener(DialLayerChangeListener listener) {
+    public void addChangeListener(DialLayerChangeListener listener) {
         this.listenerList.add(DialLayerChangeListener.class, listener);
     }
 
@@ -168,7 +168,7 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @see #addChangeListener(DialLayerChangeListener)
      */
     @Override
-	public void removeChangeListener(DialLayerChangeListener listener) {
+    public void removeChangeListener(DialLayerChangeListener listener) {
         this.listenerList.remove(DialLayerChangeListener.class, listener);
     }
 
@@ -182,8 +182,8 @@ public abstract class AbstractDialLayer implements DialLayer {
      * @return A boolean.
      */
     @Override
-	public boolean hasListener(EventListener listener) {
-        List list = Arrays.asList(this.listenerList.getListenerList());
+    public boolean hasListener(EventListener listener) {
+        List<Object> list = Arrays.asList(this.listenerList.getListenerList());
         return list.contains(listener);
     }
 

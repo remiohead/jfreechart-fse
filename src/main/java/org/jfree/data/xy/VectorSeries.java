@@ -2,7 +2,7 @@
  * JFreeChart : a free chart library for the Java(tm) platform
  * ===========================================================
  *
- * (C) Copyright 2000-2011, by Object Refinery Limited and Contributors.
+ * (C) Copyright 2000-2014, by Object Refinery Limited and Contributors.
  *
  * Project Info:  http://www.jfree.org/jfreechart/index.html
  *
@@ -21,13 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  *
- * [Oracle and Java are registered trademarks of Oracle and/or its affiliates. 
+ * [Oracle and Java are registered trademarks of Oracle and/or its affiliates.
  * Other names may be trademarks of their respective owners.]
  *
  * -----------------
  * VectorSeries.java
  * -----------------
- * (C) Copyright 2007, 2008, by Object Refinery Limited.
+ * (C) Copyright 2007-2014, by Object Refinery Limited.
  *
  * Original Author:  David Gilbert (for Object Refinery Limited);
  * Contributor(s):   -;
@@ -61,7 +61,7 @@ public class VectorSeries extends ComparableObjectSeries {
     /**
      * Creates a new empty series.
      *
-     * @param key  the series key (<code>null</code> not permitted).
+     * @param key  the series key ({@code null} not permitted).
      */
     public VectorSeries(Comparable key) {
         this(key, false, true);
@@ -103,7 +103,7 @@ public class VectorSeries extends ComparableObjectSeries {
      * @return The item removed.
      */
     @Override
-	public ComparableObjectItem remove(int index) {
+    public ComparableObjectItem remove(int index) {
         VectorDataItem result = (VectorDataItem) this.data.remove(index);
         fireSeriesChanged();
         return result;
@@ -165,7 +165,7 @@ public class VectorSeries extends ComparableObjectSeries {
      * @return The data item.
      */
     @Override
-	public ComparableObjectItem getDataItem(int index) {
+    public ComparableObjectItem getDataItem(int index) {
         // overridden to make public
         return super.getDataItem(index);
     }
